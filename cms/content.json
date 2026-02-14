@@ -96,5 +96,43 @@
         ]
       }
     ]
+  },
+
+  "reviews": {
+    "label": "Reviews",
+    "heading": {
+      "line1": "Humara kaam,",
+      "line2": "unki {italic} mein",
+      "italicWord": "zubaani"
+    },
+    "items": [
+      {
+        "name": "Gagandeep Singh",
+        "content": "One of the best Architecture firm in Haridwar, quality experience and dedication toward the work is key factor of this firm. Must try it.",
+        "featured": true
+      },
+      {
+        "name": "Nitish Bhardwaj",
+        "content": "Best person in nature, great knowledge of designing. I have designed my shop from this firm — best experience I have ever received.",
+        "videoUrl": "https://stream.mux.com/C96HW02UCqhlhOAZ00vDjqQxgjZMkCB8dtFpHCGJZONG8.m3u8?redundant_streams=true"
+      },
+      {
+        "name": "Neeraj Rajput",
+        "content": "One of the best firm with good attitude and work experience. Must try it."
+      },
+      {
+        "name": "Saumya Gupta",
+        "content": "He is very professional in his work and quality is up to date.",
+        "videoUrl": "https://stream.mux.com/7MlGBBexs8A2d7hFD4HMDj1XLVVvv8phhQEeUBN200Fg.m3u8?redundant_streams=true"
+      },
+      {
+        "name": "Deepak Sharma",
+        "content": "His work and design is very good and very super friendly person."
+      },
+      {
+        "name": "Shivansh Bajaj",
+        "content": "Best in town."
+      }
+    ]
   }
 }

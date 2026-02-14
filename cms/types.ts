@@ -65,9 +65,27 @@ export interface ServicesContent {
   items: ServiceItem[];
 }
 
+export interface ReviewItem {
+  name: string;
+  content: string;
+  videoUrl?: string;
+  featured?: boolean;
+}
+
+export interface ReviewsContent {
+  label: string;
+  heading: {
+    line1: string;
+    line2: string;
+    italicWord: string;
+  };
+  items: ReviewItem[];
+}
+
 export interface SiteContent {
   nav: NavContent;
   hero: HeroContent;
   projectGallery: ProjectGalleryContent;
   services: ServicesContent;
+  reviews: ReviewsContent;
 }
