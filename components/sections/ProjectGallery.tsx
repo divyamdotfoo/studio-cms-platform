@@ -9,7 +9,7 @@ import { springGentle, T_HERO } from "@/lib/motion";
  * ProjectGallery
  *
  * Desktop: three side-by-side panels with hover expand.
- * Mobile:  horizontal scroll strip with snap.
+ * Mobile:  vertical stacked grid.
  * ──────────────────────────────────────────────────── */
 
 const FLEX_ACTIVE = 3.7;
@@ -43,11 +43,11 @@ function DesktopPanel({ label, index, active, onHover }: DesktopPanelProps) {
       transition={panelSpring}
       onMouseEnter={() => onHover(index)}
     >
-      <div className="absolute inset-0 bg-light-gray/40 border border-warm-gray/20">
+      <div className="absolute inset-0 bg-shell border border-mist">
         <div className="absolute inset-0 flex items-end p-6">
           <motion.span
-            className="text-[13px] uppercase tracking-widest text-deep-black/45 font-medium"
-            animate={{ opacity: isActive ? 1 : 0.5 }}
+            className="text-[13px] uppercase tracking-widest text-drift font-medium"
+            animate={{ opacity: isActive ? 1 : 0.6 }}
             transition={panelSpring}
           >
             {label}
@@ -76,10 +76,10 @@ export function ProjectGallery() {
         {projectGallery.panels.map((panel, i) => (
           <div
             key={i}
-            className="w-full h-[200px] bg-light-gray/40 border border-warm-gray/20 overflow-hidden relative"
+            className="w-full h-[200px] bg-shell border border-mist overflow-hidden relative"
           >
             <div className="absolute inset-0 flex items-end p-5">
-              <span className="text-[13px] uppercase tracking-widest text-deep-black/45 font-medium">
+              <span className="text-[13px] uppercase tracking-widest text-drift font-medium">
                 {panel.label}
               </span>
             </div>

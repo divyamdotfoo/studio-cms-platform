@@ -27,7 +27,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...spring, delay: T }}
-            className="lg:hidden text-[13px] uppercase tracking-[0.12em] text-deep-black/55 mb-5"
+            className="lg:hidden text-[13px] uppercase tracking-[0.12em] text-drift mb-5"
           >
             {hero.location}
           </motion.div>
@@ -35,7 +35,7 @@ export function Hero() {
           <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-14">
             {/* Left — Headline */}
             <div className="lg:pt-4">
-              <h1 className="font-serif text-[clamp(2.2rem,10vw,3.2rem)] lg:text-[clamp(2.2rem,6vw,5rem)] leading-[0.95] tracking-[-0.015em] font-normal">
+              <h1 className="font-serif text-[clamp(2.2rem,10vw,3.2rem)] lg:text-[clamp(2.2rem,6vw,5rem)] leading-[0.95] tracking-[-0.015em] font-normal text-ink">
                 <span className="block">
                   <RevealText text={hero.headline.line1} delay={T} />
                 </span>
@@ -60,7 +60,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ ...spring, delay: T + 0.35 }}
-                className="hidden lg:block text-[13px] uppercase tracking-[0.12em] text-deep-black/55 text-right"
+                className="hidden lg:block text-[13px] uppercase tracking-[0.12em] text-drift text-right"
               >
                 {hero.location}
               </motion.div>
@@ -70,7 +70,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ ...spring, delay: T + 0.45 }}
-                className="text-[15px] leading-[1.75] text-deep-black/70"
+                className="text-[15px] leading-[1.75] text-stone"
               >
                 {hero.description}
               </motion.p>

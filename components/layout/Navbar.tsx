@@ -35,7 +35,7 @@ export function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter] duration-500 ${
         isScrolled
-          ? "bg-cream/80 backdrop-blur-2xl supports-backdrop-filter:bg-cream/70"
+          ? "bg-cream/80 backdrop-blur-2xl"
           : "bg-transparent backdrop-blur-none"
       }`}
     >
@@ -63,7 +63,7 @@ export function Navbar() {
           className="justify-self-center"
         >
           <Link href="/" className="relative z-10" aria-label={`${nav.brand} — Home`}>
-            <span className="font-serif italic text-xl tracking-tight text-deep-black">
+            <span className="font-serif italic text-xl tracking-tight text-ink">
               {nav.brand}
             </span>
           </Link>
@@ -93,7 +93,7 @@ export function Navbar() {
           transition={{ ...spring, delay: 0.1 }}
         >
           <Link href="/" aria-label={`${nav.brand} — Home`}>
-            <span className="font-serif italic text-base tracking-tight text-deep-black">
+            <span className="font-serif italic text-base tracking-tight text-ink">
               {nav.brand}
             </span>
           </Link>
@@ -109,7 +109,7 @@ export function Navbar() {
           {/* Message icon */}
           <Link
             href="/contact"
-            className="flex items-center justify-center w-11 h-11 text-deep-black/60 active:text-deep-black transition-colors"
+            className="flex items-center justify-center w-11 h-11 text-drift active:text-ink transition-colors"
             aria-label="Send message"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -120,7 +120,7 @@ export function Navbar() {
           {/* Phone icon */}
           <Link
             href="/contact?book=true"
-            className="flex items-center justify-center w-11 h-11 text-deep-black/60 active:text-deep-black transition-colors"
+            className="flex items-center justify-center w-11 h-11 text-drift active:text-ink transition-colors"
             aria-label="Call us"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -133,7 +133,7 @@ export function Navbar() {
       {/* ── Bottom border ── */}
       <motion.div
         className="h-px origin-left"
-        style={{ backgroundColor: "#C4C1B8" }}
+        style={{ backgroundColor: "var(--color-sand)" }}
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ ...spring, delay: T_NAV_BORDER }}

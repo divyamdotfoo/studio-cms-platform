@@ -18,7 +18,16 @@ import { springGentle, springSnap } from "@/lib/motion";
 
 function HomeIcon({ active }: { active: boolean }) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill={active ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
       {!active && <polyline points="9 22 9 12 15 12 15 22" />}
     </svg>
@@ -27,7 +36,16 @@ function HomeIcon({ active }: { active: boolean }) {
 
 function ProjectsIcon({ active }: { active: boolean }) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill={active ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <rect x="3" y="3" width="7" height="7" rx="1" />
       <rect x="14" y="3" width="7" height="7" rx="1" />
       <rect x="3" y="14" width="7" height="7" rx="1" />
@@ -38,7 +56,16 @@ function ProjectsIcon({ active }: { active: boolean }) {
 
 function AboutIcon({ active }: { active: boolean }) {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill={active ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
       <circle cx="12" cy="7" r="4" />
     </svg>
@@ -64,19 +91,19 @@ export function Dock() {
     >
       <motion.nav
         className="pointer-events-auto"
-        initial={{ y: 80 }}
-        animate={{ y: 0 }}
+        initial={{ y: 80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
         transition={{ ...springGentle, delay: 0.8 }}
         aria-label="Navigation dock"
       >
         <div
-          className="flex items-center gap-1 px-3 py-2 border border-warm-gray/25"
+          className="flex items-center gap-1 px-3 py-2 border border-mist"
           style={{
             backgroundColor: "rgba(245, 243, 239, 0.72)",
             backdropFilter: "blur(24px) saturate(1.4)",
             WebkitBackdropFilter: "blur(24px) saturate(1.4)",
             borderRadius: "22px",
-            boxShadow: "0 2px 24px -4px rgba(26, 26, 26, 0.1), 0 0 0 0.5px rgba(196, 193, 184, 0.3)",
+            boxShadow: "0 2px 24px -4px rgba(26, 26, 26, 0.1)",
           }}
         >
           {nav.dock.map((item) => {
@@ -88,7 +115,7 @@ export function Dock() {
                 key={item.href}
                 href={item.href}
                 className={`relative flex flex-col items-center gap-1 px-5 py-2 rounded-2xl transition-colors duration-200 ${
-                  isActive ? "text-deep-black" : "text-deep-black/50"
+                  isActive ? "text-ink" : "text-drift"
                 }`}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -100,7 +127,7 @@ export function Dock() {
                 {/* Active indicator dot */}
                 {isActive && (
                   <motion.div
-                    className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-deep-black"
+                    className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-ink"
                     layoutId="dock-dot"
                     transition={springSnap}
                   />

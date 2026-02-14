@@ -43,8 +43,7 @@ function ServiceRow({
     >
       {/* Top border */}
       <motion.div
-        className="h-px origin-left"
-        style={{ backgroundColor: "#C4C1B8" }}
+        className="h-px origin-left bg-sand"
         initial={{ scaleX: 0 }}
         animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
         transition={{ ...spring, delay: index * STAGGER * 2.5 + 0.05 }}
@@ -54,12 +53,8 @@ function ServiceRow({
       <div className="relative grid grid-cols-[36px_1fr_auto] lg:grid-cols-[60px_1fr_auto] items-baseline gap-4 lg:gap-8 py-5 lg:py-7 cursor-pointer">
         {/* Number */}
         <motion.span
-          className="font-serif text-sm lg:text-sm text-deep-black/40"
-          animate={{
-            color: isExpanded
-              ? "rgba(139, 115, 85, 0.7)"
-              : "rgba(26, 26, 26, 0.4)",
-          }}
+          className="font-serif text-sm"
+          animate={{ color: isExpanded ? "#8B7355" : "#94908A" }}
           transition={springSnap}
         >
           {service.num}
@@ -67,7 +62,7 @@ function ServiceRow({
 
         {/* Title */}
         <motion.h3
-          className="font-serif text-xl lg:text-[1.75rem] tracking-[-0.01em] text-deep-black"
+          className="font-serif text-xl lg:text-[1.75rem] tracking-[-0.01em] text-ink"
           animate={{ x: isExpanded ? 6 : 0 }}
           transition={springSnap}
         >
@@ -83,7 +78,7 @@ function ServiceRow({
           transition={springSnap}
         >
           <svg
-            className="w-4 h-4 lg:w-5 lg:h-5 text-deep-black/45"
+            className="w-4 h-4 lg:w-5 lg:h-5 text-drift"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -117,7 +112,7 @@ function ServiceRow({
                 initial={{ y: 8 }}
                 animate={{ y: 0 }}
                 transition={springSnap}
-                className="text-[15px] leading-[1.8] text-deep-black/65 max-w-[440px]"
+                className="text-[15px] leading-[1.8] text-stone max-w-[440px]"
               >
                 {service.description}
               </motion.p>
@@ -130,7 +125,7 @@ function ServiceRow({
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ ...springSnap, delay: i * 0.04 }}
-                    className="text-[13px] uppercase tracking-[0.08em] text-earth-brown/75 whitespace-nowrap"
+                    className="text-[13px] uppercase tracking-[0.08em] text-bronze whitespace-nowrap"
                   >
                     {item}
                   </motion.span>
@@ -167,9 +162,6 @@ function RichHeadingLine({
 
 /* ────────────────────────────────────────────────────
  * Services section
- *
- * Mobile:  single-col header, 2x2 stats, tap-to-expand rows
- * Desktop: two-col header, 4-col stats, hover-to-expand rows
  * ──────────────────────────────────────────────────── */
 
 export function Services() {
@@ -192,10 +184,10 @@ export function Services() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={springGentle}
           >
-            <span className="text-[13px] uppercase tracking-[0.12em] text-deep-black/50 block mb-4 lg:mb-5">
+            <span className="text-[13px] uppercase tracking-[0.12em] text-drift block mb-4 lg:mb-5">
               {services.label}
             </span>
-            <h2 className="font-serif text-[clamp(1.8rem,6vw,3.4rem)] leading-[1.05] tracking-[-0.015em]">
+            <h2 className="font-serif text-[clamp(1.8rem,6vw,3.4rem)] leading-[1.05] tracking-[-0.015em] text-ink">
               {services.heading.line1}
               <br />
               <RichHeadingLine
@@ -206,7 +198,7 @@ export function Services() {
           </motion.div>
 
           <motion.p
-            className="text-[15px] leading-[1.8] text-deep-black/65 lg:self-end"
+            className="text-[15px] leading-[1.8] text-stone lg:self-end"
             initial={{ opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...springGentle, delay: STAGGER * 3 }}
@@ -233,11 +225,10 @@ export function Services() {
                 delay: STAGGER * 4 + i * STAGGER * 2,
               }}
             >
-              {/* Vertical divider — desktop only (all except first) */}
+              {/* Vertical divider — desktop only */}
               {i > 0 && (
                 <motion.div
-                  className="absolute left-0 top-6 bottom-6 w-px origin-top hidden lg:block"
-                  style={{ backgroundColor: "#C4C1B8" }}
+                  className="absolute left-0 top-6 bottom-6 w-px origin-top hidden lg:block bg-sand"
                   initial={{ scaleY: 0 }}
                   animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
                   transition={{
@@ -248,10 +239,10 @@ export function Services() {
               )}
 
               <div className={`${i > 0 ? "lg:pl-10" : ""}`}>
-                <span className="font-serif text-[2rem] lg:text-[2.8rem] leading-none tracking-tight text-deep-black">
+                <span className="font-serif text-[2rem] lg:text-[2.8rem] leading-none tracking-tight text-ink">
                   {stat.value}
                 </span>
-                <span className="block mt-1.5 lg:mt-2 text-xs lg:text-[13px] uppercase tracking-[0.08em] text-deep-black/50">
+                <span className="block mt-1.5 lg:mt-2 text-xs lg:text-[13px] uppercase tracking-[0.08em] text-drift">
                   {stat.label}
                 </span>
               </div>
@@ -276,8 +267,7 @@ export function Services() {
 
           {/* Bottom border */}
           <motion.div
-            className="h-px origin-left"
-            style={{ backgroundColor: "#C4C1B8" }}
+            className="h-px origin-left bg-sand"
             initial={{ scaleX: 0 }}
             animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
             transition={{

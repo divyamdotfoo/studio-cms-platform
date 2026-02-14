@@ -46,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
-      <body className="font-sans antialiased bg-cream text-deep-black">
+      <body className="font-sans antialiased bg-cream text-ink">
         <ContentProvider content={content as SiteContent}>
           <Navbar />
           {children}

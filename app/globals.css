@@ -11,15 +11,16 @@
   --font-serif: var(--font-serif);
   --font-mono: var(--font-geist-mono);
 
-  /* Architecture palette */
-  --color-cream: #f5f3ef;
-  --color-warm-white: #fefdfb;
-  --color-deep-black: #1a1a1a;
-  --color-soft-black: #2d2d2d;
-  --color-earth-brown: #8b7355;
-  --color-sage-green: #9fa89a;
-  --color-warm-gray: #c4c1b8;
-  --color-light-gray: #e8e6e1;
+  /* ── Site palette (9 shades, no opacity modifiers needed) ── */
+  --color-ink: #1a1a1a; /* headings, brand, primary text */
+  --color-stone: #5c5852; /* body copy, descriptions */
+  --color-drift: #94908a; /* labels, locations, meta text */
+  --color-bronze: #8b7355; /* accent — selection, hover, tags */
+  --color-sand: #c4c1b8; /* dividers, drawn borders */
+  --color-mist: #dfdcd6; /* subtle borders on panels */
+  --color-shell: #e8e6e1; /* subtle fills, card bg */
+  --color-cream: #f5f3ef; /* page background */
+  --color-ivory: #fefdfb; /* elevated surfaces */
 
   /* shadcn tokens */
   --color-sidebar-ring: var(--sidebar-ring);

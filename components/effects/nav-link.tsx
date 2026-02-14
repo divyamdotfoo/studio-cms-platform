@@ -26,7 +26,7 @@ export function HoverLink({ href, label, className }: NavLinkProps) {
   return (
     <Link
       href={href}
-      className={`relative pb-0.5 text-xs uppercase tracking-[0.08em] text-deep-black transition-colors duration-200 ${
+      className={`relative pb-0.5 text-xs uppercase tracking-[0.08em] text-ink transition-colors duration-200 ${
         className ?? ""
       }`}
       onMouseEnter={() => setHovered(true)}
@@ -36,7 +36,7 @@ export function HoverLink({ href, label, className }: NavLinkProps) {
 
       {/* Underline — spring-animated width. */}
       <motion.span
-        className="absolute bottom-0 left-0 h-px bg-black"
+        className="absolute bottom-0 left-0 h-px bg-ink"
         initial={{ width: "0%" }}
         animate={{ width: hovered ? "100%" : "0%" }}
         transition={springSnap}
