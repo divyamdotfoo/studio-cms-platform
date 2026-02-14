@@ -134,5 +134,30 @@
         "content": "Best in town."
       }
     ]
+  },
+
+  "social": {
+    "label": "Follow our journey",
+    "heading": {
+      "line1": "Humara kaam,",
+      "line2": "roz {italic} pe",
+      "italicWord": "social"
+    },
+    "description": "Design process se leke final reveal tak — sab kuch share karte hain. Follow karein aur dekho kaise ek idea ghar ban jaata hai.",
+    "channels": [
+      {
+        "platform": "instagram",
+        "handle": "@vision_architect_",
+        "url": "https://www.instagram.com/vision_architect_/",
+        "followers": "10k+ followers",
+        "featuredPostUrl": "https://www.instagram.com/p/DSC-BiWiaWP/"
+      },
+      {
+        "platform": "youtube",
+        "handle": "Vision Architect",
+        "url": "https://www.youtube.com/@visionarchitect3537",
+        "followers": "3k+ subscribers"
+      }
+    ]
   }
 }

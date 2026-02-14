@@ -82,10 +82,30 @@ export interface ReviewsContent {
   items: ReviewItem[];
 }
 
+export interface SocialChannel {
+  platform: string;
+  handle: string;
+  url: string;
+  followers: string;
+  featuredPostUrl?: string;
+}
+
+export interface SocialContent {
+  label: string;
+  heading: {
+    line1: string;
+    line2: string;
+    italicWord: string;
+  };
+  description: string;
+  channels: SocialChannel[];
+}
+
 export interface SiteContent {
   nav: NavContent;
   hero: HeroContent;
   projectGallery: ProjectGalleryContent;
   services: ServicesContent;
   reviews: ReviewsContent;
+  social: SocialContent;
 }
