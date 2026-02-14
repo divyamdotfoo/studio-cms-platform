@@ -8,20 +8,14 @@ import { springGentle, T_HERO } from "@/lib/motion";
 /* ────────────────────────────────────────────────────
  * ProjectGallery
  *
- * Three side-by-side panels. The first panel starts
- * expanded; hovering any panel expands it while the
- * others shrink. Uses spring-based flex animation
- * so the transition feels fluid and physical.
+ * Desktop: three side-by-side panels with hover expand.
+ * Mobile:  horizontal scroll strip with snap.
  * ──────────────────────────────────────────────────── */
 
-/** Flex values: 65% active, ~17.5% each inactive. */
 const FLEX_ACTIVE = 3.7;
 const FLEX_INACTIVE = 1;
-
-/** Gallery enters after the headline and separator. */
 const T = T_HERO + 0.55;
 
-/** Bouncy spring for panel expand/contract. */
 const panelSpring = {
   type: "spring" as const,
   stiffness: 80,
@@ -29,14 +23,16 @@ const panelSpring = {
   mass: 1,
 };
 
-interface PanelProps {
+/* ── Desktop panel (with flex animation) ── */
+
+interface DesktopPanelProps {
   label: string;
   index: number;
   active: number;
   onHover: (index: number) => void;
 }
 
-function GalleryPanel({ label, index, active, onHover }: PanelProps) {
+function DesktopPanel({ label, index, active, onHover }: DesktopPanelProps) {
   const isActive = active === index;
 
   return (
@@ -50,7 +46,7 @@ function GalleryPanel({ label, index, active, onHover }: PanelProps) {
       <div className="absolute inset-0 bg-light-gray/40 border border-warm-gray/20">
         <div className="absolute inset-0 flex items-end p-6">
           <motion.span
-            className="text-xs uppercase tracking-widest text-deep-black/30 font-medium"
+            className="text-[13px] uppercase tracking-widest text-deep-black/45 font-medium"
             animate={{ opacity: isActive ? 1 : 0.5 }}
             transition={panelSpring}
           >
@@ -62,26 +58,52 @@ function GalleryPanel({ label, index, active, onHover }: PanelProps) {
   );
 }
 
+/* ── Gallery component ── */
+
 export function ProjectGallery() {
   const { projectGallery } = useContent();
   const [active, setActive] = useState(0);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ ...springGentle, delay: T }}
-      className="flex gap-3 pb-8"
-    >
-      {projectGallery.panels.map((panel, i) => (
-        <GalleryPanel
-          key={i}
-          label={panel.label}
-          index={i}
-          active={active}
-          onHover={setActive}
-        />
-      ))}
-    </motion.div>
+    <>
+      {/* Mobile — vertical stacked grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...springGentle, delay: T }}
+        className="lg:hidden flex flex-col gap-3 pb-6"
+      >
+        {projectGallery.panels.map((panel, i) => (
+          <div
+            key={i}
+            className="w-full h-[200px] bg-light-gray/40 border border-warm-gray/20 overflow-hidden relative"
+          >
+            <div className="absolute inset-0 flex items-end p-5">
+              <span className="text-[13px] uppercase tracking-widest text-deep-black/45 font-medium">
+                {panel.label}
+              </span>
+            </div>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* Desktop — flex panels with hover expand */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...springGentle, delay: T }}
+        className="hidden lg:flex gap-3 pb-8"
+      >
+        {projectGallery.panels.map((panel, i) => (
+          <DesktopPanel
+            key={i}
+            label={panel.label}
+            index={i}
+            active={active}
+            onHover={setActive}
+          />
+        ))}
+      </motion.div>
+    </>
   );
 }

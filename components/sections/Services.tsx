@@ -7,7 +7,7 @@ import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
 import type { ServiceItem } from "@/cms/types";
 
 /* ────────────────────────────────────────────────────
- * ServiceRow — expandable on hover
+ * ServiceRow — expandable on hover (desktop) / tap (mobile)
  * ──────────────────────────────────────────────────── */
 
 interface RowProps {
@@ -17,9 +17,18 @@ interface RowProps {
   isExpanded: boolean;
   onHover: () => void;
   onLeave: () => void;
+  onToggle: () => void;
 }
 
-function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: RowProps) {
+function ServiceRow({
+  service,
+  index,
+  isInView,
+  isExpanded,
+  onHover,
+  onLeave,
+  onToggle,
+}: RowProps) {
   return (
     <motion.div
       className="group relative"
@@ -28,8 +37,11 @@ function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: 
       transition={{ ...spring, delay: index * STAGGER * 2.5 }}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
+      onPointerDown={(e) => {
+        if (e.pointerType === "touch") onToggle();
+      }}
     >
-      {/* Top border — draws in on scroll */}
+      {/* Top border */}
       <motion.div
         className="h-px origin-left"
         style={{ backgroundColor: "#C4C1B8" }}
@@ -38,20 +50,16 @@ function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: 
         transition={{ ...spring, delay: index * STAGGER * 2.5 + 0.05 }}
       />
 
-      {/* Hover background */}
-      <motion.div
-        className="absolute inset-0 top-px bg-deep-black/2 pointer-events-none"
-        initial={false}
-        animate={{ opacity: isExpanded ? 1 : 0 }}
-        transition={springSnap}
-      />
-
-      {/* Main row content */}
-      <div className="relative grid grid-cols-[60px_1fr_auto] items-baseline gap-8 py-7 cursor-pointer">
+      {/* Main row */}
+      <div className="relative grid grid-cols-[36px_1fr_auto] lg:grid-cols-[60px_1fr_auto] items-baseline gap-4 lg:gap-8 py-5 lg:py-7 cursor-pointer">
         {/* Number */}
         <motion.span
-          className="font-serif text-sm text-deep-black/25"
-          animate={{ color: isExpanded ? "rgba(139, 115, 85, 0.6)" : "rgba(26, 26, 26, 0.25)" }}
+          className="font-serif text-sm lg:text-sm text-deep-black/40"
+          animate={{
+            color: isExpanded
+              ? "rgba(139, 115, 85, 0.7)"
+              : "rgba(26, 26, 26, 0.4)",
+          }}
           transition={springSnap}
         >
           {service.num}
@@ -59,7 +67,7 @@ function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: 
 
         {/* Title */}
         <motion.h3
-          className="font-serif text-[1.75rem] tracking-[-0.01em] text-deep-black"
+          className="font-serif text-xl lg:text-[1.75rem] tracking-[-0.01em] text-deep-black"
           animate={{ x: isExpanded ? 6 : 0 }}
           transition={springSnap}
         >
@@ -68,22 +76,29 @@ function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: 
 
         {/* Arrow */}
         <motion.div
-          animate={{ rotate: isExpanded ? -45 : 0, x: isExpanded ? 2 : 0 }}
+          animate={{
+            rotate: isExpanded ? -45 : 0,
+            x: isExpanded ? 2 : 0,
+          }}
           transition={springSnap}
         >
           <svg
-            className="w-5 h-5 text-deep-black/30"
+            className="w-4 h-4 lg:w-5 lg:h-5 text-deep-black/45"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={1.2}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M7 17L17 7M17 7H7M17 7v10"
+            />
           </svg>
         </motion.div>
       </div>
 
-      {/* Expandable detail area */}
+      {/* Expandable detail */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -93,29 +108,29 @@ function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: 
             transition={springSnap}
             className="overflow-hidden"
           >
-            <div className="grid grid-cols-[60px_1fr_1fr] gap-8 pb-8">
-              {/* Spacer for alignment with number column */}
-              <div />
+            <div className="grid grid-cols-1 lg:grid-cols-[60px_1fr_1fr] gap-4 lg:gap-8 pb-6 lg:pb-8 pl-10 lg:pl-0">
+              {/* Spacer — desktop only */}
+              <div className="hidden lg:block" />
 
               {/* Description */}
               <motion.p
                 initial={{ y: 8 }}
                 animate={{ y: 0 }}
                 transition={springSnap}
-                className="text-sm leading-[1.8] text-deep-black/50 max-w-[440px]"
+                className="text-[15px] leading-[1.8] text-deep-black/65 max-w-[440px]"
               >
                 {service.description}
               </motion.p>
 
               {/* Deliverables */}
-              <div className="flex flex-wrap gap-x-6 gap-y-2 items-start">
+              <div className="flex flex-wrap gap-x-4 lg:gap-x-6 gap-y-2 items-start">
                 {service.deliverables.map((item, i) => (
                   <motion.span
                     key={item}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ ...springSnap, delay: i * 0.04 }}
-                    className="text-xs uppercase tracking-[0.08em] text-earth-brown/60 whitespace-nowrap"
+                    className="text-[13px] uppercase tracking-[0.08em] text-earth-brown/75 whitespace-nowrap"
                   >
                     {item}
                   </motion.span>
@@ -130,11 +145,16 @@ function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: 
 }
 
 /* ────────────────────────────────────────────────────
- * Heading renderer — replaces {italic} token with
- * an italic <span> using the provided word.
+ * Heading renderer — replaces {italic} token
  * ──────────────────────────────────────────────────── */
 
-function RichHeadingLine({ template, italicWord }: { template: string; italicWord: string }) {
+function RichHeadingLine({
+  template,
+  italicWord,
+}: {
+  template: string;
+  italicWord: string;
+}) {
   const parts = template.split("{italic}");
   return (
     <>
@@ -147,6 +167,9 @@ function RichHeadingLine({ template, italicWord }: { template: string; italicWor
 
 /* ────────────────────────────────────────────────────
  * Services section
+ *
+ * Mobile:  single-col header, 2x2 stats, tap-to-expand rows
+ * Desktop: two-col header, 4-col stats, hover-to-expand rows
  * ──────────────────────────────────────────────────── */
 
 export function Services() {
@@ -155,21 +178,24 @@ export function Services() {
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  return (
-    <section ref={sectionRef} className="py-28" aria-label="Services">
-      <div className="mx-auto max-w-[1400px] px-10">
+  const handleToggle = (index: number) => {
+    setExpandedIndex((prev) => (prev === index ? null : index));
+  };
 
+  return (
+    <section ref={sectionRef} className="py-16 lg:py-28" aria-label="Services">
+      <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
         {/* ── Section header ── */}
-        <div className="grid grid-cols-[1fr_380px] gap-14 mb-20">
+        <div className="flex flex-col lg:grid lg:grid-cols-[1fr_380px] gap-5 lg:gap-14 mb-12 lg:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={springGentle}
           >
-            <span className="text-xs uppercase tracking-[0.12em] text-deep-black/35 block mb-5">
+            <span className="text-[13px] uppercase tracking-[0.12em] text-deep-black/50 block mb-4 lg:mb-5">
               {services.label}
             </span>
-            <h2 className="font-serif text-[clamp(2rem,4vw,3.4rem)] leading-[1.05] tracking-[-0.015em]">
+            <h2 className="font-serif text-[clamp(1.8rem,6vw,3.4rem)] leading-[1.05] tracking-[-0.015em]">
               {services.heading.line1}
               <br />
               <RichHeadingLine
@@ -180,7 +206,7 @@ export function Services() {
           </motion.div>
 
           <motion.p
-            className="text-sm leading-[1.8] text-deep-black/45 self-end"
+            className="text-[15px] leading-[1.8] text-deep-black/65 lg:self-end"
             initial={{ opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...springGentle, delay: STAGGER * 3 }}
@@ -189,9 +215,9 @@ export function Services() {
           </motion.p>
         </div>
 
-        {/* ── Stats strip — credibility ── */}
+        {/* ── Stats strip ── */}
         <motion.div
-          className="grid grid-cols-4 mb-16"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-y-6 lg:gap-y-0 mb-10 lg:mb-16"
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ ...spring, delay: STAGGER * 4 }}
@@ -199,26 +225,33 @@ export function Services() {
           {services.stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="relative py-8"
+              className="relative py-4 lg:py-8"
               initial={{ opacity: 0, y: 12 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ ...spring, delay: STAGGER * 4 + i * STAGGER * 2 }}
+              transition={{
+                ...spring,
+                delay: STAGGER * 4 + i * STAGGER * 2,
+              }}
             >
-              {/* Left border on all except first */}
+              {/* Vertical divider — desktop only (all except first) */}
               {i > 0 && (
                 <motion.div
-                  className="absolute left-0 top-6 bottom-6 w-px origin-top"
+                  className="absolute left-0 top-6 bottom-6 w-px origin-top hidden lg:block"
                   style={{ backgroundColor: "#C4C1B8" }}
                   initial={{ scaleY: 0 }}
                   animate={isInView ? { scaleY: 1 } : { scaleY: 0 }}
-                  transition={{ ...spring, delay: STAGGER * 4 + i * STAGGER * 2 }}
+                  transition={{
+                    ...spring,
+                    delay: STAGGER * 4 + i * STAGGER * 2,
+                  }}
                 />
               )}
-              <div className={i > 0 ? "pl-10" : ""}>
-                <span className="font-serif text-[2.8rem] leading-none tracking-tight text-deep-black">
+
+              <div className={`${i > 0 ? "lg:pl-10" : ""}`}>
+                <span className="font-serif text-[2rem] lg:text-[2.8rem] leading-none tracking-tight text-deep-black">
                   {stat.value}
                 </span>
-                <span className="block mt-2 text-xs uppercase tracking-[0.08em] text-deep-black/35">
+                <span className="block mt-1.5 lg:mt-2 text-xs lg:text-[13px] uppercase tracking-[0.08em] text-deep-black/50">
                   {stat.label}
                 </span>
               </div>
@@ -226,7 +259,7 @@ export function Services() {
           ))}
         </motion.div>
 
-        {/* ── Service rows — expandable list ── */}
+        {/* ── Service rows ── */}
         <div>
           {services.items.map((service, i) => (
             <ServiceRow
@@ -237,16 +270,20 @@ export function Services() {
               isExpanded={expandedIndex === i}
               onHover={() => setExpandedIndex(i)}
               onLeave={() => setExpandedIndex(null)}
+              onToggle={() => handleToggle(i)}
             />
           ))}
 
-          {/* Bottom border for the last row */}
+          {/* Bottom border */}
           <motion.div
             className="h-px origin-left"
             style={{ backgroundColor: "#C4C1B8" }}
             initial={{ scaleX: 0 }}
             animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={{ ...spring, delay: services.items.length * STAGGER * 2.5 + 0.05 }}
+            transition={{
+              ...spring,
+              delay: services.items.length * STAGGER * 2.5 + 0.05,
+            }}
           />
         </div>
       </div>

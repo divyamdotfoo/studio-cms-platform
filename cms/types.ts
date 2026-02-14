@@ -10,21 +10,17 @@ export interface NavLink {
   href: string;
 }
 
-export interface MetaContent {
-  title: string;
-  description: string;
-  keywords: string;
-  og: {
-    title: string;
-    description: string;
-    locale: string;
-  };
+export interface DockItem {
+  label: string;
+  href: string;
+  icon: string;
 }
 
 export interface NavContent {
   brand: string;
   leftLinks: NavLink[];
   rightLinks: NavLink[];
+  dock: DockItem[];
 }
 
 export interface HeroContent {
@@ -70,7 +66,6 @@ export interface ServicesContent {
 }
 
 export interface SiteContent {
-  meta: MetaContent;
   nav: NavContent;
   hero: HeroContent;
   projectGallery: ProjectGalleryContent;
