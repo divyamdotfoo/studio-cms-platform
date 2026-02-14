@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { RevealText } from "@/components/effects/text-effects";
 import { ProjectGallery } from "@/components/sections/ProjectGallery";
+import { useContent } from "@/lib/content-ctx";
 import { spring, STAGGER, T_HERO } from "@/lib/motion";
 
 /*
@@ -15,6 +16,8 @@ const T = T_HERO;
  *  Hero section
  * ──────────────────────────────────────────────────── */
 export function Hero() {
+  const { hero } = useContent();
+
   return (
     <section className="pt-28" aria-label="Hero">
       <div className="mx-auto max-w-[1400px] px-10">
@@ -24,12 +27,15 @@ export function Hero() {
           <div className="pt-4">
             <h1 className="font-serif text-[clamp(2.2rem,6vw,5rem)] leading-[0.95] tracking-[-0.015em] font-normal">
               <span className="block">
-                <RevealText text="DESIGNING SPACES," delay={T} />
+                <RevealText text={hero.headline.line1} delay={T} />
               </span>
               <span className="block">
-                <RevealText text="INSPIRE" delay={T + STAGGER * 3} />{" "}
                 <RevealText
-                  text="LIVES"
+                  text={hero.headline.line2}
+                  delay={T + STAGGER * 3}
+                />{" "}
+                <RevealText
+                  text={hero.headline.line2Italic}
                   delay={T + STAGGER * 5}
                   className="italic"
                 />
@@ -46,7 +52,7 @@ export function Hero() {
               transition={{ ...spring, delay: T + 0.35 }}
               className="text-xs uppercase tracking-[0.12em] text-deep-black/40 text-right"
             >
-              Haridwar, Uttarakhand
+              {hero.location}
             </motion.div>
 
             {/* Description — bottom right */}
@@ -57,9 +63,7 @@ export function Hero() {
                 transition={{ ...spring, delay: T + 0.45 }}
                 className="text-sm leading-[1.7] text-deep-black/55"
               >
-                Hum spaces ko aise design karte hain ki unme rehne ka mann kare.
-                Ghar ho, cafe ho ya koi bhi jagah — har project mein woh feeling
-                aani chahiye jo aapne socha tha.
+                {hero.description}
               </motion.p>
             </div>
           </div>

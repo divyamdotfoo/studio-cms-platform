@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "title": "Vision Architect — Haridwar's Trusted Architecture Partner",
+    "description": "Professional architecture services in Haridwar. Specializing in homes, cafes, and commercial spaces. Designing spaces that inspire lives.",
+    "keywords": "architect haridwar, architecture firm haridwar, home design haridwar, commercial architecture, vision architect",
+    "og": {
+      "title": "Vision Architect — Haridwar",
+      "description": "Professional architecture services in Haridwar",
+      "locale": "hi_IN"
+    }
+  },
+
+  "nav": {
+    "brand": "VISION ARCHITECT",
+    "leftLinks": [
+      { "label": "Home", "href": "/" },
+      { "label": "About", "href": "/about" },
+      { "label": "Projects", "href": "/projects" },
+      { "label": "Services", "href": "/services" }
+    ],
+    "rightLinks": [
+      { "label": "Send message", "href": "/contact" },
+      { "label": "Call us", "href": "/contact?book=true" }
+    ]
+  },
+
+  "hero": {
+    "headline": {
+      "line1": "DESIGNING SPACES,",
+      "line2": "INSPIRE",
+      "line2Italic": "LIVES"
+    },
+    "location": "Haridwar, Uttarakhand",
+    "description": "Hum spaces ko aise design karte hain ki unme rehne ka mann kare. Ghar ho, cafe ho ya koi bhi jagah — har project mein woh feeling aani chahiye jo aapne socha tha."
+  },
+
+  "projectGallery": {
+    "panels": [
+      { "label": "Project 1" },
+      { "label": "Project 2" },
+      { "label": "Project 3" }
+    ]
+  },
+
+  "services": {
+    "label": "What we do",
+    "heading": {
+      "line1": "Har space ke peeche",
+      "line2": "ek {italic} hoti hai",
+      "italicWord": "soch"
+    },
+    "description": "Design sirf dikhne ke liye nahi hota — usme rehna padta hai, kaam karna padta hai, feel karna padta hai. Isliye hum har project ko ek fresh perspective se dekhte hain.",
+    "stats": [
+      { "value": "12+", "label": "Saal ka experience" },
+      { "value": "50+", "label": "Projects delivered" },
+      { "value": "3", "label": "Cities mein kaam" },
+      { "value": "100+", "label": "Families ne trust kiya" }
+    ],
+    "items": [
+      {
+        "num": "01",
+        "title": "Residential Design",
+        "description": "Ghar banaana sirf walls aur roof nahi hota — woh aapki zindagi ka reflection hota hai. Hum har room ko samajh ke design karte hain, aapki family ke hisaab se. Vastu se leke ventilation tak, sab ka dhyan rakhte hain.",
+        "deliverables": [
+          "Floor Planning",
+          "3D Visualization",
+          "Construction Drawings",
+          "Vastu Consultation"
+        ]
+      },
+      {
+        "num": "02",
+        "title": "Commercial Spaces",
+        "description": "Cafe ho, office ho ya showroom — aapki jagah aisi honi chahiye ki log baar baar aana chahein. Hum functionality aur aesthetics dono ka balance rakhte hain taaki aapka business grow kare.",
+        "deliverables": [
+          "Space Planning",
+          "Brand-Aligned Interiors",
+          "Lighting Design",
+          "Furniture Layout"
+        ]
+      },
+      {
+        "num": "03",
+        "title": "Interior Design",
+        "description": "Andar se ghar ko alive karna humara kaam hai. Furniture, lighting, materials, colors — sab milke ek story bolte hain. Hum ensure karte hain ki woh story aapki ho.",
+        "deliverables": [
+          "Material Selection",
+          "Custom Furniture",
+          "Color Consultation",
+          "Decor Styling"
+        ]
+      },
+      {
+        "num": "04",
+        "title": "Consultation & Planning",
+        "description": "Koi bhi project shuru karne se pehle samajhna zaroori hai — kya chahiye, budget kitna hai, timeline kya hogi. Hum pehle sunnte hain, phir clear roadmap dete hain.",
+        "deliverables": [
+          "Site Analysis",
+          "Budget Planning",
+          "Regulatory Guidance",
+          "Project Timeline"
+        ]
+      }
+    ]
+  }
+}

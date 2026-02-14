@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
+import { ContentProvider } from "@/lib/content-ctx";
+import content from "@/cms/content.json";
+import type { SiteContent } from "@/cms/types";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -15,17 +18,17 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
+/* ── Metadata from CMS ── */
+const { meta } = content as SiteContent;
+
 export const metadata: Metadata = {
-  title:
-    "Vision Architect — Haridwar's Trusted Architecture Partner",
-  description:
-    "Professional architecture services in Haridwar. Specializing in homes, cafes, and commercial spaces. Designing spaces that inspire lives.",
-  keywords:
-    "architect haridwar, architecture firm haridwar, home design haridwar, commercial architecture, vision architect",
+  title: meta.title,
+  description: meta.description,
+  keywords: meta.keywords,
   openGraph: {
-    title: "Vision Architect — Haridwar",
-    description: "Professional architecture services in Haridwar",
-    locale: "hi_IN",
+    title: meta.og.title,
+    description: meta.og.description,
+    locale: meta.og.locale,
   },
 };
 
@@ -37,7 +40,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
       <body className="font-sans antialiased bg-cream text-deep-black">
-        {children}
+        <ContentProvider content={content as SiteContent}>
+          {children}
+        </ContentProvider>
       </body>
     </html>
   );

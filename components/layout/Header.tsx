@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { HoverLink } from "@/components/effects/nav-link";
+import { useContent } from "@/lib/content-ctx";
 import {
   spring,
   STAGGER,
@@ -13,23 +14,10 @@ import {
   T_NAV_BORDER,
 } from "@/lib/motion";
 
-/* ────────── link data ────────── */
-
-const LEFT_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Projects", href: "/projects" },
-  { label: "Services", href: "/services" },
-] as const;
-
-const RIGHT_LINKS = [
-  { label: "Send message", href: "/contact" },
-  { label: "Call us", href: "/contact?book=true" },
-] as const;
-
 /* ────────── component ────────── */
 
 export function Header() {
+  const { nav } = useContent();
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
 
@@ -48,7 +36,7 @@ export function Header() {
       <nav className="mx-auto max-w-[1400px] grid grid-cols-[1fr_auto_1fr] items-center px-10 h-16">
         {/* ── Left nav links ── */}
         <div className="flex items-center gap-7">
-          {LEFT_LINKS.map((link, i) => (
+          {nav.leftLinks.map((link, i) => (
             <motion.div
               key={link.href}
               initial={{ opacity: 0, y: -8 }}
@@ -73,17 +61,17 @@ export function Header() {
           <Link
             href="/"
             className="relative z-10"
-            aria-label="Vision Architect — Home"
+            aria-label={`${nav.brand} — Home`}
           >
             <span className="font-serif italic text-xl tracking-tight text-deep-black">
-              VISION ARCHITECT
+              {nav.brand}
             </span>
           </Link>
         </motion.div>
 
         {/* ── Right CTA links ── */}
         <div className="flex items-center justify-end gap-7">
-          {RIGHT_LINKS.map((link, i) => (
+          {nav.rightLinks.map((link, i) => (
             <motion.div
               key={link.href}
               initial={{ opacity: 0, y: -8 }}

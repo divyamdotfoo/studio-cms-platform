@@ -2,60 +2,16 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
+import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
-
-/* ────────────────────────────────────────────────────
- * Stats — credibility signals up front
- * ──────────────────────────────────────────────────── */
-
-const STATS = [
-  { value: "12+", label: "Saal ka experience" },
-  { value: "50+", label: "Projects delivered" },
-  { value: "3", label: "Cities mein kaam" },
-  { value: "100+", label: "Families ne trust kiya" },
-] as const;
-
-/* ────────────────────────────────────────────────────
- * Services data
- * ──────────────────────────────────────────────────── */
-
-const SERVICES = [
-  {
-    num: "01",
-    title: "Residential Design",
-    description:
-      "Ghar banaana sirf walls aur roof nahi hota — woh aapki zindagi ka reflection hota hai. Hum har room ko samajh ke design karte hain, aapki family ke hisaab se. Vastu se leke ventilation tak, sab ka dhyan rakhte hain.",
-    deliverables: ["Floor Planning", "3D Visualization", "Construction Drawings", "Vastu Consultation"],
-  },
-  {
-    num: "02",
-    title: "Commercial Spaces",
-    description:
-      "Cafe ho, office ho ya showroom — aapki jagah aisi honi chahiye ki log baar baar aana chahein. Hum functionality aur aesthetics dono ka balance rakhte hain taaki aapka business grow kare.",
-    deliverables: ["Space Planning", "Brand-Aligned Interiors", "Lighting Design", "Furniture Layout"],
-  },
-  {
-    num: "03",
-    title: "Interior Design",
-    description:
-      "Andar se ghar ko alive karna humara kaam hai. Furniture, lighting, materials, colors — sab milke ek story bolte hain. Hum ensure karte hain ki woh story aapki ho.",
-    deliverables: ["Material Selection", "Custom Furniture", "Color Consultation", "Decor Styling"],
-  },
-  {
-    num: "04",
-    title: "Consultation & Planning",
-    description:
-      "Koi bhi project shuru karne se pehle samajhna zaroori hai — kya chahiye, budget kitna hai, timeline kya hogi. Hum pehle sunnte hain, phir clear roadmap dete hain.",
-    deliverables: ["Site Analysis", "Budget Planning", "Regulatory Guidance", "Project Timeline"],
-  },
-] as const;
+import type { ServiceItem } from "@/cms/types";
 
 /* ────────────────────────────────────────────────────
  * ServiceRow — expandable on hover
  * ──────────────────────────────────────────────────── */
 
 interface RowProps {
-  service: (typeof SERVICES)[number];
+  service: ServiceItem;
   index: number;
   isInView: boolean;
   isExpanded: boolean;
@@ -174,10 +130,27 @@ function ServiceRow({ service, index, isInView, isExpanded, onHover, onLeave }: 
 }
 
 /* ────────────────────────────────────────────────────
+ * Heading renderer — replaces {italic} token with
+ * an italic <span> using the provided word.
+ * ──────────────────────────────────────────────────── */
+
+function RichHeadingLine({ template, italicWord }: { template: string; italicWord: string }) {
+  const parts = template.split("{italic}");
+  return (
+    <>
+      {parts[0]}
+      <span className="italic">{italicWord}</span>
+      {parts[1]}
+    </>
+  );
+}
+
+/* ────────────────────────────────────────────────────
  * Services section
  * ──────────────────────────────────────────────────── */
 
 export function Services() {
+  const { services } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -194,12 +167,15 @@ export function Services() {
             transition={springGentle}
           >
             <span className="text-xs uppercase tracking-[0.12em] text-deep-black/35 block mb-5">
-              What we do
+              {services.label}
             </span>
             <h2 className="font-serif text-[clamp(2rem,4vw,3.4rem)] leading-[1.05] tracking-[-0.015em]">
-              Har space ke peeche
+              {services.heading.line1}
               <br />
-              ek <span className="italic">soch</span> hoti hai
+              <RichHeadingLine
+                template={services.heading.line2}
+                italicWord={services.heading.italicWord}
+              />
             </h2>
           </motion.div>
 
@@ -209,8 +185,7 @@ export function Services() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...springGentle, delay: STAGGER * 3 }}
           >
-            Design sirf dikhne ke liye nahi hota — usme rehna padta hai, kaam karna padta hai,
-            feel karna padta hai. Isliye hum har project ko ek fresh perspective se dekhte hain.
+            {services.description}
           </motion.p>
         </div>
 
@@ -221,7 +196,7 @@ export function Services() {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ ...spring, delay: STAGGER * 4 }}
         >
-          {STATS.map((stat, i) => (
+          {services.stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               className="relative py-8"
@@ -253,7 +228,7 @@ export function Services() {
 
         {/* ── Service rows — expandable list ── */}
         <div>
-          {SERVICES.map((service, i) => (
+          {services.items.map((service, i) => (
             <ServiceRow
               key={service.num}
               service={service}
@@ -271,7 +246,7 @@ export function Services() {
             style={{ backgroundColor: "#C4C1B8" }}
             initial={{ scaleX: 0 }}
             animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={{ ...spring, delay: SERVICES.length * STAGGER * 2.5 + 0.05 }}
+            transition={{ ...spring, delay: services.items.length * STAGGER * 2.5 + 0.05 }}
           />
         </div>
       </div>
