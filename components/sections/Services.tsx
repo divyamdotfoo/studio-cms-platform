@@ -32,8 +32,8 @@ function ServiceRow({
   return (
     <motion.div
       className="group relative"
-      initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      initial={{ opacity: 0, y: 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
       transition={{ ...spring, delay: index * STAGGER * 2.5 }}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
@@ -46,7 +46,7 @@ function ServiceRow({
         className="h-px origin-left bg-sand"
         initial={{ scaleX: 0 }}
         animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ ...spring, delay: index * STAGGER * 2.5 + 0.05 }}
+        transition={{ ...spring, delay: index * STAGGER * 2.5 + 0.08 }}
       />
 
       {/* Main row */}

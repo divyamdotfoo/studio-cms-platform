@@ -163,12 +163,16 @@ function PhotoFrame({
   scrollProgress: MotionValue<number>;
 }) {
   /* Each photo drifts at its own rate based on parallaxFactor.
-     We use an outer wrapper for continuous scroll-parallax (y),
-     and the inner motion.div for the one-time entrance animation
-     (opacity + rotate + scale). This avoids conflicts between
-     the MotionValue and the initial/animate y. */
-  const range = 80 * slot.parallaxFactor;
+     Outer wrapper handles continuous scroll-parallax (y + rotate),
+     inner motion.div handles the one-time entrance animation. */
+  const range = 120 * slot.parallaxFactor;
   const y = useTransform(scrollProgress, [0, 1], [range, -range]);
+  /* Subtle rotation drift — photos rock gently as user scrolls */
+  const rotateParallax = useTransform(
+    scrollProgress,
+    [0, 1],
+    [slot.rotate - 1.5 * slot.parallaxFactor, slot.rotate + 1.5 * slot.parallaxFactor],
+  );
 
   return (
     <motion.div
@@ -179,6 +183,7 @@ function PhotoFrame({
         width: slot.width,
         zIndex: slot.z,
         y,
+        rotate: rotateParallax,
       }}
     >
       <motion.div
@@ -232,7 +237,7 @@ function ImageCollage({
   const slots = COLLAGE_LAYOUTS[layoutIndex % COLLAGE_LAYOUTS.length];
 
   /* Collage as a whole drifts slower than the text side */
-  const collageY = useTransform(scrollProgress, [0, 1], [50, -50]);
+  const collageY = useTransform(scrollProgress, [0, 1], [70, -70]);
 
   return (
     <motion.div
@@ -274,7 +279,7 @@ function ProjectInfo({
   const num = String(index + 1).padStart(2, "0");
 
   /* Text travels faster than images → differential parallax */
-  const textY = useTransform(scrollProgress, [0, 1], [120, -120]);
+  const textY = useTransform(scrollProgress, [0, 1], [180, -180]);
 
   return (
     <motion.div
@@ -367,11 +372,15 @@ function ProjectShowcase({
   isFirst: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  /* First project uses a looser trigger since it's choreographed with
+     the page load. Later projects need a tighter margin so they only
+     animate once the user has actually scrolled to them. */
+  const isInView = useInView(ref, {
+    once: true,
+    margin: isFirst ? "-60px" : "-150px",
+  });
   const reversed = index % 2 === 1;
 
-  /* First project syncs with the page choreography (navbar → hero → this).
-     Subsequent projects animate immediately when they enter the viewport. */
   const baseDelay = isFirst ? T_FEATURED : 0;
 
   /* Scroll progress for this specific row (0 = enters bottom, 1 = exits top) */

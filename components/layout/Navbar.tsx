@@ -7,6 +7,7 @@ import { HoverLink } from "@/components/effects/nav-link";
 import { useContent } from "@/lib/content-ctx";
 import {
   spring,
+  springSnap,
   fade,
   STAGGER,
   T_NAV_LEFT,
@@ -14,6 +15,52 @@ import {
   T_NAV_RIGHT,
   T_NAV_BORDER,
 } from "@/lib/motion";
+
+/* ────────────────────────────────────────────────────
+ * CtaLink — CTA nav link with a subtle breathing
+ * underline that continuously draws attention.
+ * ──────────────────────────────────────────────────── */
+
+function CtaLink({ href, label }: { href: string; label: string }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Link
+      href={href}
+      className="relative pb-0.5 text-xs uppercase tracking-[0.08em] text-ink transition-colors duration-200"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {label}
+
+      {/* Solid hover underline */}
+      <motion.span
+        className="absolute bottom-0 left-0 h-px bg-ink"
+        initial={{ width: "0%" }}
+        animate={{ width: hovered ? "100%" : "0%" }}
+        transition={springSnap}
+      />
+
+      {/* Continuous breathing underline — subtle bronze shimmer */}
+      {!hovered && (
+        <motion.span
+          className="absolute bottom-0 left-0 right-0 h-px bg-bronze"
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{
+            opacity: [0, 0.5, 0],
+            scaleX: [0, 1, 0],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          style={{ originX: 0 }}
+        />
+      )}
+    </Link>
+  );
+}
 
 /* ────────────────────────────────────────────────────
  * Navbar
@@ -78,7 +125,7 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...spring, delay: T_NAV_RIGHT + i * STAGGER }}
             >
-              <HoverLink href={link.href} label={link.label} />
+              <CtaLink href={link.href} label={link.label} />
             </motion.div>
           ))}
         </div>
