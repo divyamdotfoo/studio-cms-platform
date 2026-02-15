@@ -8,8 +8,8 @@
       { "label": "Services", "href": "/services" }
     ],
     "rightLinks": [
-      { "label": "Send message", "href": "/contact" },
-      { "label": "Call us", "href": "/contact?book=true" }
+      { "label": "Send message", "href": "https://wa.me/917668761558" },
+      { "label": "Call us", "href": "tel:+917668761558" }
     ],
     "dock": [
       { "label": "Home", "href": "/", "icon": "home" },
@@ -176,10 +176,9 @@
     "brand": "VISION ARCHITECT",
     "tagline": "Designing spaces, inspiring lives.",
     "contact": {
-      "phone": "+91 98765 43210",
-      "whatsapp": "+91 98765 43210",
-      "email": "hello@visionarchitect.in",
-      "address": "Haridwar, Uttarakhand, India"
+      "phone": "tel:+917668761558",
+      "whatsapp": "https://wa.me/917668761558",
+      "email": "mailto:visionarchitect29@gmail.com"
     },
     "socials": [
       {

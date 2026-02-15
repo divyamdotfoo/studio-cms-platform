@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
-import { spring, springGentle, STAGGER, T_HERO } from "@/lib/motion";
+import { spring, springGentle, STAGGER } from "@/lib/motion";
 import profileImg from "@/assets/profile.jpeg";
 
 /* ────────────────────────────────────────────────────
@@ -17,9 +17,9 @@ import profileImg from "@/assets/profile.jpeg";
  * Palette: ink, stone, drift, bronze, sand, ivory, cream
  * ──────────────────────────────────────────────────── */
 
-const T = T_HERO;
-
 /* ── Copy — hardcoded (page-specific, not CMS) ───── */
+
+const T = 0;
 
 const INTRO = {
   label: "The founder",

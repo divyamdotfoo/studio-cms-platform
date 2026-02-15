@@ -123,13 +123,6 @@ export function Footer() {
   const year = new Date().getFullYear();
   const copyright = footer.copyright.replace("{year}", String(year));
 
-  const whatsappLink = `https://wa.me/${footer.contact.whatsapp.replace(
-    /[^0-9]/g,
-    ""
-  )}`;
-  const phoneLink = `tel:${footer.contact.phone.replace(/\s/g, "")}`;
-  const emailLink = `mailto:${footer.contact.email}`;
-
   return (
     <footer ref={ref} className="bg-[#131211]" aria-label="Footer">
       <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
@@ -166,18 +159,18 @@ export function Footer() {
                 {/* Phone */}
                 <li>
                   <a
-                    href={phoneLink}
+                    href={footer.contact.phone}
                     className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                   >
                     <PhoneIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
-                    {footer.contact.phone}
+                    Call us
                   </a>
                 </li>
 
                 {/* WhatsApp */}
                 <li>
                   <a
-                    href={whatsappLink}
+                    href={footer.contact.whatsapp}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
@@ -190,11 +183,11 @@ export function Footer() {
                 {/* Email */}
                 <li>
                   <a
-                    href={emailLink}
+                    href={footer.contact.email}
                     className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                   >
                     <MailIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
-                    {footer.contact.email}
+                    Email us
                   </a>
                 </li>
               </ul>
