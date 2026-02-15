@@ -101,6 +101,19 @@ export interface SocialContent {
   channels: SocialChannel[];
 }
 
+export interface FooterContent {
+  brand: string;
+  tagline: string;
+  contact: {
+    phone: string;
+    whatsapp: string;
+    email: string;
+    address: string;
+  };
+  socials: { platform: string; url: string; label: string }[];
+  copyright: string;
+}
+
 export interface SiteContent {
   nav: NavContent;
   hero: HeroContent;
@@ -108,4 +121,5 @@ export interface SiteContent {
   services: ServicesContent;
   reviews: ReviewsContent;
   social: SocialContent;
+  footer: FooterContent;
 }

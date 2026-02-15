@@ -5,7 +5,7 @@ import { Social } from "@/components/sections/Social";
 
 export default function Page() {
   return (
-    <main className="pb-28 lg:pb-0">
+    <main>
       <Hero />
       <Services />
       <Reviews />

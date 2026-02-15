@@ -136,6 +136,30 @@
     ]
   },
 
+  "footer": {
+    "brand": "VISION ARCHITECT",
+    "tagline": "Designing spaces, inspiring lives.",
+    "contact": {
+      "phone": "+91 98765 43210",
+      "whatsapp": "+91 98765 43210",
+      "email": "hello@visionarchitect.in",
+      "address": "Haridwar, Uttarakhand, India"
+    },
+    "socials": [
+      {
+        "platform": "instagram",
+        "url": "https://www.instagram.com/vision_architect_/",
+        "label": "Instagram"
+      },
+      {
+        "platform": "youtube",
+        "url": "https://www.youtube.com/@visionarchitect3537",
+        "label": "YouTube"
+      }
+    ],
+    "copyright": "© {year} Vision Architect. All rights reserved."
+  },
+
   "social": {
     "label": "Follow our journey",
     "heading": {

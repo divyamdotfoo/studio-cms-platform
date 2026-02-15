@@ -99,11 +99,11 @@ export function Dock() {
         <div
           className="flex items-center gap-1 px-3 py-2 border border-mist"
           style={{
-            backgroundColor: "rgba(245, 243, 239, 0.72)",
+            backgroundColor: "rgba(245, 243, 239, 0.94)",
             backdropFilter: "blur(24px) saturate(1.4)",
             WebkitBackdropFilter: "blur(24px) saturate(1.4)",
             borderRadius: "22px",
-            boxShadow: "0 2px 24px -4px rgba(26, 26, 26, 0.1)",
+            boxShadow: "0 4px 24px -4px rgba(26, 26, 26, 0.12)",
           }}
         >
           {nav.dock.map((item) => {

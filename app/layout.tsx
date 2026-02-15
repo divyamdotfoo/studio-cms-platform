@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
 import { ContentProvider } from "@/lib/content-ctx";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
 import content from "@/cms/content.json";
 import type { SiteContent } from "@/cms/types";
@@ -50,6 +51,7 @@ export default function RootLayout({
         <ContentProvider content={content as SiteContent}>
           <Navbar />
           {children}
+          <Footer />
           <Dock />
         </ContentProvider>
       </body>
