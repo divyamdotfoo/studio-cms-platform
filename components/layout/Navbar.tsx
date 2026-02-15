@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { HoverLink } from "@/components/effects/nav-link";
 import { useContent } from "@/lib/content-ctx";
@@ -71,6 +72,7 @@ function CtaLink({ href, label }: { href: string; label: string }) {
 
 export function Navbar() {
   const { nav } = useContent();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
 
@@ -97,7 +99,15 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...spring, delay: T_NAV_LEFT + i * STAGGER }}
             >
-              <HoverLink href={link.href} label={link.label} />
+              <HoverLink
+                href={link.href}
+                label={link.label}
+                isActive={
+                  link.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(link.href)
+                }
+              />
             </motion.div>
           ))}
         </div>

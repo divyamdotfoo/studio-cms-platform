@@ -10,18 +10,20 @@ import { springSnap } from "@/lib/motion";
  *
  * A small-caps navigation link with an animated
  * underline: enters from the left on hover, exits
- * to the right on leave.  Uses Framer Motion springs
- * so the line feels physical rather than tween-y.
+ * to the right on leave.  When `isActive` is true
+ * the underline stays permanently visible.
  * ──────────────────────────────────────────────────── */
 
 interface NavLinkProps {
   href: string;
   label: string;
   className?: string;
+  isActive?: boolean;
 }
 
-export function HoverLink({ href, label, className }: NavLinkProps) {
+export function HoverLink({ href, label, className, isActive }: NavLinkProps) {
   const [hovered, setHovered] = useState(false);
+  const showLine = hovered || isActive;
 
   return (
     <Link
@@ -34,11 +36,11 @@ export function HoverLink({ href, label, className }: NavLinkProps) {
     >
       {label}
 
-      {/* Underline — spring-animated width. */}
+      {/* Underline — spring-animated width. Always visible when active. */}
       <motion.span
         className="absolute bottom-0 left-0 h-px bg-ink"
         initial={{ width: "0%" }}
-        animate={{ width: hovered ? "100%" : "0%" }}
+        animate={{ width: showLine ? "100%" : "0%" }}
         transition={springSnap}
       />
     </Link>
