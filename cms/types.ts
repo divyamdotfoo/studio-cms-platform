@@ -33,12 +33,21 @@ export interface HeroContent {
   description: string;
 }
 
-export interface GalleryPanel {
-  label: string;
+export interface FeaturedProject {
+  name: string;
+  description: string;
+  images: string[];
+  details: { label: string; value: string }[];
 }
 
 export interface ProjectGalleryContent {
-  panels: GalleryPanel[];
+  label: string;
+  heading: {
+    line1: string;
+    line2: string;
+    italicWord: string;
+  };
+  projects: FeaturedProject[];
 }
 
 export interface Stat {

@@ -29,10 +29,46 @@
   },
 
   "projectGallery": {
-    "panels": [
-      { "label": "Project 1" },
-      { "label": "Project 2" },
-      { "label": "Project 3" }
+    "label": "Featured Work",
+    "heading": {
+      "line1": "Jo kaam bolte hain,",
+      "line2": "woh hum {italic} hain",
+      "italicWord": "dikhate"
+    },
+    "projects": [
+      {
+        "name": "Arya Residence",
+        "description": "Ek modern family home jisme warmth bhi ho aur style bhi. Har kamre ko socha gaya hai — living room se leke kitchen tak, sab kuch aapke lifestyle ke hisaab se.",
+        "images": ["one", "two", "three", "four"],
+        "details": [
+          { "label": "Area", "value": "2,400 sq.ft" },
+          { "label": "Timeline", "value": "8 months" },
+          { "label": "Type", "value": "Residential" },
+          { "label": "Location", "value": "Haridwar" }
+        ]
+      },
+      {
+        "name": "Nanda Villa",
+        "description": "Spacious villa with contemporary design aur traditional touch. Double-height living, open courtyard, aur har angle se greenery dikhti hai.",
+        "images": ["one", "two", "three", "four"],
+        "details": [
+          { "label": "Area", "value": "3,100 sq.ft" },
+          { "label": "Timeline", "value": "14 months" },
+          { "label": "Type", "value": "Villa" },
+          { "label": "Location", "value": "Rishikesh" }
+        ]
+      },
+      {
+        "name": "Kapoor House",
+        "description": "Compact magar classy — ek young couple ke liye designed. Smart storage, clean lines, aur bohot saari natural light. Chhota ghar, bada feel.",
+        "images": ["one", "two", "three", "four"],
+        "details": [
+          { "label": "Area", "value": "1,850 sq.ft" },
+          { "label": "Timeline", "value": "6 months" },
+          { "label": "Type", "value": "Residential" },
+          { "label": "Location", "value": "Haridwar" }
+        ]
+      }
     ]
   },
 

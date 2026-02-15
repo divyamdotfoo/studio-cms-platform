@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import { RevealText } from "@/components/effects/text-effects";
-import { ProjectGallery } from "@/components/sections/ProjectGallery";
 import { useContent } from "@/lib/content-ctx";
 import { spring, STAGGER, T_HERO } from "@/lib/motion";
 
@@ -77,9 +76,6 @@ export function Hero() {
             </div>
           </div>
         </div>
-
-        {/* ── Project gallery ── */}
-        <ProjectGallery />
       </div>
     </section>
   );

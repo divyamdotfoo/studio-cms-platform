@@ -84,3 +84,6 @@ export const T_NAV_BORDER = T_NAV_RIGHT + RIGHT_COUNT * STAGGER + 0.04;
 
 /** After the navbar is done — hero content starts here. */
 export const T_HERO = T_NAV_BORDER + 0.15;
+
+/** After the hero finishes — featured projects can start. */
+export const T_FEATURED = T_HERO + 0.55;
