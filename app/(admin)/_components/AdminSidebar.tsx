@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -73,15 +73,12 @@ function SidebarItem({
   const hasChildren = node.children && node.children.length > 0;
   const isActive = activeKey === node.key;
   const isParentOfActive = activeKey.startsWith(node.key + ".");
-  const [open, setOpen] = useState(isParentOfActive || isActive);
-
-  useEffect(() => {
-    if (isParentOfActive) setOpen(true);
-  }, [isParentOfActive]);
+  const [manualOpen, setManualOpen] = useState(isParentOfActive || isActive);
+  const open = manualOpen || isParentOfActive;
 
   const handleClick = () => {
     if (hasChildren) {
-      setOpen((prev) => !prev);
+      setManualOpen((prev) => !prev);
     } else {
       onSelect(node.key);
     }
