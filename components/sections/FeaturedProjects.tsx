@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import {
   motion,
   useInView,
@@ -9,9 +8,18 @@ import {
   useTransform,
   MotionValue,
 } from "motion/react";
+import { XIcon } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER, T_FEATURED } from "@/lib/motion";
 import type { FeaturedProject } from "@/cms/types";
+import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogClose,
+  MorphingDialogImage,
+  MorphingDialogContainer,
+} from "@/components/effects/morphing-dialog";
 
 /* ────────────────────────────────────────────────────
  * FeaturedProjects
@@ -166,7 +174,10 @@ function PhotoFrame({
   const rotateParallax = useTransform(
     scrollProgress,
     [0, 1],
-    [slot.rotate - 1.5 * slot.parallaxFactor, slot.rotate + 1.5 * slot.parallaxFactor],
+    [
+      slot.rotate - 1.5 * slot.parallaxFactor,
+      slot.rotate + 1.5 * slot.parallaxFactor,
+    ]
   );
 
   return (
@@ -194,16 +205,37 @@ function PhotoFrame({
         }
         transition={{ ...spring, delay }}
       >
-        <div className="relative w-full aspect-4/3">
-          <Image
-            src={src}
-            alt={alt}
-            fill
-            className="object-cover select-none"
-            sizes="(max-width: 768px) 45vw, 30vw"
-            draggable={false}
-          />
-        </div>
+        <MorphingDialog transition={{ duration: 0.3, ease: "easeInOut" }}>
+          <MorphingDialogTrigger>
+            <MorphingDialogImage
+              src={src}
+              alt={alt}
+              className="w-full aspect-4/3 object-cover select-none"
+            />
+          </MorphingDialogTrigger>
+          <MorphingDialogContainer>
+            <MorphingDialogContent className="relative">
+              <MorphingDialogImage
+                src={src}
+                alt={alt}
+                className="h-auto w-full max-w-[90vw] max-h-[90vh] md:max-w-[70vw] lg:max-h-[70vh] rounded-[4px] object-contain"
+              />
+            </MorphingDialogContent>
+            <MorphingDialogClose
+              className="fixed right-6 top-6 h-fit w-fit rounded-full bg-white p-1"
+              variants={{
+                initial: { opacity: 0 },
+                animate: {
+                  opacity: 1,
+                  transition: { delay: 0.3, duration: 0.1 },
+                },
+                exit: { opacity: 0, transition: { duration: 0 } },
+              }}
+            >
+              <XIcon className="h-5 w-5 text-zinc-500" />
+            </MorphingDialogClose>
+          </MorphingDialogContainer>
+        </MorphingDialog>
       </motion.div>
     </motion.div>
   );
@@ -458,7 +490,11 @@ function ProjectShowcase({
 /* ── FeaturedProjects — main section ─────────────── */
 
 export function FeaturedProjects() {
-  const { pages: { homepage: { projectGallery } } } = useContent();
+  const {
+    pages: {
+      homepage: { projectGallery },
+    },
+  } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 
