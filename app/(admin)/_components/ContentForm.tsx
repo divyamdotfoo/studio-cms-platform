@@ -1350,6 +1350,10 @@ function DiffView({
         <p className="text-[13px] text-drift text-center">
           This may take at least 1 minute to reflect on the live website.
         </p>
+        <p className="text-[12px] text-drift/70 text-center">
+          Please don&apos;t use this more than 2 times a day. Keep at least 10
+          minutes between each save.
+        </p>
       </div>
     </div>
   );
@@ -1369,6 +1373,7 @@ export function ContentForm({
   const [diffs, setDiffs] = useState<Diff[]>([]);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [baseline, setBaseline] = useState<FormValues>(initialContent);
 
   const form = useForm<FormValues>({
     defaultValues: initialContent,
@@ -1386,7 +1391,7 @@ export function ContentForm({
         return;
       }
 
-      const changes = getChangedFields(initialContent, data);
+      const changes = getChangedFields(baseline, data);
       if (changes.length === 0) {
         toast("No changes to commit.");
         return;
@@ -1396,7 +1401,7 @@ export function ContentForm({
       setPendingData(data);
       setReviewing(true);
     },
-    [initialContent]
+    [baseline]
   );
 
   const handleConfirm = useCallback(async () => {
@@ -1418,6 +1423,7 @@ export function ContentForm({
       }
 
       toast("Content saved successfully.");
+      setBaseline(pendingData);
       form.reset(pendingData);
       setReviewing(false);
       setPendingData(null);
@@ -1436,8 +1442,8 @@ export function ContentForm({
   }, []);
 
   const handleReset = useCallback(() => {
-    form.reset(initialContent);
-  }, [form, initialContent]);
+    form.reset(baseline);
+  }, [form, baseline]);
 
   const ActiveSection = SECTION_MAP[activeKey];
 
@@ -1447,6 +1453,7 @@ export function ContentForm({
         onReset={handleReset}
         isDirty={isDirty}
         reviewing={reviewing}
+        submitting={submitting}
         onCancelReview={handleCancelReview}
       />
 

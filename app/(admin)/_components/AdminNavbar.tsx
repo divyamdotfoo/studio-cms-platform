@@ -9,6 +9,7 @@ interface AdminNavbarProps {
   onReset: () => void;
   isDirty: boolean;
   reviewing?: boolean;
+  submitting?: boolean;
   onCancelReview?: () => void;
 }
 
@@ -16,6 +17,7 @@ export function AdminNavbar({
   onReset,
   isDirty,
   reviewing,
+  submitting,
   onCancelReview,
 }: AdminNavbarProps) {
   return (
@@ -40,6 +42,7 @@ export function AdminNavbar({
               variant="outline"
               size="default"
               onClick={onCancelReview}
+              disabled={submitting}
             >
               <ArrowLeft data-icon="inline-start" />
               <span className="hidden sm:inline">Back to editing</span>
