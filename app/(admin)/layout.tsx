@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 
 const dmSans = DM_Sans({
@@ -24,6 +25,7 @@ export default function AdminLayout({
         className="font-sans antialiased bg-cream text-ink min-h-screen"
         suppressHydrationWarning
       >
+        <Toaster />
         {children}
       </body>
     </html>

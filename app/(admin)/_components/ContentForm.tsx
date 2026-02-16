@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { AdminNavbar } from "./AdminNavbar";
 import { AdminSidebar } from "./AdminSidebar";
 import { Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 type FormValues = SiteContent;
 type FormProps = { form: UseFormReturn<FormValues> };
@@ -1242,6 +1243,119 @@ const SECTION_MAP: Record<string, (props: FormProps) => React.JSX.Element> = {
 };
 
 /* ════════════════════════════════════════════════════
+ * DIFF UTILITIES
+ * ════════════════════════════════════════════════════ */
+
+interface Diff {
+  label: string;
+  before: string;
+  after: string;
+}
+
+function formatKey(key: string): string {
+  if (/^\d+$/.test(key)) return `#${Number(key) + 1}`;
+  return key;
+}
+
+function getChangedFields(
+  before: unknown,
+  after: unknown,
+  trail: string[] = []
+): Diff[] {
+  if (before === after) return [];
+
+  if (
+    before == null ||
+    after == null ||
+    typeof before !== typeof after ||
+    typeof before !== "object"
+  ) {
+    return [
+      {
+        label: trail.map(formatKey).join(" → "),
+        before: before == null ? "" : String(before),
+        after: after == null ? "" : String(after),
+      },
+    ];
+  }
+
+  const bObj = before as Record<string, unknown>;
+  const aObj = after as Record<string, unknown>;
+  const allKeys = new Set([...Object.keys(bObj), ...Object.keys(aObj)]);
+  const diffs: Diff[] = [];
+
+  for (const key of allKeys) {
+    if (key === "extendable" || key === "min" || key === "max") continue;
+    diffs.push(...getChangedFields(bObj[key], aObj[key], [...trail, key]));
+  }
+
+  return diffs;
+}
+
+/* ════════════════════════════════════════════════════
+ * REVIEW / DIFF VIEW
+ * ════════════════════════════════════════════════════ */
+
+function DiffView({
+  diffs,
+  onConfirm,
+  submitting,
+}: {
+  diffs: Diff[];
+  onConfirm: () => void;
+  submitting: boolean;
+}) {
+  return (
+    <div className="max-w-4xl mx-auto px-4 md:px-8 py-8 pb-16">
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-ink">Review Changes</h2>
+        <p className="text-[15px] text-drift mt-1">
+          {diffs.length} field{diffs.length !== 1 && "s"} changed.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-[1fr_1fr] gap-0 text-[13px] uppercase tracking-wider text-drift font-medium border-b border-sand pb-2 mb-4">
+        <span>Before</span>
+        <span>After</span>
+      </div>
+
+      <div className="space-y-3">
+        {diffs.map((d, i) => (
+          <div key={i} className="border border-sand overflow-hidden">
+            <div className="bg-cream/60 px-4 py-2 text-[13px] font-medium text-drift tracking-wide border-b border-sand">
+              {d.label}
+            </div>
+            <div className="grid grid-cols-[1fr_1fr] divide-x divide-sand">
+              <div className="px-4 py-3 bg-red-50/50 text-[15px] text-stone wrap-break-word whitespace-pre-wrap min-h-10">
+                {d.before || <span className="text-drift italic">empty</span>}
+              </div>
+              <div className="px-4 py-3 bg-emerald-50/50 text-[15px] text-ink wrap-break-word whitespace-pre-wrap min-h-10">
+                {d.after || <span className="text-drift italic">empty</span>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-10 flex flex-col items-center gap-3">
+        <Button
+          type="button"
+          size="lg"
+          className="w-full max-w-md text-base h-12"
+          onClick={onConfirm}
+          disabled={submitting}
+        >
+          {submitting ? "Saving…" : "Commit changes"}
+        </Button>
+        <p className="text-[13px] text-drift text-center">
+          This may take at least 1 minute to reflect on the live website.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════
  * MAIN CONTENT FORM
  * ════════════════════════════════════════════════════ */
 
@@ -1251,6 +1365,10 @@ export function ContentForm({
   initialContent: SiteContent;
 }) {
   const [activeKey, setActiveKey] = useState("general");
+  const [reviewing, setReviewing] = useState(false);
+  const [diffs, setDiffs] = useState<Diff[]>([]);
+  const [pendingData, setPendingData] = useState<FormValues | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
     defaultValues: initialContent,
@@ -1259,8 +1377,62 @@ export function ContentForm({
 
   const { isDirty } = form.formState;
 
-  const onSubmit = useCallback((data: FormValues) => {
-    console.log("Form submitted:", data);
+  const onSubmit = useCallback(
+    (data: FormValues) => {
+      try {
+        JSON.stringify(data);
+      } catch {
+        toast.error("Form data could not be serialized to valid JSON.");
+        return;
+      }
+
+      const changes = getChangedFields(initialContent, data);
+      if (changes.length === 0) {
+        toast("No changes to commit.");
+        return;
+      }
+
+      setDiffs(changes);
+      setPendingData(data);
+      setReviewing(true);
+    },
+    [initialContent]
+  );
+
+  const handleConfirm = useCallback(async () => {
+    if (!pendingData) return;
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/update-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pendingData),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(result.error ?? "Failed to save content.");
+        return;
+      }
+
+      toast("Content saved successfully.");
+      form.reset(pendingData);
+      setReviewing(false);
+      setPendingData(null);
+      setDiffs([]);
+    } catch {
+      toast.error("Network error — could not reach the server.");
+    } finally {
+      setSubmitting(false);
+    }
+  }, [pendingData, form]);
+
+  const handleCancelReview = useCallback(() => {
+    setReviewing(false);
+    setPendingData(null);
+    setDiffs([]);
   }, []);
 
   const handleReset = useCallback(() => {
@@ -1271,25 +1443,41 @@ export function ContentForm({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AdminNavbar onReset={handleReset} isDirty={isDirty} />
-      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-        <AdminSidebar activeKey={activeKey} onSelect={setActiveKey} />
+      <AdminNavbar
+        onReset={handleReset}
+        isDirty={isDirty}
+        reviewing={reviewing}
+        onCancelReview={handleCancelReview}
+      />
+
+      {reviewing ? (
         <main className="flex-1 overflow-y-auto">
-          <form
-            id="content-form"
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="max-w-3xl mx-auto px-4 md:px-8 py-8 pb-16"
-          >
-            {ActiveSection ? (
-              <ActiveSection form={form} />
-            ) : (
-              <div className="text-center py-20 text-drift text-base">
-                Select a section from the sidebar to edit.
-              </div>
-            )}
-          </form>
+          <DiffView
+            diffs={diffs}
+            onConfirm={handleConfirm}
+            submitting={submitting}
+          />
         </main>
-      </div>
+      ) : (
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+          <AdminSidebar activeKey={activeKey} onSelect={setActiveKey} />
+          <main className="flex-1 overflow-y-auto">
+            <form
+              id="content-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="max-w-3xl mx-auto px-4 md:px-8 py-8 pb-16"
+            >
+              {ActiveSection ? (
+                <ActiveSection form={form} />
+              ) : (
+                <div className="text-center py-20 text-drift text-base">
+                  Select a section from the sidebar to edit.
+                </div>
+              )}
+            </form>
+          </main>
+        </div>
+      )}
     </div>
   );
 }
