@@ -183,8 +183,8 @@ export default function NotFound() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: T + 0.4 }}
         >
-          Lagta hai aap galat jagah aa gaye. Yeh page exist nahi karta — ya phir
-          hata diya gaya hai.
+          It looks like you&apos;ve reached a page that doesn&apos;t exist — or it may
+          have been removed.
         </motion.p>
 
         {/* CTA */}
@@ -216,7 +216,7 @@ export default function NotFound() {
               animate={{ scaleX: 1 }}
               transition={{ ...spring, delay: T + 0.55 }}
             />
-            Ghar le chalein
+            Take me Home
           </Link>
         </motion.div>
       </div>

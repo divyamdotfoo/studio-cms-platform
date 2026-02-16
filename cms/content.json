@@ -25,20 +25,20 @@
       "line2Italic": "LIVES"
     },
     "location": "Haridwar, Uttarakhand",
-    "description": "Hum spaces ko aise design karte hain ki unme rehne ka mann kare. Ghar ho, cafe ho ya koi bhi jagah — har project mein woh feeling aani chahiye jo aapne socha tha."
+    "description": "We design spaces that feel like home the moment you walk in. Whether it's a residence, a cafe, or any place in between — every project is shaped to match the vision you had in mind."
   },
 
   "projectGallery": {
     "label": "Featured Work",
     "heading": {
-      "line1": "Jo kaam bolte hain,",
-      "line2": "woh hum {italic} hain",
-      "italicWord": "dikhate"
+      "line1": "Our work speaks",
+      "line2": "for {italic}",
+      "italicWord": "itself"
     },
     "projects": [
       {
         "name": "Arya Residence",
-        "description": "Ek modern family home jisme warmth bhi ho aur style bhi. Har kamre ko socha gaya hai — living room se leke kitchen tak, sab kuch aapke lifestyle ke hisaab se.",
+        "description": "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
         "images": ["one", "two", "three", "four"],
         "details": [
           { "label": "Area", "value": "2,400 sq.ft" },
@@ -49,7 +49,7 @@
       },
       {
         "name": "Nanda Villa",
-        "description": "Spacious villa with contemporary design aur traditional touch. Double-height living, open courtyard, aur har angle se greenery dikhti hai.",
+        "description": "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
         "images": ["one", "two", "three", "four"],
         "details": [
           { "label": "Area", "value": "3,100 sq.ft" },
@@ -60,7 +60,7 @@
       },
       {
         "name": "Kapoor House",
-        "description": "Compact magar classy — ek young couple ke liye designed. Smart storage, clean lines, aur bohot saari natural light. Chhota ghar, bada feel.",
+        "description": "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
         "images": ["one", "two", "three", "four"],
         "details": [
           { "label": "Area", "value": "1,850 sq.ft" },
@@ -75,22 +75,22 @@
   "services": {
     "label": "What we do",
     "heading": {
-      "line1": "Har space ke peeche",
-      "line2": "ek {italic} hoti hai",
-      "italicWord": "soch"
+      "line1": "Behind every space,",
+      "line2": "there's a {italic}",
+      "italicWord": "vision"
     },
-    "description": "Design sirf dikhne ke liye nahi hota — usme rehna padta hai, kaam karna padta hai, feel karna padta hai. Isliye hum har project ko ek fresh perspective se dekhte hain.",
+    "description": "Design isn't just about how things look — it's about how they live, how they work, and how they feel. That's why we approach every project with a fresh perspective.",
     "stats": [
-      { "value": "12+", "label": "Saal ka experience" },
+      { "value": "12+", "label": "Years of experience" },
       { "value": "50+", "label": "Projects delivered" },
-      { "value": "3", "label": "Cities mein kaam" },
-      { "value": "100+", "label": "Families ne trust kiya" }
+      { "value": "3", "label": "Cities served" },
+      { "value": "100+", "label": "Families who trust us" }
     ],
     "items": [
       {
         "num": "01",
         "title": "Residential Design",
-        "description": "Ghar banaana sirf walls aur roof nahi hota — woh aapki zindagi ka reflection hota hai. Hum har room ko samajh ke design karte hain, aapki family ke hisaab se. Vastu se leke ventilation tak, sab ka dhyan rakhte hain.",
+        "description": "Building a home is more than walls and a roof — it's a reflection of your life. We design every room with your family in mind, paying attention to everything from Vastu to ventilation.",
         "deliverables": [
           "Floor Planning",
           "3D Visualization",
@@ -101,7 +101,7 @@
       {
         "num": "02",
         "title": "Commercial Spaces",
-        "description": "Cafe ho, office ho ya showroom — aapki jagah aisi honi chahiye ki log baar baar aana chahein. Hum functionality aur aesthetics dono ka balance rakhte hain taaki aapka business grow kare.",
+        "description": "Whether it's a cafe, an office, or a showroom — your space should make people want to come back. We balance functionality and aesthetics so your business can grow.",
         "deliverables": [
           "Space Planning",
           "Brand-Aligned Interiors",
@@ -112,7 +112,7 @@
       {
         "num": "03",
         "title": "Interior Design",
-        "description": "Andar se ghar ko alive karna humara kaam hai. Furniture, lighting, materials, colors — sab milke ek story bolte hain. Hum ensure karte hain ki woh story aapki ho.",
+        "description": "Bringing interiors to life is what we do best. Furniture, lighting, materials, and colours — everything comes together to tell a story. We make sure that story is yours.",
         "deliverables": [
           "Material Selection",
           "Custom Furniture",
@@ -123,7 +123,7 @@
       {
         "num": "04",
         "title": "Consultation & Planning",
-        "description": "Koi bhi project shuru karne se pehle samajhna zaroori hai — kya chahiye, budget kitna hai, timeline kya hogi. Hum pehle sunnte hain, phir clear roadmap dete hain.",
+        "description": "Before any project begins, understanding comes first — what you need, what the budget allows, and what the timeline looks like. We listen first, then lay out a clear roadmap.",
         "deliverables": [
           "Site Analysis",
           "Budget Planning",
@@ -137,9 +137,9 @@
   "reviews": {
     "label": "Reviews",
     "heading": {
-      "line1": "Humara kaam,",
-      "line2": "unki {italic} mein",
-      "italicWord": "zubaani"
+      "line1": "Our work,",
+      "line2": "in their {italic}",
+      "italicWord": "words"
     },
     "items": [
       {
@@ -198,11 +198,11 @@
   "social": {
     "label": "Follow our journey",
     "heading": {
-      "line1": "Humara kaam,",
-      "line2": "roz {italic} pe",
+      "line1": "Our work,",
+      "line2": "daily on {italic}",
       "italicWord": "social"
     },
-    "description": "Design process se leke final reveal tak — sab kuch share karte hain. Follow karein aur dekho kaise ek idea ghar ban jaata hai.",
+    "description": "From the design process to the final reveal — we share it all. Follow along and see how an idea becomes a home.",
     "channels": [
       {
         "platform": "instagram",

@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Vision Architect — Haridwar",
     description: "Professional architecture services in Haridwar",
-    locale: "hi_IN",
+    locale: "en_IN",
   },
 };
 

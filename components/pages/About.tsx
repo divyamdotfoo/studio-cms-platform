@@ -11,7 +11,7 @@ import profileImg from "@/assets/profile.jpeg";
  *
  * Sections:
  *   1. Hero — founder headline + portrait
- *   2. Story — the journey in hinglish
+ *   2. Story — the journey
  *   3. Philosophy — 3 core values
  *
  * Palette: ink, stone, drift, bronze, sand, ivory, cream
@@ -23,41 +23,41 @@ const T = 0;
 
 const INTRO = {
   label: "The founder",
-  headline: ["Ek sapna tha —", "achhe ghar banana jo", "log apna keh sakein"],
+  headline: ["A simple dream —", "to build homes that", "people truly call their own"],
   name: "Ar. Ujjwal Kapoor",
   role: "Founder & Principal Architect",
   brief:
-    "Architecture ka degree 2018 mein mila, par ghar banana ka passion bachpan se tha. Aaj Vision Architect ke peeche ek simple idea hai — aapka ghar, aapke hisaab se.",
+    "Armed with an architecture degree since 2018 and a lifelong passion for building homes, Ujjwal started Vision Architect with one clear idea — your home, designed your way.",
 };
 
 const STORY = {
   label: "The journey",
-  pullQuote: "Design sirf dikhne ke liye nahi hota — usme rehna padta hai.",
+  pullQuote: "Design isn't just about appearance — it has to be lived in.",
   paragraphs: [
-    "Jab doosre log settle hone ki soch rahe the, Ujjwal ne apna pehla project liya — ek chhota sa ghar, ek bahut bada sapna. Na koi team thi, na koi office. Sirf ek laptop, AutoCAD, aur raat ke 2 baje tak kaam karne ka junoon.",
-    "Aaj 50+ projects aur 100+ khush families baad, Vision Architect Haridwar ka ek trusted naam ban chuka hai. Haridwar se shuru hua safar ab Rishikesh aur aas-paas ke shahron tak pahunch gaya hai.",
-    "Par ek cheez nahi badli — har project mein wahi dedication, wahi attention to detail, jaisa pehle din tha. Kyunki Ujjwal ke liye, har ghar ek responsibility hai, sirf ek project nahi.",
+    "While others were settling into routine careers, Ujjwal took on his first project — a small house, but an enormous dream. No team, no office. Just a laptop, AutoCAD, and the drive to work past 2 AM every night.",
+    "Today, with over 50 projects and 100 happy families behind us, Vision Architect has become a trusted name in Haridwar. What started here has now grown to Rishikesh and the surrounding cities.",
+    "But one thing has never changed — the same dedication, the same attention to detail, as on day one. Because for Ujjwal, every home is a responsibility, not just a project.",
   ],
 };
 
 const VALUES = [
   {
     num: "01",
-    title: "Pehle sunna, phir banana",
+    title: "Listen first, design later",
     description:
-      "Hum pehle aapki zaroorat samajhte hain, phir pen uthate hain. Har ghar alag hota hai kyunki har family alag hoti hai.",
+      "We understand your needs before we pick up a pen. Every home is different because every family is different.",
   },
   {
     num: "02",
-    title: "Budget ka respect",
+    title: "Respect for your budget",
     description:
-      "Bade sapne dikhana aasan hai, budget mein rakh ke deliver karna mushkil. Hum woh mushkil kaam karte hain.",
+      "It's easy to dream big on paper. Delivering within budget is the hard part — and that's exactly what we do.",
   },
   {
     num: "03",
-    title: "Deadline pe deliver",
+    title: "Delivered on time",
     description:
-      "Jab bola hai tab milega. Delays se zyada kuch frustrating nahi hota — hum yeh samajhte hain.",
+      "When we commit to a deadline, we mean it. Few things are more frustrating than delays — and we understand that.",
   },
 ];
 
@@ -284,7 +284,7 @@ function ValuesSection() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ ...spring, delay: 0.05 }}
         >
-          Humara approach
+          Our approach
         </motion.span>
 
         {/* Values grid */}

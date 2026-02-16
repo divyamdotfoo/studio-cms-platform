@@ -69,8 +69,8 @@ export function ComingSoon({ title }: Props) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...spring, delay: T + 0.4 }}
           >
-            Iss page pe kuch khaas aa raha hai. Hum abhi isko bana rahe hain —
-            jaldi aayega. Tab tak, baaki site zaroor dekhein.
+            Something special is on its way. We&apos;re currently building this
+            page — it&apos;ll be ready soon. In the meantime, feel free to explore the rest of the site.
           </motion.p>
 
           {/* CTA — back to home */}
@@ -89,7 +89,7 @@ export function ComingSoon({ title }: Props) {
                 animate={{ scaleX: 1 }}
                 transition={{ ...spring, delay: T + 0.55 }}
               />
-              Home pe chalein
+              Back to Home
               <svg
                 className="w-4 h-4 text-drift transition-colors group-hover:text-ink"
                 fill="none"
