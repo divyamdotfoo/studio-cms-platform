@@ -46,7 +46,7 @@ export const CONTENT_TREE: SidebarNode[] = [
 
 function flattenLeaves(
   nodes: SidebarNode[],
-  prefix = "",
+  prefix = ""
 ): { key: string; label: string }[] {
   return nodes.flatMap((node) => {
     const label = prefix ? `${prefix} — ${node.label}` : node.label;
@@ -93,7 +93,7 @@ function SidebarItem({
           "w-full flex items-center gap-2 text-left text-[15px] py-2 px-3 transition-colors rounded-sm",
           isActive
             ? "bg-shell text-ink font-medium"
-            : "text-stone hover:bg-shell/50 hover:text-ink",
+            : "text-stone hover:bg-shell/50 hover:text-ink"
         )}
         style={{ paddingLeft: `${12 + depth * 16}px` }}
       >
@@ -101,7 +101,7 @@ function SidebarItem({
           <ChevronRight
             className={cn(
               "size-4 shrink-0 text-drift transition-transform",
-              open && "rotate-90",
+              open && "rotate-90"
             )}
           />
         ) : (
