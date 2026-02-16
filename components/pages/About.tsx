@@ -55,7 +55,7 @@ function FounderHero() {
           <div>
             {/* Headline */}
             <h1 className="font-serif text-[clamp(2rem,8vw,3.6rem)] lg:text-[clamp(2.4rem,5vw,4.2rem)] leading-none tracking-[-0.02em] text-ink mb-8 lg:mb-10">
-              {intro.headline.map((line, i) => (
+              {intro.headline.values.map((line, i) => (
                 <motion.span
                   key={i}
                   className="block"
@@ -197,7 +197,7 @@ function StorySection() {
 
           {/* Right — narrative paragraphs */}
           <div className="space-y-6">
-            {story.paragraphs.map((p, i) => (
+            {story.paragraphs.values.map((p, i) => (
               <motion.p
                 key={i}
                 className="text-[15px] lg:text-base leading-[1.8] text-stone"
@@ -247,7 +247,7 @@ function ValuesSection() {
 
         {/* Values grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
-          {values.items.map((value, i) => (
+          {values.items.values.map((value, i) => (
             <motion.div
               key={value.num}
               className="relative py-8 lg:py-10 lg:px-8 first:lg:pl-0 last:lg:pr-0"

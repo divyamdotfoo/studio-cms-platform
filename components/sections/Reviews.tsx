@@ -305,9 +305,9 @@ export function Reviews() {
   }, []);
 
   /* Split reviews into three groups */
-  const featured = reviews.items.find((r) => r.featured);
-  const videoReviews = reviews.items.filter((r) => !r.featured && r.videoUrl);
-  const textReviews = reviews.items.filter((r) => !r.featured && !r.videoUrl);
+  const featured = reviews.items.values.find((r) => r.featured);
+  const videoReviews = reviews.items.values.filter((r) => !r.featured && r.videoUrl);
+  const textReviews = reviews.items.values.filter((r) => !r.featured && !r.videoUrl);
 
   return (
     <section className="py-16 lg:py-28" aria-label="Reviews">
@@ -339,7 +339,7 @@ export function Reviews() {
                 animate={headerInView ? { opacity: 1 } : {}}
                 transition={{ ...spring, delay: 0.3 }}
               >
-                {reviews.items.length} reviews from Google
+                {reviews.items.values.length} reviews from Google
               </motion.p>
             </motion.div>
           </div>

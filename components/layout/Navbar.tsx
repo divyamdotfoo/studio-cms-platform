@@ -17,6 +17,17 @@ import {
   T_NAV_BORDER,
 } from "@/lib/motion";
 
+/* ── Hardcoded navigation data ── */
+
+const LEFT_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Projects", href: "/projects" },
+  { label: "Services", href: "/services" },
+];
+
+const BRAND = "VISION ARCHITECT";
+
 /* ────────────────────────────────────────────────────
  * CtaLink — CTA nav link with a subtle breathing
  * underline that continuously draws attention.
@@ -71,7 +82,7 @@ function CtaLink({ href, label }: { href: string; label: string }) {
  * ──────────────────────────────────────────────────── */
 
 export function Navbar() {
-  const { nav } = useContent();
+  const { general } = useContent();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
@@ -92,7 +103,7 @@ export function Navbar() {
       <nav className="hidden lg:grid mx-auto max-w-[1400px] grid-cols-[1fr_auto_1fr] items-center px-10 h-16">
         {/* Left links */}
         <div className="flex items-center gap-7">
-          {nav.leftLinks.map((link, i) => (
+          {LEFT_LINKS.map((link, i) => (
             <motion.div
               key={link.href}
               initial={{ opacity: 0, y: -8 }}
@@ -119,25 +130,29 @@ export function Navbar() {
           transition={{ ...spring, delay: T_NAV_BRAND }}
           className="justify-self-center"
         >
-          <Link href="/" className="relative z-10" aria-label={`${nav.brand} — Home`}>
+          <Link href="/" className="relative z-10" aria-label={`${BRAND} — Home`}>
             <span className="font-serif italic text-xl tracking-tight text-ink">
-              {nav.brand}
+              {BRAND}
             </span>
           </Link>
         </motion.div>
 
         {/* Right CTA links */}
         <div className="flex items-center justify-end gap-7">
-          {nav.rightLinks.map((link, i) => (
-            <motion.div
-              key={link.href}
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...spring, delay: T_NAV_RIGHT + i * STAGGER }}
-            >
-              <CtaLink href={link.href} label={link.label} />
-            </motion.div>
-          ))}
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: T_NAV_RIGHT }}
+          >
+            <CtaLink href={general.whatsapp} label="Send message" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: T_NAV_RIGHT + STAGGER }}
+          >
+            <CtaLink href={general.phone} label="Call us" />
+          </motion.div>
         </div>
       </nav>
 
@@ -149,9 +164,9 @@ export function Navbar() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ ...spring, delay: 0.1 }}
         >
-          <Link href="/" aria-label={`${nav.brand} — Home`}>
+          <Link href="/" aria-label={`${BRAND} — Home`}>
             <span className="font-serif italic text-base tracking-tight text-ink">
-              {nav.brand}
+              {BRAND}
             </span>
           </Link>
         </motion.div>

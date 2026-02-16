@@ -12,7 +12,7 @@ import type { SiteContent } from "@/cms/types";
  *
  * Usage in any client component:
  *
- *   const { nav, pages: { homepage: { hero } } } = useContent();
+ *   const { general, pages: { homepage: { hero } } } = useContent();
  *   return <h1>{hero.headline.line1}</h1>;
  *
  * ──────────────────────────────────────────────────── */

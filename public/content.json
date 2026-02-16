@@ -1,44 +1,11 @@
 {
-  "nav": {
-    "brand": "VISION ARCHITECT",
-    "leftLinks": [
-      { "label": "Home", "href": "/" },
-      { "label": "About", "href": "/about" },
-      { "label": "Projects", "href": "/projects" },
-      { "label": "Services", "href": "/services" }
-    ],
-    "rightLinks": [
-      { "label": "Send message", "href": "https://wa.me/917668761558" },
-      { "label": "Call us", "href": "tel:+917668761558" }
-    ],
-    "dock": [
-      { "label": "Home", "href": "/", "icon": "home" },
-      { "label": "Projects", "href": "/projects", "icon": "projects" },
-      { "label": "About", "href": "/about", "icon": "about" }
-    ]
-  },
-
-  "footer": {
-    "brand": "VISION ARCHITECT",
-    "tagline": "Designing spaces, inspiring lives.",
-    "contact": {
-      "phone": "tel:+917668761558",
-      "whatsapp": "https://wa.me/917668761558",
-      "email": "mailto:visionarchitect29@gmail.com"
-    },
-    "socials": [
-      {
-        "platform": "instagram",
-        "url": "https://www.instagram.com/vision_architect_/",
-        "label": "Instagram"
-      },
-      {
-        "platform": "youtube",
-        "url": "https://www.youtube.com/@visionarchitect3537",
-        "label": "YouTube"
-      }
-    ],
-    "copyright": "© {year} Vision Architect. All rights reserved."
+  "general": {
+    "phone": "tel:+917668761558",
+    "whatsapp": "https://wa.me/917668761558",
+    "email": "mailto:visionarchitect29@gmail.com",
+    "insta": "https://www.instagram.com/vision_architect_/",
+    "youtube": "https://www.youtube.com/@visionarchitect3537",
+    "tagline_footer": "From concept to creation."
   },
 
   "pages": {
@@ -60,56 +27,61 @@
           "line2": "for {italic}",
           "italicWord": "itself"
         },
-        "projects": [
-          {
-            "name": "Arya Residence",
-            "description": "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
-            "images": [
-              "/images/featured/project-1/one.jpg",
-              "/images/featured/project-1/two.jpg",
-              "/images/featured/project-1/three.jpg",
-              "/images/featured/project-1/four.jpg"
-            ],
-            "details": [
-              { "label": "Area", "value": "2,400 sq.ft" },
-              { "label": "Timeline", "value": "8 months" },
-              { "label": "Type", "value": "Residential" },
-              { "label": "Location", "value": "Haridwar" }
-            ]
-          },
-          {
-            "name": "Nanda Villa",
-            "description": "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
-            "images": [
-              "/images/featured/project-2/one.jpg",
-              "/images/featured/project-2/two.jpg",
-              "/images/featured/project-2/three.jpg",
-              "/images/featured/project-2/four.jpg"
-            ],
-            "details": [
-              { "label": "Area", "value": "3,100 sq.ft" },
-              { "label": "Timeline", "value": "14 months" },
-              { "label": "Type", "value": "Villa" },
-              { "label": "Location", "value": "Rishikesh" }
-            ]
-          },
-          {
-            "name": "Kapoor House",
-            "description": "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
-            "images": [
-              "/images/featured/project-3/one.jpg",
-              "/images/featured/project-3/two.jpg",
-              "/images/featured/project-3/three.jpg",
-              "/images/featured/project-3/four.jpg"
-            ],
-            "details": [
-              { "label": "Area", "value": "1,850 sq.ft" },
-              { "label": "Timeline", "value": "6 months" },
-              { "label": "Type", "value": "Residential" },
-              { "label": "Location", "value": "Haridwar" }
-            ]
-          }
-        ]
+        "projects": {
+          "extendable": true,
+          "min": 1,
+          "max": 5,
+          "values": [
+            {
+              "name": "Arya Residence",
+              "description": "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
+              "images": [
+                "/images/featured/project-1/one.jpg",
+                "/images/featured/project-1/two.jpg",
+                "/images/featured/project-1/three.jpg",
+                "/images/featured/project-1/four.jpg"
+              ],
+              "details": [
+                { "label": "Area", "value": "2,400 sq.ft" },
+                { "label": "Timeline", "value": "8 months" },
+                { "label": "Type", "value": "Residential" },
+                { "label": "Location", "value": "Haridwar" }
+              ]
+            },
+            {
+              "name": "Nanda Villa",
+              "description": "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
+              "images": [
+                "/images/featured/project-2/one.jpg",
+                "/images/featured/project-2/two.jpg",
+                "/images/featured/project-2/three.jpg",
+                "/images/featured/project-2/four.jpg"
+              ],
+              "details": [
+                { "label": "Area", "value": "3,100 sq.ft" },
+                { "label": "Timeline", "value": "14 months" },
+                { "label": "Type", "value": "Villa" },
+                { "label": "Location", "value": "Rishikesh" }
+              ]
+            },
+            {
+              "name": "Kapoor House",
+              "description": "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
+              "images": [
+                "/images/featured/project-3/one.jpg",
+                "/images/featured/project-3/two.jpg",
+                "/images/featured/project-3/three.jpg",
+                "/images/featured/project-3/four.jpg"
+              ],
+              "details": [
+                { "label": "Area", "value": "1,850 sq.ft" },
+                { "label": "Timeline", "value": "6 months" },
+                { "label": "Type", "value": "Residential" },
+                { "label": "Location", "value": "Haridwar" }
+              ]
+            }
+          ]
+        }
       },
 
       "services": {
@@ -120,58 +92,64 @@
           "italicWord": "vision"
         },
         "description": "Design isn't just about how things look — it's about how they live, how they work, and how they feel. That's why we approach every project with a fresh perspective.",
-        "stats": [
-          { "value": "12+", "label": "Years of experience" },
-          { "value": "50+", "label": "Projects delivered" },
-          { "value": "3", "label": "Cities served" },
-          { "value": "100+", "label": "Families who trust us" }
-        ],
-        "items": [
-          {
-            "num": "01",
-            "title": "Residential Design",
-            "description": "Building a home is more than walls and a roof — it's a reflection of your life. We design every room with your family in mind, paying attention to everything from Vastu to ventilation.",
-            "deliverables": [
-              "Floor Planning",
-              "3D Visualization",
-              "Construction Drawings",
-              "Vastu Consultation"
-            ]
-          },
-          {
-            "num": "02",
-            "title": "Commercial Spaces",
-            "description": "Whether it's a cafe, an office, or a showroom — your space should make people want to come back. We balance functionality and aesthetics so your business can grow.",
-            "deliverables": [
-              "Space Planning",
-              "Brand-Aligned Interiors",
-              "Lighting Design",
-              "Furniture Layout"
-            ]
-          },
-          {
-            "num": "03",
-            "title": "Interior Design",
-            "description": "Bringing interiors to life is what we do best. Furniture, lighting, materials, and colours — everything comes together to tell a story. We make sure that story is yours.",
-            "deliverables": [
-              "Material Selection",
-              "Custom Furniture",
-              "Color Consultation",
-              "Decor Styling"
-            ]
-          },
-          {
-            "num": "04",
-            "title": "Consultation & Planning",
-            "description": "Before any project begins, understanding comes first — what you need, what the budget allows, and what the timeline looks like. We listen first, then lay out a clear roadmap.",
-            "deliverables": [
-              "Site Analysis",
-              "Budget Planning",
-              "Regulatory Guidance",
-              "Project Timeline"
-            ]
-          }
-        ]
+        "stats": {
+          "extendable": false,
+          "values": [
+            { "value": "12+", "label": "Years of experience" },
+            { "value": "50+", "label": "Projects delivered" },
+            { "value": "3", "label": "Cities served" },
+            { "value": "100+", "label": "Families who trust us" }
+          ]
+        },
+        "items": {
+          "extendable": true,
+          "values": [
+            {
+              "num": "01",
+              "title": "Residential Design",
+              "description": "Building a home is more than walls and a roof — it's a reflection of your life. We design every room with your family in mind, paying attention to everything from Vastu to ventilation.",
+              "deliverables": [
+                "Floor Planning",
+                "3D Visualization",
+                "Construction Drawings",
+                "Vastu Consultation"
+              ]
+            },
+            {
+              "num": "02",
+              "title": "Commercial Spaces",
+              "description": "Whether it's a cafe, an office, or a showroom — your space should make people want to come back. We balance functionality and aesthetics so your business can grow.",
+              "deliverables": [
+                "Space Planning",
+                "Brand-Aligned Interiors",
+                "Lighting Design",
+                "Furniture Layout"
+              ]
+            },
+            {
+              "num": "03",
+              "title": "Interior Design",
+              "description": "Bringing interiors to life is what we do best. Furniture, lighting, materials, and colours — everything comes together to tell a story. We make sure that story is yours.",
+              "deliverables": [
+                "Material Selection",
+                "Custom Furniture",
+                "Color Consultation",
+                "Decor Styling"
+              ]
+            },
+            {
+              "num": "04",
+              "title": "Consultation & Planning",
+              "description": "Before any project begins, understanding comes first — what you need, what the budget allows, and what the timeline looks like. We listen first, then lay out a clear roadmap.",
+              "deliverables": [
+                "Site Analysis",
+                "Budget Planning",
+                "Regulatory Guidance",
+                "Project Timeline"
+              ]
+            }
+          ]
+        }
       },
 
       "reviews": {
@@ -181,35 +159,38 @@
           "line2": "in their {italic}",
           "italicWord": "words"
         },
-        "items": [
-          {
-            "name": "Gagandeep Singh",
-            "content": "One of the best Architecture firm in Haridwar, quality experience and dedication toward the work is key factor of this firm. Must try it.",
-            "featured": true
-          },
-          {
-            "name": "Nitish Bhardwaj",
-            "content": "Best person in nature, great knowledge of designing. I have designed my shop from this firm — best experience I have ever received.",
-            "videoUrl": "https://stream.mux.com/C96HW02UCqhlhOAZ00vDjqQxgjZMkCB8dtFpHCGJZONG8.m3u8?redundant_streams=true"
-          },
-          {
-            "name": "Neeraj Rajput",
-            "content": "One of the best firm with good attitude and work experience. Must try it."
-          },
-          {
-            "name": "Saumya Gupta",
-            "content": "He is very professional in his work and quality is up to date.",
-            "videoUrl": "https://stream.mux.com/7MlGBBexs8A2d7hFD4HMDj1XLVVvv8phhQEeUBN200Fg.m3u8?redundant_streams=true"
-          },
-          {
-            "name": "Deepak Sharma",
-            "content": "His work and design is very good and very super friendly person."
-          },
-          {
-            "name": "Shivansh Bajaj",
-            "content": "Best in town."
-          }
-        ]
+        "items": {
+          "extendable": true,
+          "values": [
+            {
+              "name": "Gagandeep Singh",
+              "content": "One of the best Architecture firm in Haridwar, quality experience and dedication toward the work is key factor of this firm. Must try it.",
+              "featured": true
+            },
+            {
+              "name": "Nitish Bhardwaj",
+              "content": "Best person in nature, great knowledge of designing. I have designed my shop from this firm — best experience I have ever received.",
+              "videoUrl": "https://stream.mux.com/C96HW02UCqhlhOAZ00vDjqQxgjZMkCB8dtFpHCGJZONG8.m3u8?redundant_streams=true"
+            },
+            {
+              "name": "Neeraj Rajput",
+              "content": "One of the best firm with good attitude and work experience. Must try it."
+            },
+            {
+              "name": "Saumya Gupta",
+              "content": "He is very professional in his work and quality is up to date.",
+              "videoUrl": "https://stream.mux.com/7MlGBBexs8A2d7hFD4HMDj1XLVVvv8phhQEeUBN200Fg.m3u8?redundant_streams=true"
+            },
+            {
+              "name": "Deepak Sharma",
+              "content": "His work and design is very good and very super friendly person."
+            },
+            {
+              "name": "Shivansh Bajaj",
+              "content": "Best in town."
+            }
+          ]
+        }
       },
 
       "social": {
@@ -220,32 +201,38 @@
           "italicWord": "social"
         },
         "description": "From the design process to the final reveal — we share it all. Follow along and see how an idea becomes a home.",
-        "channels": [
-          {
-            "platform": "instagram",
-            "handle": "@vision_architect_",
-            "url": "https://www.instagram.com/vision_architect_/",
-            "followers": "10k+ followers",
-            "featuredPostUrl": "https://www.instagram.com/p/DSC-BiWiaWP/"
-          },
-          {
-            "platform": "youtube",
-            "handle": "Vision Architect",
-            "url": "https://www.youtube.com/@visionarchitect3537",
-            "followers": "3k+ subscribers"
-          }
-        ]
+        "channels": {
+          "extendable": false,
+          "values": [
+            {
+              "platform": "instagram",
+              "handle": "@vision_architect_",
+              "url": "https://www.instagram.com/vision_architect_/",
+              "followers": "10k+ followers",
+              "featuredPostUrl": "https://www.instagram.com/p/DSC-BiWiaWP/"
+            },
+            {
+              "platform": "youtube",
+              "handle": "Vision Architect",
+              "url": "https://www.youtube.com/@visionarchitect3537",
+              "followers": "3k+ subscribers"
+            }
+          ]
+        }
       }
     },
 
     "about": {
       "intro": {
         "label": "The founder",
-        "headline": [
-          "A simple dream —",
-          "to build homes that",
-          "people truly call their own"
-        ],
+        "headline": {
+          "extendable": true,
+          "values": [
+            "A simple dream —",
+            "to build homes that",
+            "people truly call their own"
+          ]
+        },
         "name": "Ar. Ujjwal Kapoor",
         "role": "Founder & Principal Architect",
         "brief": "Armed with an architecture degree since 2018 and a lifelong passion for building homes, Ujjwal started Vision Architect with one clear idea — your home, designed your way.",
@@ -256,31 +243,37 @@
       "story": {
         "label": "The journey",
         "pullQuote": "Design isn't just about appearance — it has to be lived in.",
-        "paragraphs": [
-          "While others were settling into routine careers, Ujjwal took on his first project — a small house, but an enormous dream. No team, no office. Just a laptop, AutoCAD, and the drive to work past 2 AM every night.",
-          "Today, with over 50 projects and 100 happy families behind us, Vision Architect has become a trusted name in Haridwar. What started here has now grown to Rishikesh and the surrounding cities.",
-          "But one thing has never changed — the same dedication, the same attention to detail, as on day one. Because for Ujjwal, every home is a responsibility, not just a project."
-        ]
+        "paragraphs": {
+          "extendable": true,
+          "values": [
+            "While others were settling into routine careers, Ujjwal took on his first project — a small house, but an enormous dream. No team, no office. Just a laptop, AutoCAD, and the drive to work past 2 AM every night.",
+            "Today, with over 50 projects and 100 happy families behind us, Vision Architect has become a trusted name in Haridwar. What started here has now grown to Rishikesh and the surrounding cities.",
+            "But one thing has never changed — the same dedication, the same attention to detail, as on day one. Because for Ujjwal, every home is a responsibility, not just a project."
+          ]
+        }
       },
       "values": {
         "label": "Our approach",
-        "items": [
-          {
-            "num": "01",
-            "title": "Listen first, design later",
-            "description": "We understand your needs before we pick up a pen. Every home is different because every family is different."
-          },
-          {
-            "num": "02",
-            "title": "Respect for your budget",
-            "description": "It's easy to dream big on paper. Delivering within budget is the hard part — and that's exactly what we do."
-          },
-          {
-            "num": "03",
-            "title": "Delivered on time",
-            "description": "When we commit to a deadline, we mean it. Few things are more frustrating than delays — and we understand that."
-          }
-        ]
+        "items": {
+          "extendable": false,
+          "values": [
+            {
+              "num": "01",
+              "title": "Listen first, design later",
+              "description": "We understand your needs before we pick up a pen. Every home is different because every family is different."
+            },
+            {
+              "num": "02",
+              "title": "Respect for your budget",
+              "description": "It's easy to dream big on paper. Delivering within budget is the hard part — and that's exactly what we do."
+            },
+            {
+              "num": "03",
+              "title": "Delivered on time",
+              "description": "When we commit to a deadline, we mean it. Few things are more frustrating than delays — and we understand that."
+            }
+          ]
+        }
       }
     }
   }

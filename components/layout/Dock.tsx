@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
-import { useContent } from "@/lib/content-ctx";
 import { springGentle, springSnap } from "@/lib/motion";
 
 /* ────────────────────────────────────────────────────
@@ -72,16 +71,17 @@ function AboutIcon({ active }: { active: boolean }) {
   );
 }
 
-const ICON_MAP: Record<string, React.FC<{ active: boolean }>> = {
-  home: HomeIcon,
-  projects: ProjectsIcon,
-  about: AboutIcon,
-};
+/* ── Hardcoded dock items ── */
+
+const DOCK_ITEMS = [
+  { label: "Home", href: "/", Icon: HomeIcon },
+  { label: "Projects", href: "/projects", Icon: ProjectsIcon },
+  { label: "About", href: "/about", Icon: AboutIcon },
+];
 
 /* ── Component ── */
 
 export function Dock() {
-  const { nav } = useContent();
   const pathname = usePathname();
 
   return (
@@ -106,9 +106,8 @@ export function Dock() {
             boxShadow: "0 4px 24px -4px rgba(26, 26, 26, 0.12)",
           }}
         >
-          {nav.dock.map((item) => {
+          {DOCK_ITEMS.map((item) => {
             const isActive = pathname === item.href;
-            const Icon = ICON_MAP[item.icon];
 
             return (
               <Link
@@ -119,7 +118,7 @@ export function Dock() {
                 }`}
                 aria-current={isActive ? "page" : undefined}
               >
-                {Icon && <Icon active={isActive} />}
+                <item.Icon active={isActive} />
                 <span className="text-[11px] uppercase tracking-[0.04em] font-medium">
                   {item.label}
                 </span>

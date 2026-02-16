@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+/* ── Tree structure ── */
 
 export interface SidebarNode {
   key: string;
@@ -11,8 +13,7 @@ export interface SidebarNode {
 }
 
 export const CONTENT_TREE: SidebarNode[] = [
-  { key: "nav", label: "Navbar" },
-  { key: "footer", label: "Footer" },
+  { key: "general", label: "General" },
   {
     key: "pages",
     label: "Pages",
@@ -41,6 +42,23 @@ export const CONTENT_TREE: SidebarNode[] = [
   },
 ];
 
+/* ── Flatten tree to leaf options (for mobile select) ── */
+
+function flattenLeaves(
+  nodes: SidebarNode[],
+  prefix = "",
+): { key: string; label: string }[] {
+  return nodes.flatMap((node) => {
+    const label = prefix ? `${prefix} — ${node.label}` : node.label;
+    if (node.children) return flattenLeaves(node.children, label);
+    return [{ key: node.key, label }];
+  });
+}
+
+const FLAT_SECTIONS = flattenLeaves(CONTENT_TREE);
+
+/* ── SidebarItem (desktop tree) ── */
+
 function SidebarItem({
   node,
   depth,
@@ -55,11 +73,15 @@ function SidebarItem({
   const hasChildren = node.children && node.children.length > 0;
   const isActive = activeKey === node.key;
   const isParentOfActive = activeKey.startsWith(node.key + ".");
-  const [open, setOpen] = useState(isParentOfActive || depth === 0);
+  const [open, setOpen] = useState(isParentOfActive || isActive);
+
+  useEffect(() => {
+    if (isParentOfActive) setOpen(true);
+  }, [isParentOfActive]);
 
   const handleClick = () => {
     if (hasChildren) {
-      setOpen(!open);
+      setOpen((prev) => !prev);
     } else {
       onSelect(node.key);
     }
@@ -78,15 +100,16 @@ function SidebarItem({
         )}
         style={{ paddingLeft: `${12 + depth * 16}px` }}
       >
-        {hasChildren && (
+        {hasChildren ? (
           <ChevronRight
             className={cn(
               "size-4 shrink-0 text-drift transition-transform",
               open && "rotate-90",
             )}
           />
+        ) : (
+          <span className="w-4 shrink-0" />
         )}
-        {!hasChildren && <span className="w-4 shrink-0" />}
         <span>{node.label}</span>
       </button>
       {hasChildren && open && (
@@ -106,6 +129,8 @@ function SidebarItem({
   );
 }
 
+/* ── AdminSidebar ── */
+
 export function AdminSidebar({
   activeKey,
   onSelect,
@@ -114,21 +139,39 @@ export function AdminSidebar({
   onSelect: (key: string) => void;
 }) {
   return (
-    <aside className="w-64 shrink-0 border-r border-sand bg-ivory/50 overflow-y-auto">
-      <div className="py-4 px-2">
-        <p className="px-3 mb-3 text-xs uppercase tracking-widest text-drift font-medium">
-          Content
-        </p>
-        {CONTENT_TREE.map((node) => (
-          <SidebarItem
-            key={node.key}
-            node={node}
-            depth={0}
-            activeKey={activeKey}
-            onSelect={onSelect}
-          />
-        ))}
+    <>
+      {/* Mobile: select dropdown */}
+      <div className="md:hidden border-b border-sand bg-ivory/50 px-4 py-3">
+        <select
+          value={activeKey}
+          onChange={(e) => onSelect(e.target.value)}
+          className="w-full h-10 px-3 text-[15px] border border-sand bg-ivory text-ink outline-none focus:border-bronze"
+        >
+          {FLAT_SECTIONS.map((section) => (
+            <option key={section.key} value={section.key}>
+              {section.label}
+            </option>
+          ))}
+        </select>
       </div>
-    </aside>
+
+      {/* Desktop: tree sidebar */}
+      <aside className="hidden md:block w-64 shrink-0 border-r border-sand bg-ivory/50 overflow-y-auto">
+        <div className="py-4 px-2">
+          <p className="px-3 mb-3 text-xs uppercase tracking-widest text-drift font-medium">
+            Content
+          </p>
+          {CONTENT_TREE.map((node) => (
+            <SidebarItem
+              key={node.key}
+              node={node}
+              depth={0}
+              activeKey={activeKey}
+              onSelect={onSelect}
+            />
+          ))}
+        </div>
+      </aside>
+    </>
   );
 }

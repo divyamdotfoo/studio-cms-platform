@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, useFieldArray, type UseFormReturn } from "react-hook-form";
+import { useState, useCallback } from "react";
+import {
+  useForm,
+  useFieldArray,
+  type UseFormReturn,
+  type FieldErrors,
+} from "react-hook-form";
 import Image from "next/image";
 import type { SiteContent } from "@/cms/types";
 import { Input } from "@/components/ui/input";
@@ -14,8 +19,27 @@ import { AdminSidebar } from "./AdminSidebar";
 import { Plus, Trash2 } from "lucide-react";
 
 type FormValues = SiteContent;
+type FormProps = { form: UseFormReturn<FormValues> };
 
-/* ── Reusable field row ── */
+/* ── Validation ── */
+
+const REQ = { required: true } as const;
+
+function hasErr(errors: FieldErrors, path: string): true | undefined {
+  const found = path.split(".").reduce<unknown>((o, k) => {
+    if (o && typeof o === "object") return (o as Record<string, unknown>)[k];
+    return undefined;
+  }, errors);
+  return found != null ? true : undefined;
+}
+
+/* ── Shared class tokens ── */
+
+const INPUT_CLS = "text-[15px] h-10 aria-invalid:border-red-400";
+const INPUT_CLS_LG = "text-base h-10 aria-invalid:border-red-400";
+const TEXTAREA_CLS = "text-[15px] min-h-24 aria-invalid:border-red-400";
+
+/* ── Reusable: FieldRow ── */
 
 function FieldRow({
   label,
@@ -32,24 +56,26 @@ function FieldRow({
   );
 }
 
-/* ── Image preview ── */
+/* ── Reusable: ImagePreview ── */
 
 function ImagePreview({ src }: { src: string }) {
-  if (!src) return null;
+  const [hasError, setHasError] = useState(false);
+  if (!src || hasError) return null;
   return (
-    <div className="relative w-20 h-14 border border-sand overflow-hidden shrink-0">
+    <div className="relative w-20 h-14 border border-sand overflow-hidden shrink-0 bg-shell">
       <Image
         src={src}
         alt="Preview"
         fill
         className="object-cover"
         sizes="80px"
+        onError={() => setHasError(true)}
       />
     </div>
   );
 }
 
-/* ── Section Header ── */
+/* ── Reusable: SectionHeader ── */
 
 function SectionHeader({
   title,
@@ -66,239 +92,147 @@ function SectionHeader({
   );
 }
 
-/* ── Array field header ── */
+/* ── Reusable: ArrayHeader (conditionally shows Add button) ── */
 
 function ArrayHeader({
   label,
   onAdd,
   addLabel = "Add",
+  canAdd = true,
 }: {
   label: string;
   onAdd: () => void;
   addLabel?: string;
+  canAdd?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between">
       <span className="text-base font-medium text-ink">{label}</span>
-      <Button type="button" variant="outline" size="sm" onClick={onAdd}>
-        <Plus data-icon="inline-start" /> {addLabel}
-      </Button>
+      {canAdd && (
+        <Button type="button" variant="outline" size="sm" onClick={onAdd}>
+          <Plus data-icon="inline-start" /> {addLabel}
+        </Button>
+      )}
     </div>
   );
 }
 
-/* ════════════════════════════════════════════════════
- * NAV SECTION
- * ════════════════════════════════════════════════════ */
+/* ── Reusable: ItemHeader (conditionally shows Remove button) ── */
 
-function NavSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control } = form;
-  const leftLinks = useFieldArray({ control, name: "nav.leftLinks" });
-  const rightLinks = useFieldArray({ control, name: "nav.rightLinks" });
-  const dock = useFieldArray({ control, name: "nav.dock" });
-
+function ItemHeader({
+  label,
+  onRemove,
+  canRemove = true,
+}: {
+  label: string;
+  onRemove: () => void;
+  canRemove?: boolean;
+}) {
   return (
-    <div className="space-y-8">
-      <SectionHeader
-        title="Navbar"
-        description="Brand name, navigation links, and mobile dock."
-      />
-
-      <FieldRow label="Brand Name">
-        <Input {...register("nav.brand")} className="text-base h-10" />
-      </FieldRow>
-
-      <Separator />
-
-      {/* Left Links */}
-      <div className="space-y-4">
-        <ArrayHeader
-          label="Left Links"
-          onAdd={() => leftLinks.append({ label: "", href: "" })}
-        />
-        {leftLinks.fields.map((field, idx) => (
-          <div key={field.id} className="flex items-center gap-3">
-            <Input
-              placeholder="Label"
-              {...register(`nav.leftLinks.${idx}.label`)}
-              className="text-[15px] h-10"
-            />
-            <Input
-              placeholder="Href"
-              {...register(`nav.leftLinks.${idx}.href`)}
-              className="text-[15px] h-10"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => leftLinks.remove(idx)}
-            >
-              <Trash2 />
-            </Button>
-          </div>
-        ))}
-      </div>
-
-      <Separator />
-
-      {/* Right Links */}
-      <div className="space-y-4">
-        <ArrayHeader
-          label="Right Links"
-          onAdd={() => rightLinks.append({ label: "", href: "" })}
-        />
-        {rightLinks.fields.map((field, idx) => (
-          <div key={field.id} className="flex items-center gap-3">
-            <Input
-              placeholder="Label"
-              {...register(`nav.rightLinks.${idx}.label`)}
-              className="text-[15px] h-10"
-            />
-            <Input
-              placeholder="Href"
-              {...register(`nav.rightLinks.${idx}.href`)}
-              className="text-[15px] h-10"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => rightLinks.remove(idx)}
-            >
-              <Trash2 />
-            </Button>
-          </div>
-        ))}
-      </div>
-
-      <Separator />
-
-      {/* Dock */}
-      <div className="space-y-4">
-        <ArrayHeader
-          label="Dock Items"
-          onAdd={() => dock.append({ label: "", href: "", icon: "" })}
-        />
-        {dock.fields.map((field, idx) => (
-          <div key={field.id} className="flex items-center gap-3">
-            <Input
-              placeholder="Label"
-              {...register(`nav.dock.${idx}.label`)}
-              className="text-[15px] h-10"
-            />
-            <Input
-              placeholder="Href"
-              {...register(`nav.dock.${idx}.href`)}
-              className="text-[15px] h-10"
-            />
-            <Input
-              placeholder="Icon key"
-              {...register(`nav.dock.${idx}.icon`)}
-              className="text-[15px] h-10"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => dock.remove(idx)}
-            >
-              <Trash2 />
-            </Button>
-          </div>
-        ))}
-      </div>
+    <div className="flex items-center justify-between">
+      <span className="text-base font-semibold text-ink">{label}</span>
+      {canRemove && (
+        <Button type="button" variant="ghost" size="sm" onClick={onRemove}>
+          <Trash2 data-icon="inline-start" /> Remove
+        </Button>
+      )}
     </div>
   );
 }
 
+/* ── Reusable: RemoveButton ── */
+
+function RemoveButton({
+  onClick,
+  hidden = false,
+}: {
+  onClick: () => void;
+  hidden?: boolean;
+}) {
+  if (hidden) return null;
+  return (
+    <Button type="button" variant="ghost" size="icon" onClick={onClick}>
+      <Trash2 />
+    </Button>
+  );
+}
+
 /* ════════════════════════════════════════════════════
- * FOOTER SECTION
+ * GENERAL SECTION
  * ════════════════════════════════════════════════════ */
 
-function FooterSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control } = form;
-  const socials = useFieldArray({ control, name: "footer.socials" });
+function GeneralSection({ form }: FormProps) {
+  const {
+    register,
+    formState: { errors },
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
 
   return (
     <div className="space-y-8">
       <SectionHeader
-        title="Footer"
-        description="Footer brand, contact info, and social links."
+        title="General"
+        description="Site-wide contact details and social links used across the navbar and footer."
       />
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <FieldRow label="Brand">
-          <Input {...register("footer.brand")} className="text-base h-10" />
-        </FieldRow>
-        <FieldRow label="Tagline">
-          <Input {...register("footer.tagline")} className="text-base h-10" />
-        </FieldRow>
-      </div>
-
-      <FieldRow label="Copyright">
-        <Input {...register("footer.copyright")} className="text-[15px] h-10" />
-      </FieldRow>
-
-      <Separator />
-
-      <span className="text-base font-medium text-ink block">Contact</span>
-      <div className="grid gap-6 sm:grid-cols-3">
         <FieldRow label="Phone">
           <Input
-            {...register("footer.contact.phone")}
-            className="text-[15px] h-10"
+            placeholder="tel:+91..."
+            {...register("general.phone", REQ)}
+            aria-invalid={e("general.phone")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="WhatsApp">
           <Input
-            {...register("footer.contact.whatsapp")}
-            className="text-[15px] h-10"
+            placeholder="https://wa.me/..."
+            {...register("general.whatsapp", REQ)}
+            aria-invalid={e("general.whatsapp")}
+            className={INPUT_CLS}
           />
         </FieldRow>
-        <FieldRow label="Email">
+      </div>
+
+      <FieldRow label="Email">
+        <Input
+          placeholder="mailto:..."
+          {...register("general.email", REQ)}
+          aria-invalid={e("general.email")}
+          className={INPUT_CLS}
+        />
+      </FieldRow>
+
+      <Separator />
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <FieldRow label="Instagram URL">
           <Input
-            {...register("footer.contact.email")}
-            className="text-[15px] h-10"
+            placeholder="https://instagram.com/..."
+            {...register("general.insta", REQ)}
+            aria-invalid={e("general.insta")}
+            className={INPUT_CLS}
+          />
+        </FieldRow>
+        <FieldRow label="YouTube URL">
+          <Input
+            placeholder="https://youtube.com/..."
+            {...register("general.youtube", REQ)}
+            aria-invalid={e("general.youtube")}
+            className={INPUT_CLS}
           />
         </FieldRow>
       </div>
 
       <Separator />
 
-      <div className="space-y-4">
-        <ArrayHeader
-          label="Social Links"
-          onAdd={() => socials.append({ platform: "", url: "", label: "" })}
+      <FieldRow label="Footer Tagline">
+        <Input
+          {...register("general.tagline_footer", REQ)}
+          aria-invalid={e("general.tagline_footer")}
+          className={INPUT_CLS_LG}
         />
-        {socials.fields.map((field, idx) => (
-          <div key={field.id} className="flex items-center gap-3">
-            <Input
-              placeholder="Platform"
-              {...register(`footer.socials.${idx}.platform`)}
-              className="text-[15px] h-10"
-            />
-            <Input
-              placeholder="URL"
-              {...register(`footer.socials.${idx}.url`)}
-              className="text-[15px] h-10"
-            />
-            <Input
-              placeholder="Label"
-              {...register(`footer.socials.${idx}.label`)}
-              className="text-[15px] h-10"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => socials.remove(idx)}
-            >
-              <Trash2 />
-            </Button>
-          </div>
-        ))}
-      </div>
+      </FieldRow>
     </div>
   );
 }
@@ -307,8 +241,12 @@ function FooterSection({ form }: { form: UseFormReturn<FormValues> }) {
  * HERO SECTION
  * ════════════════════════════════════════════════════ */
 
-function HeroSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register } = form;
+function HeroSection({ form }: FormProps) {
+  const {
+    register,
+    formState: { errors },
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
 
   return (
     <div className="space-y-8">
@@ -318,32 +256,37 @@ function HeroSection({ form }: { form: UseFormReturn<FormValues> }) {
       />
       <FieldRow label="Headline — Line 1">
         <Input
-          {...register("pages.homepage.hero.headline.line1")}
-          className="text-base h-10"
+          {...register("pages.homepage.hero.headline.line1", REQ)}
+          aria-invalid={e("pages.homepage.hero.headline.line1")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <FieldRow label="Headline — Line 2">
         <Input
-          {...register("pages.homepage.hero.headline.line2")}
-          className="text-base h-10"
+          {...register("pages.homepage.hero.headline.line2", REQ)}
+          aria-invalid={e("pages.homepage.hero.headline.line2")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <FieldRow label="Headline — Italic Word">
         <Input
-          {...register("pages.homepage.hero.headline.line2Italic")}
-          className="text-base h-10"
+          {...register("pages.homepage.hero.headline.line2Italic", REQ)}
+          aria-invalid={e("pages.homepage.hero.headline.line2Italic")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <FieldRow label="Location">
         <Input
-          {...register("pages.homepage.hero.location")}
-          className="text-[15px] h-10"
+          {...register("pages.homepage.hero.location", REQ)}
+          aria-invalid={e("pages.homepage.hero.location")}
+          className={INPUT_CLS}
         />
       </FieldRow>
       <FieldRow label="Description">
         <Textarea
-          {...register("pages.homepage.hero.description")}
-          className="text-[15px] min-h-24"
+          {...register("pages.homepage.hero.description", REQ)}
+          aria-invalid={e("pages.homepage.hero.description")}
+          className={TEXTAREA_CLS}
         />
       </FieldRow>
     </div>
@@ -354,12 +297,23 @@ function HeroSection({ form }: { form: UseFormReturn<FormValues> }) {
  * PROJECT GALLERY SECTION
  * ════════════════════════════════════════════════════ */
 
-function ProjectGallerySection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control, watch } = form;
+function ProjectGallerySection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    formState: { errors },
+    getValues,
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
   const projects = useFieldArray({
     control,
-    name: "pages.homepage.projectGallery.projects",
+    name: "pages.homepage.projectGallery.projects.values",
   });
+  const meta = getValues("pages.homepage.projectGallery.projects");
+  const canAdd =
+    meta.extendable && (!meta.max || projects.fields.length < meta.max);
+  const canRemove =
+    meta.extendable && (!meta.min || projects.fields.length > meta.min);
 
   return (
     <div className="space-y-8">
@@ -370,27 +324,34 @@ function ProjectGallerySection({ form }: { form: UseFormReturn<FormValues> }) {
 
       <FieldRow label="Section Label">
         <Input
-          {...register("pages.homepage.projectGallery.label")}
-          className="text-base h-10"
+          {...register("pages.homepage.projectGallery.label", REQ)}
+          aria-invalid={e("pages.homepage.projectGallery.label")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <div className="grid gap-6 sm:grid-cols-3">
         <FieldRow label="Heading — Line 1">
           <Input
-            {...register("pages.homepage.projectGallery.heading.line1")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.projectGallery.heading.line1", REQ)}
+            aria-invalid={e("pages.homepage.projectGallery.heading.line1")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Line 2">
           <Input
-            {...register("pages.homepage.projectGallery.heading.line2")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.projectGallery.heading.line2", REQ)}
+            aria-invalid={e("pages.homepage.projectGallery.heading.line2")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Italic Word">
           <Input
-            {...register("pages.homepage.projectGallery.heading.italicWord")}
-            className="text-[15px] h-10"
+            {...register(
+              "pages.homepage.projectGallery.heading.italicWord",
+              REQ
+            )}
+            aria-invalid={e("pages.homepage.projectGallery.heading.italicWord")}
+            className={INPUT_CLS}
           />
         </FieldRow>
       </div>
@@ -400,6 +361,7 @@ function ProjectGallerySection({ form }: { form: UseFormReturn<FormValues> }) {
       <ArrayHeader
         label="Projects"
         addLabel="Add project"
+        canAdd={canAdd}
         onAdd={() =>
           projects.append({
             name: "",
@@ -416,7 +378,7 @@ function ProjectGallerySection({ form }: { form: UseFormReturn<FormValues> }) {
           form={form}
           index={idx}
           onRemove={() => projects.remove(idx)}
-          watch={watch}
+          canRemove={canRemove}
         />
       ))}
     </div>
@@ -427,109 +389,88 @@ function ProjectFields({
   form,
   index,
   onRemove,
-  watch,
+  canRemove,
 }: {
   form: UseFormReturn<FormValues>;
   index: number;
   onRemove: () => void;
-  watch: UseFormReturn<FormValues>["watch"];
+  canRemove: boolean;
 }) {
-  const { register, control } = form;
-  const details = useFieldArray({
+  const {
+    register,
     control,
-    name: `pages.homepage.projectGallery.projects.${index}.details`,
-  });
-  const images = useFieldArray({
-    control,
-    name: `pages.homepage.projectGallery.projects.${index}.images` as never,
-  });
+    watch,
+    formState: { errors },
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
+  const pre = `pages.homepage.projectGallery.projects.values.${index}`;
+  const details = useFieldArray({ control, name: `${pre}.details` as never });
+  const images = useFieldArray({ control, name: `${pre}.images` as never });
 
   return (
     <div className="border border-sand p-5 space-y-5">
-      <div className="flex items-center justify-between">
-        <span className="text-base font-semibold text-ink">
-          Project {index + 1}
-        </span>
-        <Button type="button" variant="ghost" size="sm" onClick={onRemove}>
-          <Trash2 data-icon="inline-start" /> Remove
-        </Button>
-      </div>
+      <ItemHeader
+        label={`Project ${index + 1}`}
+        onRemove={onRemove}
+        canRemove={canRemove}
+      />
 
       <FieldRow label="Name">
         <Input
-          {...register(`pages.homepage.projectGallery.projects.${index}.name`)}
-          className="text-base h-10"
+          {...register(`${pre}.name` as never, REQ)}
+          aria-invalid={e(`${pre}.name`)}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <FieldRow label="Description">
         <Textarea
-          {...register(
-            `pages.homepage.projectGallery.projects.${index}.description`
-          )}
-          className="text-[15px] min-h-24"
+          {...register(`${pre}.description` as never, REQ)}
+          aria-invalid={e(`${pre}.description`)}
+          className={TEXTAREA_CLS}
         />
       </FieldRow>
 
-      {/* Images with preview */}
       <div className="space-y-3">
         <ArrayHeader label="Images" onAdd={() => images.append("" as never)} />
         {images.fields.map((imgField, imgIdx) => {
           const imgPath = watch(
-            `pages.homepage.projectGallery.projects.${index}.images.${imgIdx}` as `pages.homepage.projectGallery.projects.${number}.images.${number}`
-          );
+            `${pre}.images.${imgIdx}` as never
+          ) as unknown as string | undefined;
           return (
             <div key={imgField.id} className="flex items-center gap-3">
-              {imgPath && <ImagePreview src={imgPath as string} />}
+              {imgPath && <ImagePreview src={imgPath} />}
               <Input
                 placeholder="/images/..."
-                {...register(
-                  `pages.homepage.projectGallery.projects.${index}.images.${imgIdx}` as `pages.homepage.projectGallery.projects.${number}.images.${number}`
-                )}
-                className="text-[15px] h-10"
+                {...register(`${pre}.images.${imgIdx}` as never, REQ)}
+                aria-invalid={e(`${pre}.images.${imgIdx}`)}
+                className={INPUT_CLS}
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => images.remove(imgIdx)}
-              >
-                <Trash2 />
-              </Button>
+              <RemoveButton onClick={() => images.remove(imgIdx)} />
             </div>
           );
         })}
       </div>
 
-      {/* Details */}
       <div className="space-y-3">
         <ArrayHeader
           label="Details"
-          onAdd={() => details.append({ label: "", value: "" })}
+          onAdd={() => details.append({ label: "", value: "" } as never)}
         />
         {details.fields.map((detField, detIdx) => (
           <div key={detField.id} className="flex items-center gap-3">
             <Input
               placeholder="Label"
-              {...register(
-                `pages.homepage.projectGallery.projects.${index}.details.${detIdx}.label`
-              )}
-              className="text-[15px] h-10"
+              {...register(`${pre}.details.${detIdx}.label` as never, REQ)}
+              aria-invalid={e(`${pre}.details.${detIdx}.label`)}
+              className={INPUT_CLS}
             />
             <Input
               placeholder="Value"
-              {...register(
-                `pages.homepage.projectGallery.projects.${index}.details.${detIdx}.value`
-              )}
-              className="text-[15px] h-10"
+              {...register(`${pre}.details.${detIdx}.value` as never, REQ)}
+              aria-invalid={e(`${pre}.details.${detIdx}.value`)}
+              className={INPUT_CLS}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => details.remove(detIdx)}
-            >
-              <Trash2 />
-            </Button>
+            <RemoveButton onClick={() => details.remove(detIdx)} />
           </div>
         ))}
       </div>
@@ -541,16 +482,24 @@ function ProjectFields({
  * SERVICES SECTION
  * ════════════════════════════════════════════════════ */
 
-function ServicesSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control } = form;
+function ServicesSection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    formState: { errors },
+    getValues,
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
   const stats = useFieldArray({
     control,
-    name: "pages.homepage.services.stats",
+    name: "pages.homepage.services.stats.values",
   });
   const items = useFieldArray({
     control,
-    name: "pages.homepage.services.items",
+    name: "pages.homepage.services.items.values",
   });
+  const statsMeta = getValues("pages.homepage.services.stats");
+  const itemsMeta = getValues("pages.homepage.services.items");
 
   return (
     <div className="space-y-8">
@@ -561,34 +510,39 @@ function ServicesSection({ form }: { form: UseFormReturn<FormValues> }) {
 
       <FieldRow label="Section Label">
         <Input
-          {...register("pages.homepage.services.label")}
-          className="text-base h-10"
+          {...register("pages.homepage.services.label", REQ)}
+          aria-invalid={e("pages.homepage.services.label")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <div className="grid gap-6 sm:grid-cols-3">
         <FieldRow label="Heading — Line 1">
           <Input
-            {...register("pages.homepage.services.heading.line1")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.services.heading.line1", REQ)}
+            aria-invalid={e("pages.homepage.services.heading.line1")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Line 2">
           <Input
-            {...register("pages.homepage.services.heading.line2")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.services.heading.line2", REQ)}
+            aria-invalid={e("pages.homepage.services.heading.line2")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Italic Word">
           <Input
-            {...register("pages.homepage.services.heading.italicWord")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.services.heading.italicWord", REQ)}
+            aria-invalid={e("pages.homepage.services.heading.italicWord")}
+            className={INPUT_CLS}
           />
         </FieldRow>
       </div>
       <FieldRow label="Description">
         <Textarea
-          {...register("pages.homepage.services.description")}
-          className="text-[15px] min-h-24"
+          {...register("pages.homepage.services.description", REQ)}
+          aria-invalid={e("pages.homepage.services.description")}
+          className={TEXTAREA_CLS}
         />
       </FieldRow>
 
@@ -597,28 +551,37 @@ function ServicesSection({ form }: { form: UseFormReturn<FormValues> }) {
       <div className="space-y-4">
         <ArrayHeader
           label="Stats"
+          canAdd={statsMeta.extendable}
           onAdd={() => stats.append({ value: "", label: "" })}
         />
         {stats.fields.map((field, idx) => (
           <div key={field.id} className="flex items-center gap-3">
             <Input
               placeholder="Value (e.g. 50+)"
-              {...register(`pages.homepage.services.stats.${idx}.value`)}
-              className="text-[15px] h-10"
+              {...register(
+                `pages.homepage.services.stats.values.${idx}.value` as never,
+                REQ
+              )}
+              aria-invalid={e(
+                `pages.homepage.services.stats.values.${idx}.value`
+              )}
+              className={INPUT_CLS}
             />
             <Input
               placeholder="Label"
-              {...register(`pages.homepage.services.stats.${idx}.label`)}
-              className="text-[15px] h-10"
+              {...register(
+                `pages.homepage.services.stats.values.${idx}.label` as never,
+                REQ
+              )}
+              aria-invalid={e(
+                `pages.homepage.services.stats.values.${idx}.label`
+              )}
+              className={INPUT_CLS}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
+            <RemoveButton
               onClick={() => stats.remove(idx)}
-            >
-              <Trash2 />
-            </Button>
+              hidden={!statsMeta.extendable}
+            />
           </div>
         ))}
       </div>
@@ -628,6 +591,7 @@ function ServicesSection({ form }: { form: UseFormReturn<FormValues> }) {
       <ArrayHeader
         label="Service Items"
         addLabel="Add service"
+        canAdd={itemsMeta.extendable}
         onAdd={() =>
           items.append({
             num: String(items.fields.length + 1).padStart(2, "0"),
@@ -644,6 +608,7 @@ function ServicesSection({ form }: { form: UseFormReturn<FormValues> }) {
           form={form}
           index={idx}
           onRemove={() => items.remove(idx)}
+          canRemove={itemsMeta.extendable}
         />
       ))}
     </div>
@@ -654,45 +619,53 @@ function ServiceItemFields({
   form,
   index,
   onRemove,
+  canRemove,
 }: {
   form: UseFormReturn<FormValues>;
   index: number;
   onRemove: () => void;
+  canRemove: boolean;
 }) {
-  const { register, control } = form;
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
+  const pre = `pages.homepage.services.items.values.${index}`;
   const deliverables = useFieldArray({
     control,
-    name: `pages.homepage.services.items.${index}.deliverables` as never,
+    name: `${pre}.deliverables` as never,
   });
 
   return (
     <div className="border border-sand p-5 space-y-5">
-      <div className="flex items-center justify-between">
-        <span className="text-base font-semibold text-ink">
-          Service {index + 1}
-        </span>
-        <Button type="button" variant="ghost" size="sm" onClick={onRemove}>
-          <Trash2 data-icon="inline-start" /> Remove
-        </Button>
-      </div>
+      <ItemHeader
+        label={`Service ${index + 1}`}
+        onRemove={onRemove}
+        canRemove={canRemove}
+      />
       <div className="grid gap-6 sm:grid-cols-2">
         <FieldRow label="Number">
           <Input
-            {...register(`pages.homepage.services.items.${index}.num`)}
-            className="text-[15px] h-10"
+            {...register(`${pre}.num` as never, REQ)}
+            aria-invalid={e(`${pre}.num`)}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Title">
           <Input
-            {...register(`pages.homepage.services.items.${index}.title`)}
-            className="text-base h-10"
+            {...register(`${pre}.title` as never, REQ)}
+            aria-invalid={e(`${pre}.title`)}
+            className={INPUT_CLS_LG}
           />
         </FieldRow>
       </div>
       <FieldRow label="Description">
         <Textarea
-          {...register(`pages.homepage.services.items.${index}.description`)}
-          className="text-[15px] min-h-24"
+          {...register(`${pre}.description` as never, REQ)}
+          aria-invalid={e(`${pre}.description`)}
+          className={TEXTAREA_CLS}
         />
       </FieldRow>
 
@@ -705,19 +678,11 @@ function ServiceItemFields({
           <div key={delField.id} className="flex items-center gap-3">
             <Input
               placeholder="Deliverable"
-              {...register(
-                `pages.homepage.services.items.${index}.deliverables.${delIdx}` as `pages.homepage.services.items.${number}.deliverables.${number}`
-              )}
-              className="text-[15px] h-10"
+              {...register(`${pre}.deliverables.${delIdx}` as never, REQ)}
+              aria-invalid={e(`${pre}.deliverables.${delIdx}`)}
+              className={INPUT_CLS}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => deliverables.remove(delIdx)}
-            >
-              <Trash2 />
-            </Button>
+            <RemoveButton onClick={() => deliverables.remove(delIdx)} />
           </div>
         ))}
       </div>
@@ -729,12 +694,19 @@ function ServiceItemFields({
  * REVIEWS SECTION
  * ════════════════════════════════════════════════════ */
 
-function ReviewsSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control } = form;
+function ReviewsSection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    formState: { errors },
+    getValues,
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
   const items = useFieldArray({
     control,
-    name: "pages.homepage.reviews.items",
+    name: "pages.homepage.reviews.items.values",
   });
+  const meta = getValues("pages.homepage.reviews.items");
 
   return (
     <div className="space-y-8">
@@ -745,27 +717,31 @@ function ReviewsSection({ form }: { form: UseFormReturn<FormValues> }) {
 
       <FieldRow label="Section Label">
         <Input
-          {...register("pages.homepage.reviews.label")}
-          className="text-base h-10"
+          {...register("pages.homepage.reviews.label", REQ)}
+          aria-invalid={e("pages.homepage.reviews.label")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <div className="grid gap-6 sm:grid-cols-3">
         <FieldRow label="Heading — Line 1">
           <Input
-            {...register("pages.homepage.reviews.heading.line1")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.reviews.heading.line1", REQ)}
+            aria-invalid={e("pages.homepage.reviews.heading.line1")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Line 2">
           <Input
-            {...register("pages.homepage.reviews.heading.line2")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.reviews.heading.line2", REQ)}
+            aria-invalid={e("pages.homepage.reviews.heading.line2")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Italic Word">
           <Input
-            {...register("pages.homepage.reviews.heading.italicWord")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.reviews.heading.italicWord", REQ)}
+            aria-invalid={e("pages.homepage.reviews.heading.italicWord")}
+            className={INPUT_CLS}
           />
         </FieldRow>
       </div>
@@ -775,41 +751,48 @@ function ReviewsSection({ form }: { form: UseFormReturn<FormValues> }) {
       <ArrayHeader
         label="Reviews"
         addLabel="Add review"
+        canAdd={meta.extendable}
         onAdd={() => items.append({ name: "", content: "" })}
       />
 
       {items.fields.map((field, idx) => (
         <div key={field.id} className="border border-sand p-5 space-y-5">
-          <div className="flex items-center justify-between">
-            <span className="text-base font-semibold text-ink">
-              Review {idx + 1}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => items.remove(idx)}
-            >
-              <Trash2 data-icon="inline-start" /> Remove
-            </Button>
-          </div>
+          <ItemHeader
+            label={`Review ${idx + 1}`}
+            onRemove={() => items.remove(idx)}
+            canRemove={meta.extendable}
+          />
           <FieldRow label="Name">
             <Input
-              {...register(`pages.homepage.reviews.items.${idx}.name`)}
-              className="text-base h-10"
+              {...register(
+                `pages.homepage.reviews.items.values.${idx}.name` as never,
+                REQ
+              )}
+              aria-invalid={e(
+                `pages.homepage.reviews.items.values.${idx}.name`
+              )}
+              className={INPUT_CLS_LG}
             />
           </FieldRow>
           <FieldRow label="Content">
             <Textarea
-              {...register(`pages.homepage.reviews.items.${idx}.content`)}
-              className="text-[15px] min-h-24"
+              {...register(
+                `pages.homepage.reviews.items.values.${idx}.content` as never,
+                REQ
+              )}
+              aria-invalid={e(
+                `pages.homepage.reviews.items.values.${idx}.content`
+              )}
+              className={TEXTAREA_CLS}
             />
           </FieldRow>
           <FieldRow label="Video URL (optional)">
             <Input
               placeholder="https://..."
-              {...register(`pages.homepage.reviews.items.${idx}.videoUrl`)}
-              className="text-[15px] h-10"
+              {...register(
+                `pages.homepage.reviews.items.values.${idx}.videoUrl` as never
+              )}
+              className={INPUT_CLS}
             />
           </FieldRow>
           <div className="flex items-center gap-3">
@@ -817,7 +800,9 @@ function ReviewsSection({ form }: { form: UseFormReturn<FormValues> }) {
               type="checkbox"
               id={`reviews-${idx}-featured`}
               className="accent-bronze w-4 h-4"
-              {...register(`pages.homepage.reviews.items.${idx}.featured`)}
+              {...register(
+                `pages.homepage.reviews.items.values.${idx}.featured` as never
+              )}
             />
             <Label htmlFor={`reviews-${idx}-featured`} className="text-[15px]">
               Featured
@@ -833,12 +818,19 @@ function ReviewsSection({ form }: { form: UseFormReturn<FormValues> }) {
  * SOCIAL SECTION
  * ════════════════════════════════════════════════════ */
 
-function SocialSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control } = form;
+function SocialSection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    formState: { errors },
+    getValues,
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
   const channels = useFieldArray({
     control,
-    name: "pages.homepage.social.channels",
+    name: "pages.homepage.social.channels.values",
   });
+  const meta = getValues("pages.homepage.social.channels");
 
   return (
     <div className="space-y-8">
@@ -849,34 +841,39 @@ function SocialSection({ form }: { form: UseFormReturn<FormValues> }) {
 
       <FieldRow label="Section Label">
         <Input
-          {...register("pages.homepage.social.label")}
-          className="text-base h-10"
+          {...register("pages.homepage.social.label", REQ)}
+          aria-invalid={e("pages.homepage.social.label")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <div className="grid gap-6 sm:grid-cols-3">
         <FieldRow label="Heading — Line 1">
           <Input
-            {...register("pages.homepage.social.heading.line1")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.social.heading.line1", REQ)}
+            aria-invalid={e("pages.homepage.social.heading.line1")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Line 2">
           <Input
-            {...register("pages.homepage.social.heading.line2")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.social.heading.line2", REQ)}
+            aria-invalid={e("pages.homepage.social.heading.line2")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Heading — Italic Word">
           <Input
-            {...register("pages.homepage.social.heading.italicWord")}
-            className="text-[15px] h-10"
+            {...register("pages.homepage.social.heading.italicWord", REQ)}
+            aria-invalid={e("pages.homepage.social.heading.italicWord")}
+            className={INPUT_CLS}
           />
         </FieldRow>
       </div>
       <FieldRow label="Description">
         <Textarea
-          {...register("pages.homepage.social.description")}
-          className="text-[15px] min-h-24"
+          {...register("pages.homepage.social.description", REQ)}
+          aria-invalid={e("pages.homepage.social.description")}
+          className={TEXTAREA_CLS}
         />
       </FieldRow>
 
@@ -885,67 +882,65 @@ function SocialSection({ form }: { form: UseFormReturn<FormValues> }) {
       <ArrayHeader
         label="Channels"
         addLabel="Add channel"
+        canAdd={meta.extendable}
         onAdd={() =>
           channels.append({ platform: "", handle: "", url: "", followers: "" })
         }
       />
 
-      {channels.fields.map((field, idx) => (
-        <div key={field.id} className="border border-sand p-5 space-y-5">
-          <div className="flex items-center justify-between">
-            <span className="text-base font-semibold text-ink">
-              Channel {idx + 1}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => channels.remove(idx)}
-            >
-              <Trash2 data-icon="inline-start" /> Remove
-            </Button>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2">
-            <FieldRow label="Platform">
+      {channels.fields.map((field, idx) => {
+        const pre = `pages.homepage.social.channels.values.${idx}`;
+        return (
+          <div key={field.id} className="border border-sand p-5 space-y-5">
+            <ItemHeader
+              label={`Channel ${idx + 1}`}
+              onRemove={() => channels.remove(idx)}
+              canRemove={meta.extendable}
+            />
+            <div className="grid gap-6 sm:grid-cols-2">
+              <FieldRow label="Platform">
+                <Input
+                  placeholder="e.g. instagram"
+                  {...register(`${pre}.platform` as never, REQ)}
+                  aria-invalid={e(`${pre}.platform`)}
+                  className={INPUT_CLS}
+                />
+              </FieldRow>
+              <FieldRow label="Handle">
+                <Input
+                  placeholder="@handle"
+                  {...register(`${pre}.handle` as never, REQ)}
+                  aria-invalid={e(`${pre}.handle`)}
+                  className={INPUT_CLS}
+                />
+              </FieldRow>
+            </div>
+            <FieldRow label="URL">
               <Input
-                placeholder="e.g. instagram"
-                {...register(`pages.homepage.social.channels.${idx}.platform`)}
-                className="text-[15px] h-10"
+                placeholder="https://..."
+                {...register(`${pre}.url` as never, REQ)}
+                aria-invalid={e(`${pre}.url`)}
+                className={INPUT_CLS}
               />
             </FieldRow>
-            <FieldRow label="Handle">
+            <FieldRow label="Followers">
               <Input
-                placeholder="@handle"
-                {...register(`pages.homepage.social.channels.${idx}.handle`)}
-                className="text-[15px] h-10"
+                placeholder="e.g. 10k+ followers"
+                {...register(`${pre}.followers` as never, REQ)}
+                aria-invalid={e(`${pre}.followers`)}
+                className={INPUT_CLS}
+              />
+            </FieldRow>
+            <FieldRow label="Featured Post URL (optional)">
+              <Input
+                placeholder="https://..."
+                {...register(`${pre}.featuredPostUrl` as never)}
+                className={INPUT_CLS}
               />
             </FieldRow>
           </div>
-          <FieldRow label="URL">
-            <Input
-              placeholder="https://..."
-              {...register(`pages.homepage.social.channels.${idx}.url`)}
-              className="text-[15px] h-10"
-            />
-          </FieldRow>
-          <FieldRow label="Followers">
-            <Input
-              placeholder="e.g. 10k+ followers"
-              {...register(`pages.homepage.social.channels.${idx}.followers`)}
-              className="text-[15px] h-10"
-            />
-          </FieldRow>
-          <FieldRow label="Featured Post URL (optional)">
-            <Input
-              placeholder="https://..."
-              {...register(
-                `pages.homepage.social.channels.${idx}.featuredPostUrl`
-              )}
-              className="text-[15px] h-10"
-            />
-          </FieldRow>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -954,12 +949,20 @@ function SocialSection({ form }: { form: UseFormReturn<FormValues> }) {
  * ABOUT INTRO SECTION
  * ════════════════════════════════════════════════════ */
 
-function AboutIntroSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control, watch } = form;
+function AboutIntroSection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    watch,
+    formState: { errors },
+    getValues,
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
   const headline = useFieldArray({
     control,
-    name: "pages.about.intro.headline" as never,
+    name: "pages.about.intro.headline.values" as never,
   });
+  const headlineMeta = getValues("pages.about.intro.headline");
   const profileImage = watch("pages.about.intro.profileImage");
 
   return (
@@ -971,32 +974,32 @@ function AboutIntroSection({ form }: { form: UseFormReturn<FormValues> }) {
 
       <FieldRow label="Label">
         <Input
-          {...register("pages.about.intro.label")}
-          className="text-base h-10"
+          {...register("pages.about.intro.label", REQ)}
+          aria-invalid={e("pages.about.intro.label")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
 
       <div className="space-y-3">
         <ArrayHeader
           label="Headline Lines"
+          canAdd={headlineMeta.extendable}
           onAdd={() => headline.append("" as never)}
         />
         {headline.fields.map((field, idx) => (
           <div key={field.id} className="flex items-center gap-3">
             <Input
               {...register(
-                `pages.about.intro.headline.${idx}` as `pages.about.intro.headline.${number}`
+                `pages.about.intro.headline.values.${idx}` as never,
+                REQ
               )}
-              className="text-base h-10"
+              aria-invalid={e(`pages.about.intro.headline.values.${idx}`)}
+              className={INPUT_CLS_LG}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
+            <RemoveButton
               onClick={() => headline.remove(idx)}
-            >
-              <Trash2 />
-            </Button>
+              hidden={!headlineMeta.extendable}
+            />
           </div>
         ))}
       </div>
@@ -1004,22 +1007,25 @@ function AboutIntroSection({ form }: { form: UseFormReturn<FormValues> }) {
       <div className="grid gap-6 sm:grid-cols-2">
         <FieldRow label="Name">
           <Input
-            {...register("pages.about.intro.name")}
-            className="text-base h-10"
+            {...register("pages.about.intro.name", REQ)}
+            aria-invalid={e("pages.about.intro.name")}
+            className={INPUT_CLS_LG}
           />
         </FieldRow>
         <FieldRow label="Role">
           <Input
-            {...register("pages.about.intro.role")}
-            className="text-[15px] h-10"
+            {...register("pages.about.intro.role", REQ)}
+            aria-invalid={e("pages.about.intro.role")}
+            className={INPUT_CLS}
           />
         </FieldRow>
       </div>
 
       <FieldRow label="Brief">
         <Textarea
-          {...register("pages.about.intro.brief")}
-          className="text-[15px] min-h-24"
+          {...register("pages.about.intro.brief", REQ)}
+          aria-invalid={e("pages.about.intro.brief")}
+          className={TEXTAREA_CLS}
         />
       </FieldRow>
 
@@ -1027,8 +1033,9 @@ function AboutIntroSection({ form }: { form: UseFormReturn<FormValues> }) {
         <div className="flex items-center gap-4">
           {profileImage && <ImagePreview src={profileImage} />}
           <Input
-            {...register("pages.about.intro.profileImage")}
-            className="text-[15px] h-10"
+            {...register("pages.about.intro.profileImage", REQ)}
+            aria-invalid={e("pages.about.intro.profileImage")}
+            className={INPUT_CLS}
           />
         </div>
       </FieldRow>
@@ -1036,14 +1043,16 @@ function AboutIntroSection({ form }: { form: UseFormReturn<FormValues> }) {
       <div className="grid gap-6 sm:grid-cols-2">
         <FieldRow label="Caption Left">
           <Input
-            {...register("pages.about.intro.captionLeft")}
-            className="text-[15px] h-10"
+            {...register("pages.about.intro.captionLeft", REQ)}
+            aria-invalid={e("pages.about.intro.captionLeft")}
+            className={INPUT_CLS}
           />
         </FieldRow>
         <FieldRow label="Caption Right">
           <Input
-            {...register("pages.about.intro.captionRight")}
-            className="text-[15px] h-10"
+            {...register("pages.about.intro.captionRight", REQ)}
+            aria-invalid={e("pages.about.intro.captionRight")}
+            className={INPUT_CLS}
           />
         </FieldRow>
       </div>
@@ -1055,12 +1064,19 @@ function AboutIntroSection({ form }: { form: UseFormReturn<FormValues> }) {
  * ABOUT STORY SECTION
  * ════════════════════════════════════════════════════ */
 
-function AboutStorySection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control } = form;
+function AboutStorySection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    formState: { errors },
+    getValues,
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
   const paragraphs = useFieldArray({
     control,
-    name: "pages.about.story.paragraphs" as never,
+    name: "pages.about.story.paragraphs.values" as never,
   });
+  const meta = getValues("pages.about.story.paragraphs");
 
   return (
     <div className="space-y-8">
@@ -1071,14 +1087,16 @@ function AboutStorySection({ form }: { form: UseFormReturn<FormValues> }) {
 
       <FieldRow label="Section Label">
         <Input
-          {...register("pages.about.story.label")}
-          className="text-base h-10"
+          {...register("pages.about.story.label", REQ)}
+          aria-invalid={e("pages.about.story.label")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
       <FieldRow label="Pull Quote">
         <Textarea
-          {...register("pages.about.story.pullQuote")}
-          className="text-base min-h-20"
+          {...register("pages.about.story.pullQuote", REQ)}
+          aria-invalid={e("pages.about.story.pullQuote")}
+          className="text-base min-h-20 aria-invalid:border-red-400"
         />
       </FieldRow>
 
@@ -1088,25 +1106,23 @@ function AboutStorySection({ form }: { form: UseFormReturn<FormValues> }) {
         <ArrayHeader
           label="Paragraphs"
           addLabel="Add paragraph"
+          canAdd={meta.extendable}
           onAdd={() => paragraphs.append("" as never)}
         />
         {paragraphs.fields.map((field, idx) => (
           <div key={field.id} className="flex items-start gap-3">
             <Textarea
               {...register(
-                `pages.about.story.paragraphs.${idx}` as `pages.about.story.paragraphs.${number}`
+                `pages.about.story.paragraphs.values.${idx}` as never,
+                REQ
               )}
-              className="text-[15px] min-h-24"
+              aria-invalid={e(`pages.about.story.paragraphs.values.${idx}`)}
+              className={TEXTAREA_CLS}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="mt-2"
+            <RemoveButton
               onClick={() => paragraphs.remove(idx)}
-            >
-              <Trash2 />
-            </Button>
+              hidden={!meta.extendable}
+            />
           </div>
         ))}
       </div>
@@ -1118,9 +1134,19 @@ function AboutStorySection({ form }: { form: UseFormReturn<FormValues> }) {
  * ABOUT VALUES SECTION
  * ════════════════════════════════════════════════════ */
 
-function AboutValuesSection({ form }: { form: UseFormReturn<FormValues> }) {
-  const { register, control } = form;
-  const items = useFieldArray({ control, name: "pages.about.values.items" });
+function AboutValuesSection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    formState: { errors },
+    getValues,
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
+  const items = useFieldArray({
+    control,
+    name: "pages.about.values.items.values",
+  });
+  const meta = getValues("pages.about.values.items");
 
   return (
     <div className="space-y-8">
@@ -1131,8 +1157,9 @@ function AboutValuesSection({ form }: { form: UseFormReturn<FormValues> }) {
 
       <FieldRow label="Section Label">
         <Input
-          {...register("pages.about.values.label")}
-          className="text-base h-10"
+          {...register("pages.about.values.label", REQ)}
+          aria-invalid={e("pages.about.values.label")}
+          className={INPUT_CLS_LG}
         />
       </FieldRow>
 
@@ -1141,6 +1168,7 @@ function AboutValuesSection({ form }: { form: UseFormReturn<FormValues> }) {
       <ArrayHeader
         label="Values"
         addLabel="Add value"
+        canAdd={meta.extendable}
         onAdd={() =>
           items.append({
             num: String(items.fields.length + 1).padStart(2, "0"),
@@ -1152,37 +1180,43 @@ function AboutValuesSection({ form }: { form: UseFormReturn<FormValues> }) {
 
       {items.fields.map((field, idx) => (
         <div key={field.id} className="border border-sand p-5 space-y-5">
-          <div className="flex items-center justify-between">
-            <span className="text-base font-semibold text-ink">
-              Value {idx + 1}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => items.remove(idx)}
-            >
-              <Trash2 data-icon="inline-start" /> Remove
-            </Button>
-          </div>
+          <ItemHeader
+            label={`Value ${idx + 1}`}
+            onRemove={() => items.remove(idx)}
+            canRemove={meta.extendable}
+          />
           <div className="grid gap-6 sm:grid-cols-2">
             <FieldRow label="Number">
               <Input
-                {...register(`pages.about.values.items.${idx}.num`)}
-                className="text-[15px] h-10"
+                {...register(
+                  `pages.about.values.items.values.${idx}.num` as never,
+                  REQ
+                )}
+                aria-invalid={e(`pages.about.values.items.values.${idx}.num`)}
+                className={INPUT_CLS}
               />
             </FieldRow>
             <FieldRow label="Title">
               <Input
-                {...register(`pages.about.values.items.${idx}.title`)}
-                className="text-base h-10"
+                {...register(
+                  `pages.about.values.items.values.${idx}.title` as never,
+                  REQ
+                )}
+                aria-invalid={e(`pages.about.values.items.values.${idx}.title`)}
+                className={INPUT_CLS_LG}
               />
             </FieldRow>
           </div>
           <FieldRow label="Description">
             <Textarea
-              {...register(`pages.about.values.items.${idx}.description`)}
-              className="text-[15px] min-h-24"
+              {...register(
+                `pages.about.values.items.values.${idx}.description` as never,
+                REQ
+              )}
+              aria-invalid={e(
+                `pages.about.values.items.values.${idx}.description`
+              )}
+              className={TEXTAREA_CLS}
             />
           </FieldRow>
         </div>
@@ -1195,12 +1229,8 @@ function AboutValuesSection({ form }: { form: UseFormReturn<FormValues> }) {
  * SECTION ROUTER
  * ════════════════════════════════════════════════════ */
 
-const SECTION_MAP: Record<
-  string,
-  React.FC<{ form: UseFormReturn<FormValues> }>
-> = {
-  nav: NavSection,
-  footer: FooterSection,
+const SECTION_MAP: Record<string, (props: FormProps) => React.JSX.Element> = {
+  general: GeneralSection,
   "pages.homepage.hero": HeroSection,
   "pages.homepage.projectGallery": ProjectGallerySection,
   "pages.homepage.services": ServicesSection,
@@ -1220,29 +1250,35 @@ export function ContentForm({
 }: {
   initialContent: SiteContent;
 }) {
-  const [activeKey, setActiveKey] = useState("nav");
+  const [activeKey, setActiveKey] = useState("general");
 
   const form = useForm<FormValues>({
     defaultValues: initialContent,
+    mode: "onTouched",
   });
 
-  const onSubmit = (data: FormValues) => {
-    // TODO: POST to API route to save content.json
+  const { isDirty } = form.formState;
+
+  const onSubmit = useCallback((data: FormValues) => {
     console.log("Form submitted:", data);
-  };
+  }, []);
+
+  const handleReset = useCallback(() => {
+    form.reset(initialContent);
+  }, [form, initialContent]);
 
   const ActiveSection = SECTION_MAP[activeKey];
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AdminNavbar />
-      <div className="flex flex-1 overflow-hidden">
+      <AdminNavbar onReset={handleReset} isDirty={isDirty} />
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         <AdminSidebar activeKey={activeKey} onSelect={setActiveKey} />
         <main className="flex-1 overflow-y-auto">
           <form
             id="content-form"
             onSubmit={form.handleSubmit(onSubmit)}
-            className="max-w-3xl mx-auto px-8 py-8 pb-16"
+            className="max-w-3xl mx-auto px-4 md:px-8 py-8 pb-16"
           >
             {ActiveSection ? (
               <ActiveSection form={form} />

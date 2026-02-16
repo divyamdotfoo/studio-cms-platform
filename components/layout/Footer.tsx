@@ -6,6 +6,11 @@ import { motion, useInView } from "motion/react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
 
+/* ── Hardcoded constants ── */
+
+const BRAND = "VISION ARCHITECT";
+const COPYRIGHT_TEMPLATE = "© {year} Vision Architect. All rights reserved.";
+
 /* ────────────────────────────────────────────────────
  * Inline SVG icons
  * ──────────────────────────────────────────────────── */
@@ -90,11 +95,6 @@ function YouTubeIcon({ className }: { className?: string }) {
   );
 }
 
-const SOCIAL_ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
-  instagram: InstagramIcon,
-  youtube: YouTubeIcon,
-};
-
 /* ────────────────────────────────────────────────────
  * Footer
  *
@@ -116,12 +116,12 @@ const SOCIAL_ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
  * ──────────────────────────────────────────────────── */
 
 export function Footer() {
-  const { footer } = useContent();
+  const { general } = useContent();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
   const year = new Date().getFullYear();
-  const copyright = footer.copyright.replace("{year}", String(year));
+  const copyright = COPYRIGHT_TEMPLATE.replace("{year}", String(year));
 
   return (
     <footer ref={ref} className="bg-[#131211]" aria-label="Footer">
@@ -137,11 +137,11 @@ export function Footer() {
             >
               <Link href="/" aria-label="Vision Architect — Home">
                 <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-ivory">
-                  {footer.brand}
+                  {BRAND}
                 </span>
               </Link>
               <p className="mt-3 text-[15px] leading-relaxed text-sand max-w-[280px]">
-                {footer.tagline}
+                {general.tagline_footer}
               </p>
             </motion.div>
 
@@ -156,21 +156,18 @@ export function Footer() {
               </span>
 
               <ul className="space-y-3.5">
-                {/* Phone */}
                 <li>
                   <a
-                    href={footer.contact.phone}
+                    href={general.phone}
                     className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                   >
                     <PhoneIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
                     Call us
                   </a>
                 </li>
-
-                {/* WhatsApp */}
                 <li>
                   <a
-                    href={footer.contact.whatsapp}
+                    href={general.whatsapp}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
@@ -179,11 +176,9 @@ export function Footer() {
                     WhatsApp
                   </a>
                 </li>
-
-                {/* Email */}
                 <li>
                   <a
-                    href={footer.contact.email}
+                    href={general.email}
                     className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                   >
                     <MailIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
@@ -204,21 +199,24 @@ export function Footer() {
               </span>
 
               <div className="flex items-center gap-4">
-                {footer.socials.map((social) => {
-                  const Icon = SOCIAL_ICON_MAP[social.platform];
-                  return (
-                    <a
-                      key={social.platform}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-10 h-10 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
-                      aria-label={social.label}
-                    >
-                      {Icon && <Icon className="w-[18px] h-[18px]" />}
-                    </a>
-                  );
-                })}
+                <a
+                  href={general.insta}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                  aria-label="Instagram"
+                >
+                  <InstagramIcon className="w-[18px] h-[18px]" />
+                </a>
+                <a
+                  href={general.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                  aria-label="YouTube"
+                >
+                  <YouTubeIcon className="w-[18px] h-[18px]" />
+                </a>
               </div>
             </motion.div>
 

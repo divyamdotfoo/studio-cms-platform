@@ -2,21 +2,10 @@
  * CMS Content Types
  *
  * Single source of truth for the shape of all site copy.
- * Structure: nav, footer, pages.homepage, pages.about …
+ * Structure: general, pages.homepage, pages.about …
  * ──────────────────────────────────────────────────── */
 
 /* ── Shared ── */
-
-export interface NavLink {
-  label: string;
-  href: string;
-}
-
-export interface DockItem {
-  label: string;
-  href: string;
-  icon: string;
-}
 
 export interface SectionHeading {
   line1: string;
@@ -24,27 +13,30 @@ export interface SectionHeading {
   italicWord: string;
 }
 
-/* ── Nav ── */
-
-export interface NavContent {
-  brand: string;
-  leftLinks: NavLink[];
-  rightLinks: NavLink[];
-  dock: DockItem[];
+/**
+ * Wraps every CMS array so the admin panel knows
+ * whether the user can add/remove entries.
+ *
+ * `extendable: false` → edit-only (no add/delete)
+ * `extendable: true`  → add/delete allowed
+ * `min` / `max`       → optional bounds (only relevant when extendable)
+ */
+export interface ContentArray<T> {
+  extendable: boolean;
+  min?: number;
+  max?: number;
+  values: T[];
 }
 
-/* ── Footer ── */
+/* ── General (site-wide contact / social info) ── */
 
-export interface FooterContent {
-  brand: string;
-  tagline: string;
-  contact: {
-    phone: string;
-    whatsapp: string;
-    email: string;
-  };
-  socials: { platform: string; url: string; label: string }[];
-  copyright: string;
+export interface GeneralContent {
+  phone: string;
+  whatsapp: string;
+  email: string;
+  insta: string;
+  youtube: string;
+  tagline_footer: string;
 }
 
 /* ── Homepage ── */
@@ -69,7 +61,7 @@ export interface FeaturedProject {
 export interface ProjectGalleryContent {
   label: string;
   heading: SectionHeading;
-  projects: FeaturedProject[];
+  projects: ContentArray<FeaturedProject>;
 }
 
 export interface Stat {
@@ -88,8 +80,8 @@ export interface ServicesContent {
   label: string;
   heading: SectionHeading;
   description: string;
-  stats: Stat[];
-  items: ServiceItem[];
+  stats: ContentArray<Stat>;
+  items: ContentArray<ServiceItem>;
 }
 
 export interface ReviewItem {
@@ -102,7 +94,7 @@ export interface ReviewItem {
 export interface ReviewsContent {
   label: string;
   heading: SectionHeading;
-  items: ReviewItem[];
+  items: ContentArray<ReviewItem>;
 }
 
 export interface SocialChannel {
@@ -117,7 +109,7 @@ export interface SocialContent {
   label: string;
   heading: SectionHeading;
   description: string;
-  channels: SocialChannel[];
+  channels: ContentArray<SocialChannel>;
 }
 
 export interface HomepageContent {
@@ -132,7 +124,7 @@ export interface HomepageContent {
 
 export interface AboutIntro {
   label: string;
-  headline: string[];
+  headline: ContentArray<string>;
   name: string;
   role: string;
   brief: string;
@@ -144,7 +136,7 @@ export interface AboutIntro {
 export interface AboutStory {
   label: string;
   pullQuote: string;
-  paragraphs: string[];
+  paragraphs: ContentArray<string>;
 }
 
 export interface AboutValueItem {
@@ -155,7 +147,7 @@ export interface AboutValueItem {
 
 export interface AboutValues {
   label: string;
-  items: AboutValueItem[];
+  items: ContentArray<AboutValueItem>;
 }
 
 export interface AboutPageContent {
@@ -174,7 +166,6 @@ export interface PagesContent {
 /* ── Root ── */
 
 export interface SiteContent {
-  nav: NavContent;
-  footer: FooterContent;
+  general: GeneralContent;
   pages: PagesContent;
 }

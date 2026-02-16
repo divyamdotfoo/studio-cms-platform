@@ -487,7 +487,7 @@ export function FeaturedProjects() {
         </div>
 
         {/* ── Project list ── */}
-        {projectGallery.projects.map((project, i) => (
+        {projectGallery.projects.values.map((project, i) => (
           <ProjectShowcase
             key={project.name}
             project={project}

@@ -214,7 +214,7 @@ export function Services() {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ ...spring, delay: STAGGER * 4 }}
         >
-          {services.stats.map((stat, i) => (
+          {services.stats.values.map((stat, i) => (
             <motion.div
               key={stat.label}
               className="relative py-4 lg:py-8"
@@ -252,7 +252,7 @@ export function Services() {
 
         {/* ── Service rows ── */}
         <div>
-          {services.items.map((service, i) => (
+          {services.items.values.map((service, i) => (
             <ServiceRow
               key={service.num}
               service={service}
@@ -272,7 +272,7 @@ export function Services() {
             animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
             transition={{
               ...spring,
-              delay: services.items.length * STAGGER * 2.5 + 0.05,
+              delay: services.items.values.length * STAGGER * 2.5 + 0.05,
             }}
           />
         </div>

@@ -215,7 +215,7 @@ export function Social() {
 
           {/* ── Right — channel cards ── */}
           <div className="mt-10 lg:mt-0 grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 self-start">
-            {social.channels.map((channel, i) => (
+            {social.channels.values.map((channel, i) => (
               <ChannelCard
                 key={channel.platform}
                 channel={channel}
