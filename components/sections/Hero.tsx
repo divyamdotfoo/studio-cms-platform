@@ -14,7 +14,7 @@ const T = T_HERO;
  *  Desktop: headline left | location + description right
  * ──────────────────────────────────────────────────── */
 export function Hero() {
-  const { hero } = useContent();
+  const { pages: { homepage: { hero } } } = useContent();
 
   return (
     <section className="pt-20 lg:pt-28" aria-label="Hero">

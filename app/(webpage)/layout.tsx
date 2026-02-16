@@ -4,9 +4,10 @@ import { ContentProvider } from "@/lib/content-ctx";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
-import content from "@/cms/content.json";
+import { readFile } from "fs/promises";
+import path from "path";
 import type { SiteContent } from "@/cms/types";
-import "./globals.css";
+import "../globals.css";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -40,15 +41,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const filePath = path.join(process.cwd(), "public", "content.json");
+  const raw = await readFile(filePath, "utf-8");
+  const content = JSON.parse(raw) as SiteContent;
+
   return (
     <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
       <body className="font-sans antialiased bg-cream text-ink">
-        <ContentProvider content={content as SiteContent}>
+        <ContentProvider content={content}>
           <Navbar />
           {children}
           <Footer />

@@ -2,8 +2,10 @@
  * CMS Content Types
  *
  * Single source of truth for the shape of all site copy.
- * Mirrors what you'd get from a headless CMS response.
+ * Structure: nav, footer, pages.homepage, pages.about …
  * ──────────────────────────────────────────────────── */
+
+/* ── Shared ── */
 
 export interface NavLink {
   label: string;
@@ -16,12 +18,36 @@ export interface DockItem {
   icon: string;
 }
 
+export interface SectionHeading {
+  line1: string;
+  line2: string;
+  italicWord: string;
+}
+
+/* ── Nav ── */
+
 export interface NavContent {
   brand: string;
   leftLinks: NavLink[];
   rightLinks: NavLink[];
   dock: DockItem[];
 }
+
+/* ── Footer ── */
+
+export interface FooterContent {
+  brand: string;
+  tagline: string;
+  contact: {
+    phone: string;
+    whatsapp: string;
+    email: string;
+  };
+  socials: { platform: string; url: string; label: string }[];
+  copyright: string;
+}
+
+/* ── Homepage ── */
 
 export interface HeroContent {
   headline: {
@@ -42,11 +68,7 @@ export interface FeaturedProject {
 
 export interface ProjectGalleryContent {
   label: string;
-  heading: {
-    line1: string;
-    line2: string;
-    italicWord: string;
-  };
+  heading: SectionHeading;
   projects: FeaturedProject[];
 }
 
@@ -64,11 +86,7 @@ export interface ServiceItem {
 
 export interface ServicesContent {
   label: string;
-  heading: {
-    line1: string;
-    line2: string;
-    italicWord: string;
-  };
+  heading: SectionHeading;
   description: string;
   stats: Stat[];
   items: ServiceItem[];
@@ -83,11 +101,7 @@ export interface ReviewItem {
 
 export interface ReviewsContent {
   label: string;
-  heading: {
-    line1: string;
-    line2: string;
-    italicWord: string;
-  };
+  heading: SectionHeading;
   items: ReviewItem[];
 }
 
@@ -101,34 +115,66 @@ export interface SocialChannel {
 
 export interface SocialContent {
   label: string;
-  heading: {
-    line1: string;
-    line2: string;
-    italicWord: string;
-  };
+  heading: SectionHeading;
   description: string;
   channels: SocialChannel[];
 }
 
-export interface FooterContent {
-  brand: string;
-  tagline: string;
-  contact: {
-    phone: string;
-    whatsapp: string;
-    email: string;
-    address: string;
-  };
-  socials: { platform: string; url: string; label: string }[];
-  copyright: string;
-}
-
-export interface SiteContent {
-  nav: NavContent;
+export interface HomepageContent {
   hero: HeroContent;
   projectGallery: ProjectGalleryContent;
   services: ServicesContent;
   reviews: ReviewsContent;
   social: SocialContent;
+}
+
+/* ── About page ── */
+
+export interface AboutIntro {
+  label: string;
+  headline: string[];
+  name: string;
+  role: string;
+  brief: string;
+  profileImage: string;
+  captionLeft: string;
+  captionRight: string;
+}
+
+export interface AboutStory {
+  label: string;
+  pullQuote: string;
+  paragraphs: string[];
+}
+
+export interface AboutValueItem {
+  num: string;
+  title: string;
+  description: string;
+}
+
+export interface AboutValues {
+  label: string;
+  items: AboutValueItem[];
+}
+
+export interface AboutPageContent {
+  intro: AboutIntro;
+  story: AboutStory;
+  values: AboutValues;
+}
+
+/* ── Pages ── */
+
+export interface PagesContent {
+  homepage: HomepageContent;
+  about: AboutPageContent;
+}
+
+/* ── Root ── */
+
+export interface SiteContent {
+  nav: NavContent;
   footer: FooterContent;
+  pages: PagesContent;
 }

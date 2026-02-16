@@ -165,7 +165,7 @@ function RichHeadingLine({
  * ──────────────────────────────────────────────────── */
 
 export function Services() {
-  const { services } = useContent();
+  const { pages: { homepage: { services } } } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);

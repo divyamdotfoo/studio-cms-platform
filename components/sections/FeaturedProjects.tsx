@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import {
   motion,
   useInView,
@@ -11,7 +11,6 @@ import {
 } from "motion/react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER, T_FEATURED } from "@/lib/motion";
-import { getFeaturedImage } from "@/assets/featured";
 import type { FeaturedProject } from "@/cms/types";
 
 /* ────────────────────────────────────────────────────
@@ -155,19 +154,15 @@ function PhotoFrame({
   delay,
   scrollProgress,
 }: {
-  src: StaticImageData;
+  src: string;
   alt: string;
   slot: CollageSlot;
   isInView: boolean;
   delay: number;
   scrollProgress: MotionValue<number>;
 }) {
-  /* Each photo drifts at its own rate based on parallaxFactor.
-     Outer wrapper handles continuous scroll-parallax (y + rotate),
-     inner motion.div handles the one-time entrance animation. */
   const range = 120 * slot.parallaxFactor;
   const y = useTransform(scrollProgress, [0, 1], [range, -range]);
-  /* Subtle rotation drift — photos rock gently as user scrolls */
   const rotateParallax = useTransform(
     scrollProgress,
     [0, 1],
@@ -204,7 +199,6 @@ function PhotoFrame({
             src={src}
             alt={alt}
             fill
-            placeholder="blur"
             className="object-cover select-none"
             sizes="(max-width: 768px) 45vw, 30vw"
             draggable={false}
@@ -218,16 +212,14 @@ function PhotoFrame({
 /* ── ImageCollage — 4 scattered photos ───────────── */
 
 function ImageCollage({
-  imageKeys,
-  projectIndex,
+  images,
   name,
   layoutIndex,
   isInView,
   scrollProgress,
   baseDelay = 0,
 }: {
-  imageKeys: string[];
-  projectIndex: number;
+  images: string[];
   name: string;
   layoutIndex: number;
   isInView: boolean;
@@ -236,7 +228,6 @@ function ImageCollage({
 }) {
   const slots = COLLAGE_LAYOUTS[layoutIndex % COLLAGE_LAYOUTS.length];
 
-  /* Collage as a whole drifts slower than the text side */
   const collageY = useTransform(scrollProgress, [0, 1], [70, -70]);
 
   return (
@@ -244,10 +235,10 @@ function ImageCollage({
       className="relative w-full h-[340px] sm:h-[380px] lg:h-[520px]"
       style={{ y: collageY }}
     >
-      {imageKeys.slice(0, 4).map((key, i) => (
+      {images.slice(0, 4).map((imgPath, i) => (
         <PhotoFrame
-          key={key}
-          src={getFeaturedImage(projectIndex, key)}
+          key={imgPath}
+          src={imgPath}
           alt={`${name} — photo ${i + 1}`}
           slot={slots[i]}
           isInView={isInView}
@@ -278,7 +269,6 @@ function ProjectInfo({
 }) {
   const num = String(index + 1).padStart(2, "0");
 
-  /* Text travels faster than images → differential parallax */
   const textY = useTransform(scrollProgress, [0, 1], [180, -180]);
 
   return (
@@ -372,9 +362,6 @@ function ProjectShowcase({
   isFirst: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  /* First project uses a looser trigger since it's choreographed with
-     the page load. Later projects need a tighter margin so they only
-     animate once the user has actually scrolled to them. */
   const isInView = useInView(ref, {
     once: true,
     margin: isFirst ? "-60px" : "-150px",
@@ -383,7 +370,6 @@ function ProjectShowcase({
 
   const baseDelay = isFirst ? T_FEATURED : 0;
 
-  /* Scroll progress for this specific row (0 = enters bottom, 1 = exits top) */
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -405,8 +391,7 @@ function ProjectShowcase({
         {/* Mobile: always collage first, then text */}
         <div className="lg:hidden">
           <ImageCollage
-            imageKeys={project.images}
-            projectIndex={index}
+            images={project.images}
             name={project.name}
             layoutIndex={index}
             isInView={isInView}
@@ -436,8 +421,7 @@ function ProjectShowcase({
                 baseDelay={baseDelay}
               />
               <ImageCollage
-                imageKeys={project.images}
-                projectIndex={index}
+                images={project.images}
                 name={project.name}
                 layoutIndex={index}
                 isInView={isInView}
@@ -448,8 +432,7 @@ function ProjectShowcase({
           ) : (
             <>
               <ImageCollage
-                imageKeys={project.images}
-                projectIndex={index}
+                images={project.images}
                 name={project.name}
                 layoutIndex={index}
                 isInView={isInView}
@@ -475,7 +458,7 @@ function ProjectShowcase({
 /* ── FeaturedProjects — main section ─────────────── */
 
 export function FeaturedProjects() {
-  const { projectGallery } = useContent();
+  const { pages: { homepage: { projectGallery } } } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 

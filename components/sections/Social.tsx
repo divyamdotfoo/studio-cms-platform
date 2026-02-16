@@ -166,7 +166,7 @@ function RichHeadingLine({
  * ──────────────────────────────────────────────────── */
 
 export function Social() {
-  const { social } = useContent();
+  const { pages: { homepage: { social } } } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 

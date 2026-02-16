@@ -294,7 +294,7 @@ function RichHeadingLine({
  * ──────────────────────────────────────────────────── */
 
 export function Reviews() {
-  const { reviews } = useContent();
+  const { pages: { homepage: { reviews } } } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
 
