@@ -24,6 +24,7 @@ const LEFT_LINKS = [
   { label: "About", href: "/about" },
   { label: "Projects", href: "/projects" },
   { label: "Services", href: "/services" },
+  { label: "Blogs", href: "/blogs" },
 ];
 
 const BRAND = "VISION ARCHITECT";
