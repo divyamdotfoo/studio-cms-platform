@@ -70,9 +70,9 @@ export async function POST(request: Request) {
   }
 
   const obj = content as Record<string, unknown>;
-  if (!obj.general || !obj.pages) {
+  if (!obj.general || !obj.projects || !obj.pages) {
     return Response.json(
-      { error: "Content must contain 'general' and 'pages' keys" },
+      { error: "Content must contain 'general', 'projects', and 'pages' keys" },
       { status: 400 }
     );
   }

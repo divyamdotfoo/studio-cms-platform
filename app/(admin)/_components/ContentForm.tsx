@@ -16,8 +16,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { AdminNavbar } from "./AdminNavbar";
 import { AdminSidebar } from "./AdminSidebar";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Check } from "lucide-react";
 import { toast } from "sonner";
+import type { Project } from "@/cms/types";
 
 type FormValues = SiteContent;
 type FormProps = { form: UseFormReturn<FormValues> };
@@ -295,32 +296,252 @@ function HeroSection({ form }: FormProps) {
 }
 
 /* ════════════════════════════════════════════════════
- * PROJECT GALLERY SECTION
+ * PROJECTS SECTION (top-level project management)
+ * ════════════════════════════════════════════════════ */
+
+function ProjectsSection({ form }: FormProps) {
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
+  const projects = useFieldArray({ control, name: "projects" });
+
+  const nextId = () => {
+    const existing = form.getValues("projects");
+    let n = existing.length + 1;
+    while (
+      existing.some((p) => p.id === `project-${String(n).padStart(2, "0")}`)
+    )
+      n++;
+    return `project-${String(n).padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="space-y-8">
+      <SectionHeader
+        title="Projects"
+        description="Manage all projects. These can be featured on the homepage from the Featured Projects section."
+      />
+
+      <ArrayHeader
+        label="All Projects"
+        addLabel="Add project"
+        canAdd
+        onAdd={() =>
+          projects.append({
+            id: nextId(),
+            name: "",
+            description: "",
+            images: [],
+            details: [],
+          })
+        }
+      />
+
+      {projects.fields.map((field, idx) => (
+        <SingleProjectFields
+          key={field.id}
+          form={form}
+          index={idx}
+          onRemove={() => {
+            const projectId = form.getValues(`projects.${idx}.id`);
+            const featured = form.getValues(
+              "pages.homepage.projectGallery.projects.values"
+            );
+            const filtered = featured.filter((r) => r.id !== projectId);
+            if (filtered.length !== featured.length) {
+              form.setValue(
+                "pages.homepage.projectGallery.projects.values",
+                filtered,
+                { shouldDirty: true }
+              );
+            }
+            projects.remove(idx);
+          }}
+          canRemove={projects.fields.length > 1}
+        />
+      ))}
+    </div>
+  );
+}
+
+function SingleProjectFields({
+  form,
+  index,
+  onRemove,
+  canRemove,
+}: {
+  form: UseFormReturn<FormValues>;
+  index: number;
+  onRemove: () => void;
+  canRemove: boolean;
+}) {
+  const {
+    register,
+    control,
+    watch,
+    formState: { errors },
+  } = form;
+  const e = (p: string) => hasErr(errors, p);
+  const pre = `projects.${index}` as const;
+  const details = useFieldArray({ control, name: `${pre}.details` as never });
+  const images = useFieldArray({ control, name: `${pre}.images` as never });
+  const projectId = watch(`${pre}.id` as never) as unknown as string;
+
+  return (
+    <div className="border border-sand p-5 space-y-5">
+      <ItemHeader
+        label={`Project ${index + 1}`}
+        onRemove={onRemove}
+        canRemove={canRemove}
+      />
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <FieldRow label="ID">
+          <Input
+            {...register(`${pre}.id` as never, REQ)}
+            aria-invalid={e(`${pre}.id`)}
+            className={INPUT_CLS}
+            readOnly
+          />
+        </FieldRow>
+        <FieldRow label="Name">
+          <Input
+            {...register(`${pre}.name` as never, REQ)}
+            aria-invalid={e(`${pre}.name`)}
+            className={INPUT_CLS_LG}
+          />
+        </FieldRow>
+      </div>
+      <FieldRow label="Description">
+        <Textarea
+          {...register(`${pre}.description` as never, REQ)}
+          aria-invalid={e(`${pre}.description`)}
+          className={TEXTAREA_CLS}
+        />
+      </FieldRow>
+
+      <div className="space-y-3">
+        <ArrayHeader label="Images" onAdd={() => images.append("" as never)} />
+        {images.fields.map((imgField, imgIdx) => {
+          const imgPath = watch(
+            `${pre}.images.${imgIdx}` as never
+          ) as unknown as string | undefined;
+          return (
+            <div key={imgField.id} className="flex items-center gap-3">
+              {imgPath && <ImagePreview src={imgPath} />}
+              <Input
+                placeholder="/project/project-1/image.jpg"
+                {...register(`${pre}.images.${imgIdx}` as never, REQ)}
+                aria-invalid={e(`${pre}.images.${imgIdx}`)}
+                className={INPUT_CLS}
+              />
+              <RemoveButton onClick={() => images.remove(imgIdx)} />
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="space-y-3">
+        <ArrayHeader
+          label="Details"
+          onAdd={() => details.append({ label: "", value: "" } as never)}
+        />
+        {details.fields.map((detField, detIdx) => (
+          <div key={detField.id} className="flex items-center gap-3">
+            <Input
+              placeholder="Label"
+              {...register(`${pre}.details.${detIdx}.label` as never, REQ)}
+              aria-invalid={e(`${pre}.details.${detIdx}.label`)}
+              className={INPUT_CLS}
+            />
+            <Input
+              placeholder="Value"
+              {...register(`${pre}.details.${detIdx}.value` as never, REQ)}
+              aria-invalid={e(`${pre}.details.${detIdx}.value`)}
+              className={INPUT_CLS}
+            />
+            <RemoveButton onClick={() => details.remove(detIdx)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════
+ * FEATURED PROJECTS SECTION (project gallery in hero)
  * ════════════════════════════════════════════════════ */
 
 function ProjectGallerySection({ form }: FormProps) {
   const {
     register,
-    control,
+    watch,
+    setValue,
     formState: { errors },
-    getValues,
   } = form;
   const e = (p: string) => hasErr(errors, p);
-  const projects = useFieldArray({
-    control,
-    name: "pages.homepage.projectGallery.projects.values",
-  });
-  const meta = getValues("pages.homepage.projectGallery.projects");
-  const canAdd =
-    meta.extendable && (!meta.max || projects.fields.length < meta.max);
-  const canRemove =
-    meta.extendable && (!meta.min || projects.fields.length > meta.min);
+
+  const allProjects: Project[] = watch("projects") ?? [];
+  const featuredValues =
+    watch("pages.homepage.projectGallery.projects.values") ?? [];
+
+  const isFeatured = (pid: string) => featuredValues.some((r) => r.id === pid);
+
+  const getFeaturedImages = (pid: string): string[] =>
+    featuredValues.find((r) => r.id === pid)?.featuredImages ?? [];
+
+  const toggleFeatured = (project: Project) => {
+    const current = form.getValues(
+      "pages.homepage.projectGallery.projects.values"
+    );
+    if (isFeatured(project.id)) {
+      setValue(
+        "pages.homepage.projectGallery.projects.values",
+        current.filter((r) => r.id !== project.id),
+        { shouldDirty: true }
+      );
+    } else {
+      setValue(
+        "pages.homepage.projectGallery.projects.values",
+        [...current, { id: project.id, featuredImages: [] }],
+        { shouldDirty: true }
+      );
+    }
+  };
+
+  const toggleImage = (projectId: string, imagePath: string) => {
+    const current = form.getValues(
+      "pages.homepage.projectGallery.projects.values"
+    );
+    const refIndex = current.findIndex((r) => r.id === projectId);
+    if (refIndex === -1) return;
+
+    const ref = current[refIndex];
+    const imgs = [...ref.featuredImages];
+    const imgIdx = imgs.indexOf(imagePath);
+
+    if (imgIdx >= 0) {
+      imgs.splice(imgIdx, 1);
+    } else {
+      if (imgs.length >= 4) return;
+      imgs.push(imagePath);
+    }
+
+    const updated = [...current];
+    updated[refIndex] = { ...ref, featuredImages: imgs };
+    setValue("pages.homepage.projectGallery.projects.values", updated, {
+      shouldDirty: true,
+    });
+  };
 
   return (
     <div className="space-y-8">
       <SectionHeader
-        title="Project Gallery"
-        description="Featured projects section heading and project list."
+        title="Featured Projects"
+        description="Choose which projects appear on the homepage and select 4 images for each."
       />
 
       <FieldRow label="Section Label">
@@ -359,122 +580,106 @@ function ProjectGallerySection({ form }: FormProps) {
 
       <Separator />
 
-      <ArrayHeader
-        label="Projects"
-        addLabel="Add project"
-        canAdd={canAdd}
-        onAdd={() =>
-          projects.append({
-            name: "",
-            description: "",
-            images: [],
-            details: [],
-          })
-        }
-      />
+      <span className="text-base font-medium text-ink">
+        Select Featured Projects
+      </span>
 
-      {projects.fields.map((field, idx) => (
-        <ProjectFields
-          key={field.id}
-          form={form}
-          index={idx}
-          onRemove={() => projects.remove(idx)}
-          canRemove={canRemove}
-        />
-      ))}
-    </div>
-  );
-}
+      {allProjects.length === 0 && (
+        <p className="text-[15px] text-drift">
+          No projects yet. Add projects in the Projects section first.
+        </p>
+      )}
 
-function ProjectFields({
-  form,
-  index,
-  onRemove,
-  canRemove,
-}: {
-  form: UseFormReturn<FormValues>;
-  index: number;
-  onRemove: () => void;
-  canRemove: boolean;
-}) {
-  const {
-    register,
-    control,
-    watch,
-    formState: { errors },
-  } = form;
-  const e = (p: string) => hasErr(errors, p);
-  const pre = `pages.homepage.projectGallery.projects.values.${index}`;
-  const details = useFieldArray({ control, name: `${pre}.details` as never });
-  const images = useFieldArray({ control, name: `${pre}.images` as never });
+      {allProjects.map((project) => {
+        const featured = isFeatured(project.id);
+        const selectedImages = getFeaturedImages(project.id);
+        const count = selectedImages.length;
 
-  return (
-    <div className="border border-sand p-5 space-y-5">
-      <ItemHeader
-        label={`Project ${index + 1}`}
-        onRemove={onRemove}
-        canRemove={canRemove}
-      />
-
-      <FieldRow label="Name">
-        <Input
-          {...register(`${pre}.name` as never, REQ)}
-          aria-invalid={e(`${pre}.name`)}
-          className={INPUT_CLS_LG}
-        />
-      </FieldRow>
-      <FieldRow label="Description">
-        <Textarea
-          {...register(`${pre}.description` as never, REQ)}
-          aria-invalid={e(`${pre}.description`)}
-          className={TEXTAREA_CLS}
-        />
-      </FieldRow>
-
-      <div className="space-y-3">
-        <ArrayHeader label="Images" onAdd={() => images.append("" as never)} />
-        {images.fields.map((imgField, imgIdx) => {
-          const imgPath = watch(
-            `${pre}.images.${imgIdx}` as never
-          ) as unknown as string | undefined;
-          return (
-            <div key={imgField.id} className="flex items-center gap-3">
-              {imgPath && <ImagePreview src={imgPath} />}
-              <Input
-                placeholder="/images/..."
-                {...register(`${pre}.images.${imgIdx}` as never, REQ)}
-                aria-invalid={e(`${pre}.images.${imgIdx}`)}
-                className={INPUT_CLS}
+        return (
+          <div
+            key={project.id}
+            className={`border p-5 space-y-4 ${
+              featured ? "border-bronze/40 bg-cream/30" : "border-sand"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id={`feat-${project.id}`}
+                checked={featured}
+                onChange={() => toggleFeatured(project)}
+                className="accent-bronze w-4 h-4"
               />
-              <RemoveButton onClick={() => images.remove(imgIdx)} />
+              <Label
+                htmlFor={`feat-${project.id}`}
+                className="text-base font-semibold text-ink cursor-pointer"
+              >
+                {project.name || project.id}
+              </Label>
+              {featured && (
+                <span
+                  className={`ml-auto text-[13px] font-medium ${
+                    count === 4 ? "text-emerald-600" : "text-amber-600"
+                  }`}
+                >
+                  {count}/4 images selected
+                </span>
+              )}
             </div>
-          );
-        })}
-      </div>
 
-      <div className="space-y-3">
-        <ArrayHeader
-          label="Details"
-          onAdd={() => details.append({ label: "", value: "" } as never)}
-        />
-        {details.fields.map((detField, detIdx) => (
-          <div key={detField.id} className="flex items-center gap-3">
-            <Input
-              placeholder="Label"
-              {...register(`${pre}.details.${detIdx}.label` as never, REQ)}
-              aria-invalid={e(`${pre}.details.${detIdx}.label`)}
-              className={INPUT_CLS}
-            />
-            <Input
-              placeholder="Value"
-              {...register(`${pre}.details.${detIdx}.value` as never, REQ)}
-              aria-invalid={e(`${pre}.details.${detIdx}.value`)}
-              className={INPUT_CLS}
-            />
-            <RemoveButton onClick={() => details.remove(detIdx)} />
+            {featured && (
+              <div className="space-y-3 pl-7">
+                <p className="text-[13px] text-drift">
+                  Select exactly 4 images to feature on the homepage.
+                </p>
+                {project.images.length === 0 ? (
+                  <p className="text-[13px] text-amber-600">
+                    This project has no images. Add images in the Projects
+                    section.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                    {project.images.map((img) => {
+                      const isSelected = selectedImages.includes(img);
+                      const atMax = count >= 4 && !isSelected;
+                      return (
+                        <button
+                          key={img}
+                          type="button"
+                          disabled={atMax}
+                          onClick={() => toggleImage(project.id, img)}
+                          className={`relative aspect-4/3 border-2 overflow-hidden transition-all ${
+                            isSelected
+                              ? "border-bronze ring-1 ring-bronze/30"
+                              : atMax
+                              ? "border-sand opacity-40 cursor-not-allowed"
+                              : "border-sand hover:border-stone"
+                          }`}
+                        >
+                          <Image
+                            src={img}
+                            alt=""
+                            fill
+                            className="object-cover"
+                            sizes="120px"
+                          />
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-bronze/20 flex items-center justify-center">
+                              <div className="w-6 h-6 rounded-full bg-bronze flex items-center justify-center">
+                                <Check className="w-4 h-4 text-white" />
+                              </div>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
@@ -1232,6 +1437,7 @@ function AboutValuesSection({ form }: FormProps) {
 
 const SECTION_MAP: Record<string, (props: FormProps) => React.JSX.Element> = {
   general: GeneralSection,
+  projects: ProjectsSection,
   "pages.homepage.hero": HeroSection,
   "pages.homepage.projectGallery": ProjectGallerySection,
   "pages.homepage.services": ServicesSection,

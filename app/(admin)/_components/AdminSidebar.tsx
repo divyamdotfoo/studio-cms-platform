@@ -14,6 +14,7 @@ export interface SidebarNode {
 
 export const CONTENT_TREE: SidebarNode[] = [
   { key: "general", label: "General" },
+  { key: "projects", label: "Projects" },
   {
     key: "pages",
     label: "Pages",
@@ -23,7 +24,7 @@ export const CONTENT_TREE: SidebarNode[] = [
         label: "Homepage",
         children: [
           { key: "pages.homepage.hero", label: "Hero" },
-          { key: "pages.homepage.projectGallery", label: "Project Gallery" },
+          { key: "pages.homepage.projectGallery", label: "Featured Projects" },
           { key: "pages.homepage.services", label: "Services" },
           { key: "pages.homepage.reviews", label: "Reviews" },
           { key: "pages.homepage.social", label: "Social" },

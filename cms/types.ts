@@ -51,6 +51,27 @@ export interface HeroContent {
   description: string;
 }
 
+/* ── Projects (top-level) ── */
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  images: string[];
+  details: { label: string; value: string }[];
+}
+
+/* ── Featured project reference (used inside the hero gallery) ── */
+
+export interface FeaturedProjectRef {
+  id: string;
+  featuredImages: string[];
+}
+
+/**
+ * Resolved shape consumed by display components — built at
+ * render time by joining a FeaturedProjectRef with its Project.
+ */
 export interface FeaturedProject {
   name: string;
   description: string;
@@ -61,7 +82,7 @@ export interface FeaturedProject {
 export interface ProjectGalleryContent {
   label: string;
   heading: SectionHeading;
-  projects: ContentArray<FeaturedProject>;
+  projects: ContentArray<FeaturedProjectRef>;
 }
 
 export interface Stat {
@@ -167,5 +188,6 @@ export interface PagesContent {
 
 export interface SiteContent {
   general: GeneralContent;
+  projects: Project[];
   pages: PagesContent;
 }

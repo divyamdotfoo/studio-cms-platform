@@ -491,12 +491,26 @@ function ProjectShowcase({
 
 export function FeaturedProjects() {
   const {
+    projects: allProjects,
     pages: {
       homepage: { projectGallery },
     },
   } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
+
+  const resolvedProjects: FeaturedProject[] = projectGallery.projects.values
+    .map((ref) => {
+      const project = allProjects.find((p) => p.id === ref.id);
+      if (!project) return null;
+      return {
+        name: project.name,
+        description: project.description,
+        images: ref.featuredImages,
+        details: project.details,
+      } satisfies FeaturedProject;
+    })
+    .filter((p): p is FeaturedProject => p !== null);
 
   return (
     <section className="" aria-label="Featured Projects">
@@ -523,7 +537,7 @@ export function FeaturedProjects() {
         </div>
 
         {/* ── Project list ── */}
-        {projectGallery.projects.values.map((project, i) => (
+        {resolvedProjects.map((project, i) => (
           <ProjectShowcase
             key={project.name}
             project={project}

@@ -7,7 +7,95 @@
     "youtube": "https://www.youtube.com/@visionarchitect3537",
     "tagline_footer": "From concept to creation."
   },
-
+  "projects": [
+    {
+      "id": "project-01",
+      "name": "Arya Residence",
+      "description": "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
+      "images": [
+        "/project/project-1/one.jpg",
+        "/project/project-1/two.jpg",
+        "/project/project-1/three.jpg",
+        "/project/project-1/four.jpg"
+      ],
+      "details": [
+        {
+          "label": "Area",
+          "value": "2,400 sq.ft"
+        },
+        {
+          "label": "Timeline",
+          "value": "8 months"
+        },
+        {
+          "label": "Type",
+          "value": "Residential"
+        },
+        {
+          "label": "Location",
+          "value": "Haridwar"
+        }
+      ]
+    },
+    {
+      "id": "project-02",
+      "name": "Nanda Villa",
+      "description": "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
+      "images": [
+        "/project/project-2/one.jpg",
+        "/project/project-2/two.jpg",
+        "/project/project-2/three.jpg",
+        "/project/project-2/four.jpg"
+      ],
+      "details": [
+        {
+          "label": "Area",
+          "value": "3,100 sq.ft"
+        },
+        {
+          "label": "Timeline",
+          "value": "14 months"
+        },
+        {
+          "label": "Type",
+          "value": "Villa"
+        },
+        {
+          "label": "Location",
+          "value": "Rishikesh"
+        }
+      ]
+    },
+    {
+      "id": "project-03",
+      "name": "Kapoor House",
+      "description": "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
+      "images": [
+        "/project/project-3/one.jpg",
+        "/project/project-3/two.jpg",
+        "/project/project-3/three.jpg",
+        "/project/project-3/four.jpg"
+      ],
+      "details": [
+        {
+          "label": "Area",
+          "value": "1,850 sq.ft"
+        },
+        {
+          "label": "Timeline",
+          "value": "6 months"
+        },
+        {
+          "label": "Type",
+          "value": "Residential"
+        },
+        {
+          "label": "Location",
+          "value": "Haridwar"
+        }
+      ]
+    }
+  ],
   "pages": {
     "homepage": {
       "hero": {
@@ -19,7 +107,6 @@
         "location": "Haridwar, Uttarakhand",
         "description": "We design spaces that feel like home the moment you walk in. Whether it's a residence, a cafe, or any place in between — every project is shaped to match the vision you had in mind."
       },
-
       "projectGallery": {
         "label": "Featured Work",
         "heading": {
@@ -33,57 +120,35 @@
           "max": 5,
           "values": [
             {
-              "name": "Arya Residence",
-              "description": "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
-              "images": [
-                "/images/featured/project-1/one.jpg",
-                "/images/featured/project-1/two.jpg",
-                "/images/featured/project-1/three.jpg",
-                "/images/featured/project-1/four.jpg"
-              ],
-              "details": [
-                { "label": "Area", "value": "2,400 sq.ft" },
-                { "label": "Timeline", "value": "8 months" },
-                { "label": "Type", "value": "Residential" },
-                { "label": "Location", "value": "Haridwar" }
+              "id": "project-01",
+              "featuredImages": [
+                "/project/project-1/one.jpg",
+                "/project/project-1/two.jpg",
+                "/project/project-1/three.jpg",
+                "/project/project-1/four.jpg"
               ]
             },
             {
-              "name": "Nanda Villa",
-              "description": "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
-              "images": [
-                "/images/featured/project-2/one.jpg",
-                "/images/featured/project-2/two.jpg",
-                "/images/featured/project-2/three.jpg",
-                "/images/featured/project-2/four.jpg"
-              ],
-              "details": [
-                { "label": "Area", "value": "3,100 sq.ft" },
-                { "label": "Timeline", "value": "14 months" },
-                { "label": "Type", "value": "Villa" },
-                { "label": "Location", "value": "Rishikesh" }
+              "id": "project-02",
+              "featuredImages": [
+                "/project/project-2/one.jpg",
+                "/project/project-2/two.jpg",
+                "/project/project-2/three.jpg",
+                "/project/project-2/four.jpg"
               ]
             },
             {
-              "name": "Kapoor House",
-              "description": "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
-              "images": [
-                "/images/featured/project-3/one.jpg",
-                "/images/featured/project-3/two.jpg",
-                "/images/featured/project-3/three.jpg",
-                "/images/featured/project-3/four.jpg"
-              ],
-              "details": [
-                { "label": "Area", "value": "1,850 sq.ft" },
-                { "label": "Timeline", "value": "6 months" },
-                { "label": "Type", "value": "Residential" },
-                { "label": "Location", "value": "Haridwar" }
+              "id": "project-03",
+              "featuredImages": [
+                "/project/project-3/one.jpg",
+                "/project/project-3/two.jpg",
+                "/project/project-3/three.jpg",
+                "/project/project-3/four.jpg"
               ]
             }
           ]
         }
       },
-
       "services": {
         "label": "What we do",
         "heading": {
@@ -95,10 +160,22 @@
         "stats": {
           "extendable": false,
           "values": [
-            { "value": "12+", "label": "Years of experience" },
-            { "value": "50+", "label": "Projects delivered" },
-            { "value": "3", "label": "Cities served" },
-            { "value": "100+", "label": "Families who trust us" }
+            {
+              "value": "12+",
+              "label": "Years of experience"
+            },
+            {
+              "value": "50+",
+              "label": "Projects delivered"
+            },
+            {
+              "value": "3",
+              "label": "Cities served"
+            },
+            {
+              "value": "100+",
+              "label": "Families who trust us"
+            }
           ]
         },
         "items": {
@@ -151,7 +228,6 @@
           ]
         }
       },
-
       "reviews": {
         "label": "Reviews",
         "heading": {
@@ -192,7 +268,6 @@
           ]
         }
       },
-
       "social": {
         "label": "Follow our journey",
         "heading": {
@@ -221,7 +296,6 @@
         }
       }
     },
-
     "about": {
       "intro": {
         "label": "The founder",
