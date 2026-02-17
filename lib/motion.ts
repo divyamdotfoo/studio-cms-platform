@@ -64,26 +64,21 @@ export const STAGGER = 0.065;
 /* ────────────────────────────────────────────────────
  * Page choreography timing
  *
- * The entry sequence flows left-to-right across the navbar,
- * then cascades down into the hero content.
+ * Navbar is visible instantly (no staggered entrance).
+ * Hero content and subsequent sections start at 0.
  * ──────────────────────────────────────────────────── */
-
-/** Number of items in the left nav group. */
-const LEFT_COUNT = 4;
-/** Number of items in the right nav group. */
-const RIGHT_COUNT = 2;
 
 /** When the left nav group starts revealing. */
 export const T_NAV_LEFT = 0;
 /** When the brand name appears. */
-export const T_NAV_BRAND = LEFT_COUNT * STAGGER + 0.04;
+export const T_NAV_BRAND = 0;
 /** When the right nav group starts revealing. */
-export const T_NAV_RIGHT = T_NAV_BRAND + 0.1;
+export const T_NAV_RIGHT = 0;
 /** When the header border draws in. */
-export const T_NAV_BORDER = T_NAV_RIGHT + RIGHT_COUNT * STAGGER + 0.04;
+export const T_NAV_BORDER = 0;
 
-/** After the navbar is done — hero content starts here. */
-export const T_HERO = T_NAV_BORDER + 0.15;
+/** Hero content starts immediately. */
+export const T_HERO = 0;
 
-/** After the hero finishes — featured projects can start. */
-export const T_FEATURED = T_HERO + 0.55;
+/** Featured projects can start after a short content delay. */
+export const T_FEATURED = 0.55;

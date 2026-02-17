@@ -5,11 +5,21 @@ import Link from "next/link";
 import { motion, useInView } from "motion/react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
+import { ContactFormFields } from "@/components/sections/ContactFormFields";
 
 /* ── Hardcoded constants ── */
 
 const BRAND = "VISION ARCHITECT";
 const COPYRIGHT_TEMPLATE = "© {year} Vision Architect. All rights reserved.";
+
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Projects", href: "/projects" },
+  { label: "Services", href: "/services" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "Contact Us", href: "/contact-us" },
+];
 
 /* ────────────────────────────────────────────────────
  * Inline SVG icons
@@ -99,20 +109,12 @@ function YouTubeIcon({ className }: { className?: string }) {
  * Footer
  *
  * Dark background (#131211) with the existing site
- * palette colors used at full value (no opacity modifiers).
- *
- * Color mapping on dark bg:
- *   ivory  → brand / headings       (~18:1)
- *   mist   → contact links          (~11:1)
- *   sand   → labels, tagline, icons (~8:1)
- *   drift  → copyright, meta        (~4.7:1)
- *   stone  → borders, dividers      (~2.3:1)
+ * palette colors used at full value.
  *
  * Layout:
- * Desktop: 3-col grid — brand | contact | socials
- *          Map spans cols 2-3 underneath
- * Mobile:  Single column, map capped at 450px
- *          Extra bottom padding clears the Dock.
+ * Desktop: 4-col grid — brand | links | contact info | contact form
+ *          Map spans across underneath
+ * Mobile:  Single column
  * ──────────────────────────────────────────────────── */
 
 export function Footer() {
@@ -128,7 +130,7 @@ export function Footer() {
       <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
         {/* ── Main content ── */}
         <div className="pt-14 lg:pt-20 pb-10 lg:pb-14">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_auto] gap-12 lg:gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr] gap-12 lg:gap-10">
             {/* ── Brand column ── */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -143,13 +145,59 @@ export function Footer() {
               <p className="mt-3 text-[15px] leading-relaxed text-sand max-w-[280px]">
                 {general.tagline_footer}
               </p>
+
+              {/* Socials */}
+              <div className="flex items-center gap-3 mt-6">
+                <a
+                  href={general.insta}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                  aria-label="Instagram"
+                >
+                  <InstagramIcon className="w-[16px] h-[16px]" />
+                </a>
+                <a
+                  href={general.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                  aria-label="YouTube"
+                >
+                  <YouTubeIcon className="w-[16px] h-[16px]" />
+                </a>
+              </div>
+            </motion.div>
+
+            {/* ── Quick links column ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ ...springGentle, delay: STAGGER * 2 }}
+            >
+              <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
+                Quick links
+              </span>
+
+              <ul className="space-y-3">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </motion.div>
 
             {/* ── Contact column ── */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 2 }}
+              transition={{ ...springGentle, delay: STAGGER * 3 }}
             >
               <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
                 Get in touch
@@ -188,61 +236,42 @@ export function Footer() {
               </ul>
             </motion.div>
 
-            {/* ── Socials column ── */}
+            {/* ── Contact form column ── */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...springGentle, delay: STAGGER * 4 }}
             >
               <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
-                Follow us
+                Send us a message
               </span>
 
-              <div className="flex items-center gap-4">
-                <a
-                  href={general.insta}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-10 h-10 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
-                  aria-label="Instagram"
-                >
-                  <InstagramIcon className="w-[18px] h-[18px]" />
-                </a>
-                <a
-                  href={general.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-10 h-10 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
-                  aria-label="YouTube"
-                >
-                  <YouTubeIcon className="w-[18px] h-[18px]" />
-                </a>
-              </div>
-            </motion.div>
-
-            {/* ── Map embed — spans contact + socials columns on desktop ── */}
-            <motion.div
-              className="max-w-[450px] lg:max-w-none lg:col-start-2 lg:col-span-2 overflow-hidden border border-stone"
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 5 }}
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d671.5169117158848!2d78.13765208010588!3d29.93671897216422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39094706cf38250d%3A0x4e520b77699b721!2sVISION%20ARCHITECT!5e0!3m2!1sen!2sin!4v1771153421760!5m2!1sen!2sin"
-                width="100%"
-                height="200"
-                style={{
-                  border: 0,
-                  display: "block",
-                  filter: "grayscale(0.1) brightness(0.75)",
-                }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Vision Architect location on Google Maps"
-              />
+              <ContactFormFields theme="dark" />
             </motion.div>
           </div>
+
+          {/* ── Map embed — full width below ── */}
+          <motion.div
+            className="mt-12 lg:mt-14 overflow-hidden border border-stone"
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ ...springGentle, delay: STAGGER * 5 }}
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d671.5169117158848!2d78.13765208010588!3d29.93671897216422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39094706cf38250d%3A0x4e520b77699b721!2sVISION%20ARCHITECT!5e0!3m2!1sen!2sin!4v1771153421760!5m2!1sen!2sin"
+              width="100%"
+              height="200"
+              style={{
+                border: 0,
+                display: "block",
+                filter: "grayscale(0.1) brightness(0.75)",
+              }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Vision Architect location on Google Maps"
+            />
+          </motion.div>
         </div>
 
         {/* ── Bottom bar ── */}

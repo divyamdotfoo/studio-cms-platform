@@ -6,6 +6,16 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ hostname: "images.unsplash.com" }],
   },
+  redirects: async () => {
+    return [
+      {
+        source: "/whatsapp",
+        destination:
+          "https://wa.me/917668761558?text=Hello, I'm interested in your services",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({

@@ -93,7 +93,7 @@ export function Dock() {
         className="pointer-events-auto"
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ ...springGentle, delay: 0.8 }}
+        transition={springGentle}
         aria-label="Navigation dock"
       >
         <div

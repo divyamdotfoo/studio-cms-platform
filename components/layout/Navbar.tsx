@@ -3,23 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { useMotionValueEvent, useScroll } from "motion/react";
+import { Phone } from "lucide-react";
 import { HoverLink } from "@/components/effects/nav-link";
+import { buttonVariants } from "@/components/ui/button";
 import { useContent } from "@/lib/content-ctx";
-import {
-  spring,
-  springSnap,
-  fade,
-  STAGGER,
-  T_NAV_LEFT,
-  T_NAV_BRAND,
-  T_NAV_RIGHT,
-  T_NAV_BORDER,
-} from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 /* ── Hardcoded navigation data ── */
 
-const LEFT_LINKS = [
+const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Projects", href: "/projects" },
@@ -29,57 +22,23 @@ const LEFT_LINKS = [
 
 const BRAND = "VISION ARCHITECT";
 
-/* ────────────────────────────────────────────────────
- * CtaLink — CTA nav link with a subtle breathing
- * underline that continuously draws attention.
- * ──────────────────────────────────────────────────── */
+/* ── Inline WhatsApp icon (no lucide equivalent) ── */
 
-function CtaLink({ href, label }: { href: string; label: string }) {
-  const [hovered, setHovered] = useState(false);
-
+function WhatsAppIcon({ className }: { className?: string }) {
   return (
-    <Link
-      href={href}
-      className="relative pb-0.5 text-xs uppercase tracking-[0.08em] text-ink transition-colors duration-200"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {label}
-
-      {/* Solid hover underline */}
-      <motion.span
-        className="absolute bottom-0 left-0 h-px bg-ink"
-        initial={{ width: "0%" }}
-        animate={{ width: hovered ? "100%" : "0%" }}
-        transition={springSnap}
-      />
-
-      {/* Continuous breathing underline — subtle bronze shimmer */}
-      {!hovered && (
-        <motion.span
-          className="absolute bottom-0 left-0 right-0 h-px bg-bronze"
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{
-            opacity: [0, 0.5, 0],
-            scaleX: [0, 1, 0],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{ originX: 0 }}
-        />
-      )}
-    </Link>
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
   );
 }
 
 /* ────────────────────────────────────────────────────
  * Navbar
  *
- * Desktop (lg+): left links | center brand | right links
- * Mobile (<lg):  brand left | CTA icons right
+ * Desktop (lg+): brand left | nav links + CTA buttons right
+ * Mobile (<lg):  brand left | CTA icon buttons right
+ *
+ * No entry animations — visible immediately on page load.
  * ──────────────────────────────────────────────────── */
 
 export function Navbar() {
@@ -101,16 +60,24 @@ export function Navbar() {
       }`}
     >
       {/* ── Desktop nav ── */}
-      <nav className="hidden lg:grid mx-auto max-w-[1400px] grid-cols-[1fr_auto_1fr] items-center px-10 h-16">
-        {/* Left links */}
+      <nav className="hidden lg:flex mx-auto max-w-[1400px] items-center justify-between px-10 h-16">
+        {/* Left — Brand */}
+        <div>
+          <Link
+            href="/"
+            className="relative z-10"
+            aria-label={`${BRAND} — Home`}
+          >
+            <span className="font-serif italic text-xl font-medium tracking-tight text-ink">
+              {BRAND}
+            </span>
+          </Link>
+        </div>
+
+        {/* Right — Nav links + CTA buttons */}
         <div className="flex items-center gap-7">
-          {LEFT_LINKS.map((link, i) => (
-            <motion.div
-              key={link.href}
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...spring, delay: T_NAV_LEFT + i * STAGGER }}
-            >
+          {NAV_LINKS.map((link) => (
+            <div key={link.href}>
               <HoverLink
                 href={link.href}
                 label={link.label}
@@ -120,118 +87,73 @@ export function Navbar() {
                     : pathname.startsWith(link.href)
                 }
               />
-            </motion.div>
+            </div>
           ))}
-        </div>
 
-        {/* Center brand */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...spring, delay: T_NAV_BRAND }}
-          className="justify-self-center"
-        >
-          <Link
-            href="/"
-            className="relative z-10"
-            aria-label={`${BRAND} — Home`}
-          >
-            <span className="font-serif italic text-xl tracking-tight text-ink">
-              {BRAND}
-            </span>
-          </Link>
-        </motion.div>
-
-        {/* Right CTA links */}
-        <div className="flex items-center justify-end gap-7">
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...spring, delay: T_NAV_RIGHT }}
-          >
-            <CtaLink href={general.whatsapp} label="Send message" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...spring, delay: T_NAV_RIGHT + STAGGER }}
-          >
-            <CtaLink href={general.phone} label="Call us" />
-          </motion.div>
+          {/* CTA buttons */}
+          <div className="flex items-center gap-2 ml-2">
+            <Link
+              href={general.phone}
+              className={cn(
+                buttonVariants({ variant: "outline", size: "default" }),
+                "gap-1.5"
+              )}
+            >
+              <Phone className="size-3.5" />
+              <span>Call Us</span>
+            </Link>
+            <Link
+              href={general.whatsapp}
+              className={cn(
+                buttonVariants({ variant: "default", size: "default" }),
+                "gap-1.5"
+              )}
+            >
+              <WhatsAppIcon className="size-3.5" />
+              <span>WhatsApp</span>
+            </Link>
+          </div>
         </div>
       </nav>
 
       {/* ── Mobile nav ── */}
       <nav className="lg:hidden flex items-center justify-between px-5 h-14">
         {/* Brand */}
-        <motion.div
-          initial={{ opacity: 0, x: -8 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ ...spring, delay: 0.1 }}
-        >
+        <div>
           <Link href="/" aria-label={`${BRAND} — Home`}>
-            <span className="font-serif italic text-base tracking-tight text-ink">
+            <span className="font-serif italic text-lg font-semibold tracking-tight text-ink">
               {BRAND}
             </span>
           </Link>
-        </motion.div>
+        </div>
 
-        {/* CTA icons */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ ...fade, delay: 0.2 }}
-          className="flex items-center gap-0.5"
-        >
-          {/* Message icon */}
+        {/* CTA buttons */}
+        <div className="flex items-center gap-1.5">
           <Link
-            href="/contact"
-            className="flex items-center justify-center w-11 h-11 text-drift active:text-ink transition-colors"
-            aria-label="Send message"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-            </svg>
-          </Link>
-
-          {/* Phone icon */}
-          <Link
-            href="/contact?book=true"
-            className="flex items-center justify-center w-11 h-11 text-drift active:text-ink transition-colors"
+            href={general.phone}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "default" })
+            )}
             aria-label="Call us"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
-            </svg>
+            <Phone className="size-4" />
           </Link>
-        </motion.div>
+          <Link
+            href={general.whatsapp}
+            className={cn(
+              buttonVariants({ variant: "default", size: "default" })
+            )}
+            aria-label="WhatsApp us"
+          >
+            <WhatsAppIcon className="size-4" />
+          </Link>
+        </div>
       </nav>
 
       {/* ── Bottom border ── */}
-      <motion.div
-        className="h-px origin-left"
+      <div
+        className="h-px"
         style={{ backgroundColor: "var(--color-sand)" }}
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ ...spring, delay: T_NAV_BORDER }}
       />
     </header>
   );

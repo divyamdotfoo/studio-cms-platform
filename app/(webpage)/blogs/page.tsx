@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function BlogsPage() {
   return (
     <main className="pt-28 lg:pt-36 pb-20 lg:pb-28">
-      <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
+      <div className="mx-auto max-w-[1100px] px-5 lg:px-10">
         {/* Header */}
         <div className="max-w-2xl mb-14 lg:mb-20">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-ink leading-[1.1]">
@@ -29,7 +29,7 @@ export default function BlogsPage() {
             <Link
               key={post.slug}
               href={`/blog/${post.slug}`}
-              className="group block border border-sand overflow-hidden transition-colors duration-200 hover:border-bronze/40"
+              className="group bg-white p-3 block border border-sand overflow-hidden transition-colors duration-200 hover:border-bronze/40"
             >
               <article>
                 {/* Cover image */}
@@ -39,12 +39,12 @@ export default function BlogsPage() {
                     alt={post.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                    className="object-cover transition-transform duration-500 ease-out"
                   />
                 </div>
 
                 {/* Text */}
-                <div className="px-5 py-5 lg:px-6 lg:py-6">
+                <div className="py-5 px-2 lg:py-6">
                   <span className="text-xs uppercase tracking-widest text-drift">
                     {post.readingTime}
                   </span>

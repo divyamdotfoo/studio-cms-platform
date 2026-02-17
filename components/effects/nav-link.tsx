@@ -28,7 +28,7 @@ export function HoverLink({ href, label, className, isActive }: NavLinkProps) {
   return (
     <Link
       href={href}
-      className={`relative pb-0.5 text-xs uppercase tracking-[0.08em] text-ink transition-colors duration-200 ${
+      className={`relative pb-0.5 text-sm uppercase tracking-[0.08em] text-ink transition-colors duration-200 ${
         className ?? ""
       }`}
       onMouseEnter={() => setHovered(true)}
