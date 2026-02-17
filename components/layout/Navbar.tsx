@@ -151,10 +151,7 @@ export function Navbar() {
       </nav>
 
       {/* ── Bottom border ── */}
-      <div
-        className="h-px"
-        style={{ backgroundColor: "var(--color-sand)" }}
-      />
+      <div className="h-px" style={{ backgroundColor: "var(--color-sand)" }} />
     </header>
   );
 }

@@ -301,12 +301,7 @@ function HeroSection({ form }: FormProps) {
  * ════════════════════════════════════════════════════ */
 
 function ProjectsSection({ form }: FormProps) {
-  const {
-    register,
-    control,
-    formState: { errors },
-  } = form;
-  const e = (p: string) => hasErr(errors, p);
+  const { control } = form;
   const projects = useFieldArray({ control, name: "projects" });
 
   const nextId = () => {
