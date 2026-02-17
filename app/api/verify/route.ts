@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       from: "Divyam <onboarding@resend.dev>",
       to: process.env.ad_email!,
       subject: "Admin Login OTP",
-      html: `<p>Your OTP for the Vision Architect Admin Panel:</p><h1 style="letter-spacing:8px;font-size:36px;">${otpCode}</h1><p>This code is valid for a single use.</p>`,
+      html: `<p>Your OTP for the Vision Architect's Admin Panel is:</p><h1 style="letter-spacing:8px;font-size:36px;">${otpCode}</h1><p>This code is valid for a single use.</p><p style="color:#9ca3af;font-size:11px;margin-top:32px;">this email is automated by the site manager</p>`,
     });
 
     if (error) {
