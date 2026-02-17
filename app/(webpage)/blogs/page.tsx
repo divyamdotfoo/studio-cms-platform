@@ -29,11 +29,11 @@ export default function BlogsPage() {
             <Link
               key={post.slug}
               href={`/blog/${post.slug}`}
-              className="group block"
+              className="group block border border-sand overflow-hidden transition-colors duration-200 hover:border-bronze/40"
             >
               <article>
                 {/* Cover image */}
-                <div className="relative overflow-hidden bg-shell aspect-16/10">
+                <div className="relative h-52 lg:h-60 overflow-hidden bg-shell">
                   <Image
                     src={post.coverImage}
                     alt={post.title}
@@ -44,7 +44,7 @@ export default function BlogsPage() {
                 </div>
 
                 {/* Text */}
-                <div className="mt-5">
+                <div className="px-5 py-5 lg:px-6 lg:py-6">
                   <span className="text-xs uppercase tracking-widest text-drift">
                     {post.readingTime}
                   </span>
