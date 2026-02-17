@@ -13,10 +13,10 @@
       "name": "Arya Residence",
       "description": "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
       "images": [
-        "/project/project-1/one.jpg",
-        "/project/project-1/two.jpg",
-        "/project/project-1/three.jpg",
-        "/project/project-1/four.jpg"
+        "/project/project-01/one.jpg",
+        "/project/project-01/two.jpg",
+        "/project/project-01/three.jpg",
+        "/project/project-01/four.jpg"
       ],
       "details": [
         {
@@ -42,10 +42,10 @@
       "name": "Nanda Villa",
       "description": "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
       "images": [
-        "/project/project-2/one.jpg",
-        "/project/project-2/two.jpg",
-        "/project/project-2/three.jpg",
-        "/project/project-2/four.jpg"
+        "/project/project-02/one.jpg",
+        "/project/project-02/two.jpg",
+        "/project/project-02/three.jpg",
+        "/project/project-02/four.jpg"
       ],
       "details": [
         {
@@ -71,10 +71,10 @@
       "name": "Kapoor House",
       "description": "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
       "images": [
-        "/project/project-3/one.jpg",
-        "/project/project-3/two.jpg",
-        "/project/project-3/three.jpg",
-        "/project/project-3/four.jpg"
+        "/project/project-03/one.jpg",
+        "/project/project-03/two.jpg",
+        "/project/project-03/three.jpg",
+        "/project/project-03/four.jpg"
       ],
       "details": [
         {
@@ -122,28 +122,28 @@
             {
               "id": "project-01",
               "featuredImages": [
-                "/project/project-1/one.jpg",
-                "/project/project-1/two.jpg",
-                "/project/project-1/three.jpg",
-                "/project/project-1/four.jpg"
+                "/project/project-01/one.jpg",
+                "/project/project-01/two.jpg",
+                "/project/project-01/three.jpg",
+                "/project/project-01/four.png"
               ]
             },
             {
               "id": "project-02",
               "featuredImages": [
-                "/project/project-2/one.jpg",
-                "/project/project-2/two.jpg",
-                "/project/project-2/three.jpg",
-                "/project/project-2/four.jpg"
+                "/project/project-02/one.jpg",
+                "/project/project-02/two.jpg",
+                "/project/project-02/three.jpg",
+                "/project/project-02/four.jpg"
               ]
             },
             {
               "id": "project-03",
               "featuredImages": [
-                "/project/project-3/one.jpg",
-                "/project/project-3/two.jpg",
-                "/project/project-3/three.jpg",
-                "/project/project-3/four.jpg"
+                "/project/project-03/one.jpg",
+                "/project/project-03/two.jpg",
+                "/project/project-03/three.jpg",
+                "/project/project-03/four.jpg"
               ]
             }
           ]

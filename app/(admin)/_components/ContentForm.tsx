@@ -8,7 +8,7 @@ import {
   type FieldErrors,
 } from "react-hook-form";
 import Image from "next/image";
-import type { SiteContent } from "@/cms/types";
+import type { SiteContent, Project } from "@/cms/types";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -16,9 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { AdminNavbar } from "./AdminNavbar";
 import { AdminSidebar } from "./AdminSidebar";
-import { Plus, Trash2, Check } from "lucide-react";
+import { ImageUploadModal } from "./ImageUploadModal";
+import { ImageStoreProvider, useImageStore } from "./useImageStore";
+import { Plus, Trash2, Check, Upload } from "lucide-react";
 import { toast } from "sonner";
-import type { Project } from "@/cms/types";
 
 type FormValues = SiteContent;
 type FormProps = { form: UseFormReturn<FormValues> };
@@ -389,6 +390,36 @@ function SingleProjectFields({
   const details = useFieldArray({ control, name: `${pre}.details` as never });
   const images = useFieldArray({ control, name: `${pre}.images` as never });
   const projectId = watch(`${pre}.id` as never) as unknown as string;
+  const store = useImageStore();
+  const [uploadOpen, setUploadOpen] = useState(false);
+
+  const handleImageAdded = (targetPath: string) => {
+    images.append(targetPath as never);
+  };
+
+  const handleRemoveNewImage = (imgIdx: number, imgPath: string) => {
+    store.removeNewFile(imgPath);
+
+    const featured = form.getValues(
+      "pages.homepage.projectGallery.projects.values"
+    );
+    let changed = false;
+    const updated = featured.map((ref) => {
+      const filtered = ref.featuredImages.filter((fi) => fi !== imgPath);
+      if (filtered.length !== ref.featuredImages.length) {
+        changed = true;
+        return { ...ref, featuredImages: filtered };
+      }
+      return ref;
+    });
+    if (changed) {
+      form.setValue("pages.homepage.projectGallery.projects.values", updated, {
+        shouldDirty: true,
+      });
+    }
+
+    images.remove(imgIdx);
+  };
 
   return (
     <div className="border border-sand p-5 space-y-5">
@@ -424,25 +455,71 @@ function SingleProjectFields({
       </FieldRow>
 
       <div className="space-y-3">
-        <ArrayHeader label="Images" onAdd={() => images.append("" as never)} />
+        <div className="flex items-center justify-between">
+          <span className="text-base font-medium text-ink">Images</span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setUploadOpen(true)}
+          >
+            <Upload data-icon="inline-start" /> Upload Image
+          </Button>
+        </div>
+
         {images.fields.map((imgField, imgIdx) => {
           const imgPath = watch(
             `${pre}.images.${imgIdx}` as never
           ) as unknown as string | undefined;
+          if (!imgPath) return null;
+
+          const isPending = store.isPending(imgPath);
+          const blobUrl = store.getBlobUrl(imgPath);
+
           return (
             <div key={imgField.id} className="flex items-center gap-3">
-              {imgPath && <ImagePreview src={imgPath} />}
-              <Input
-                placeholder="/project/project-1/image.jpg"
-                {...register(`${pre}.images.${imgIdx}` as never, REQ)}
-                aria-invalid={e(`${pre}.images.${imgIdx}`)}
-                className={INPUT_CLS}
-              />
-              <RemoveButton onClick={() => images.remove(imgIdx)} />
+              {isPending && blobUrl ? (
+                <div className="relative w-20 h-14 border border-bronze/40 overflow-hidden shrink-0 bg-shell">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={blobUrl}
+                    alt="New upload"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <ImagePreview src={imgPath} />
+              )}
+              <span className="text-[13px] text-stone truncate flex-1 min-w-0">
+                {imgPath}
+                {isPending && (
+                  <span className="ml-2 text-[11px] text-bronze font-medium uppercase">
+                    new
+                  </span>
+                )}
+              </span>
+              {isPending && (
+                <RemoveButton
+                  onClick={() => handleRemoveNewImage(imgIdx, imgPath)}
+                />
+              )}
             </div>
           );
         })}
+
+        {images.fields.length === 0 && (
+          <p className="text-[13px] text-drift">
+            No images yet. Click &ldquo;Upload Image&rdquo; to add.
+          </p>
+        )}
       </div>
+
+      <ImageUploadModal
+        open={uploadOpen}
+        onOpenChange={setUploadOpen}
+        projectId={projectId}
+        onImageAdded={handleImageAdded}
+      />
 
       <div className="space-y-3">
         <ArrayHeader
@@ -483,6 +560,7 @@ function ProjectGallerySection({ form }: FormProps) {
     formState: { errors },
   } = form;
   const e = (p: string) => hasErr(errors, p);
+  const store = useImageStore();
 
   const allProjects: Project[] = watch("projects") ?? [];
   const featuredValues =
@@ -642,6 +720,9 @@ function ProjectGallerySection({ form }: FormProps) {
                     {project.images.map((img) => {
                       const isSelected = selectedImages.includes(img);
                       const atMax = count >= 4 && !isSelected;
+                      const blobUrl = store.getBlobUrl(img);
+                      const imgSrc = blobUrl ?? img;
+                      const isPending = store.isPending(img);
                       return (
                         <button
                           key={img}
@@ -656,13 +737,22 @@ function ProjectGallerySection({ form }: FormProps) {
                               : "border-sand hover:border-stone"
                           }`}
                         >
-                          <Image
-                            src={img}
-                            alt=""
-                            fill
-                            className="object-cover"
-                            sizes="120px"
-                          />
+                          {isPending ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img
+                              src={imgSrc}
+                              alt=""
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Image
+                              src={imgSrc}
+                              alt=""
+                              fill
+                              className="object-cover"
+                              sizes="120px"
+                            />
+                          )}
                           {isSelected && (
                             <div className="absolute inset-0 bg-bronze/20 flex items-center justify-center">
                               <div className="w-6 h-6 rounded-full bg-bronze flex items-center justify-center">
@@ -1511,37 +1601,76 @@ function DiffView({
   onConfirm: () => void;
   submitting: boolean;
 }) {
+  const store = useImageStore();
+  const pendingEntries = [...store.pendingEntries];
+
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-8 py-8 pb-16">
       <div className="mb-8">
         <h2 className="text-xl font-semibold text-ink">Review Changes</h2>
         <p className="text-[15px] text-drift mt-1">
-          {diffs.length} field{diffs.length !== 1 && "s"} changed.
+          {diffs.length} field{diffs.length !== 1 && "s"} changed
+          {pendingEntries.length > 0 &&
+            `, ${pendingEntries.length} image${
+              pendingEntries.length !== 1 ? "s" : ""
+            } to upload`}
+          .
         </p>
       </div>
 
-      <div className="grid grid-cols-[1fr_1fr] gap-0 text-[13px] uppercase tracking-wider text-drift font-medium border-b border-sand pb-2 mb-4">
-        <span>Before</span>
-        <span>After</span>
-      </div>
-
-      <div className="space-y-3">
-        {diffs.map((d, i) => (
-          <div key={i} className="border border-sand overflow-hidden">
-            <div className="bg-cream/60 px-4 py-2 text-[13px] font-medium text-drift tracking-wide border-b border-sand">
-              {d.label}
-            </div>
-            <div className="grid grid-cols-[1fr_1fr] divide-x divide-sand">
-              <div className="px-4 py-3 bg-red-50/50 text-[15px] text-stone wrap-break-word whitespace-pre-wrap min-h-10">
-                {d.before || <span className="text-drift italic">empty</span>}
-              </div>
-              <div className="px-4 py-3 bg-emerald-50/50 text-[15px] text-ink wrap-break-word whitespace-pre-wrap min-h-10">
-                {d.after || <span className="text-drift italic">empty</span>}
-              </div>
-            </div>
+      {pendingEntries.length > 0 && (
+        <div className="mb-6 border border-sand overflow-hidden">
+          <div className="bg-emerald-50/60 px-4 py-2 text-[13px] font-medium text-emerald-700 tracking-wide border-b border-sand">
+            Images to upload ({pendingEntries.length})
           </div>
-        ))}
-      </div>
+          <div className="p-4 grid grid-cols-4 sm:grid-cols-6 gap-3">
+            {pendingEntries.map(([path, blobUrl]) => (
+              <div key={path} className="space-y-1">
+                <div className="relative aspect-4/3 bg-shell border border-sand overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={blobUrl}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-[11px] text-drift truncate">{path}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {diffs.length > 0 && (
+        <>
+          <div className="grid grid-cols-[1fr_1fr] gap-0 text-[13px] uppercase tracking-wider text-drift font-medium border-b border-sand pb-2 mb-4">
+            <span>Before</span>
+            <span>After</span>
+          </div>
+
+          <div className="space-y-3">
+            {diffs.map((d, i) => (
+              <div key={i} className="border border-sand overflow-hidden">
+                <div className="bg-cream/60 px-4 py-2 text-[13px] font-medium text-drift tracking-wide border-b border-sand">
+                  {d.label}
+                </div>
+                <div className="grid grid-cols-[1fr_1fr] divide-x divide-sand">
+                  <div className="px-4 py-3 bg-red-50/50 text-[15px] text-stone wrap-break-word whitespace-pre-wrap min-h-10">
+                    {d.before || (
+                      <span className="text-drift italic">empty</span>
+                    )}
+                  </div>
+                  <div className="px-4 py-3 bg-emerald-50/50 text-[15px] text-ink wrap-break-word whitespace-pre-wrap min-h-10">
+                    {d.after || (
+                      <span className="text-drift italic">empty</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       <div className="mt-10 flex flex-col items-center gap-3">
         <Button
@@ -1574,12 +1703,21 @@ export function ContentForm({
 }: {
   initialContent: SiteContent;
 }) {
+  return (
+    <ImageStoreProvider>
+      <ContentFormInner initialContent={initialContent} />
+    </ImageStoreProvider>
+  );
+}
+
+function ContentFormInner({ initialContent }: { initialContent: SiteContent }) {
   const [activeKey, setActiveKey] = useState("general");
   const [reviewing, setReviewing] = useState(false);
   const [diffs, setDiffs] = useState<Diff[]>([]);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [baseline, setBaseline] = useState<FormValues>(initialContent);
+  const store = useImageStore();
 
   const form = useForm<FormValues>({
     defaultValues: initialContent,
@@ -1587,6 +1725,7 @@ export function ContentForm({
   });
 
   const { isDirty } = form.formState;
+  const hasChanges = isDirty || store.hasImageChanges;
 
   const onSubmit = useCallback(
     (data: FormValues) => {
@@ -1598,7 +1737,7 @@ export function ContentForm({
       }
 
       const changes = getChangedFields(baseline, data);
-      if (changes.length === 0) {
+      if (changes.length === 0 && !store.hasImageChanges) {
         toast("No changes to commit.");
         return;
       }
@@ -1607,7 +1746,7 @@ export function ContentForm({
       setPendingData(data);
       setReviewing(true);
     },
-    [baseline]
+    [baseline, store]
   );
 
   const handleConfirm = useCallback(async () => {
@@ -1615,10 +1754,10 @@ export function ContentForm({
     setSubmitting(true);
 
     try {
+      const formData = store.buildFormData(pendingData);
       const res = await fetch("/api/update-content", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pendingData),
+        body: formData,
       });
 
       const result = await res.json();
@@ -1629,6 +1768,7 @@ export function ContentForm({
       }
 
       toast("Content saved successfully.");
+      store.clear();
       setBaseline(pendingData);
       form.reset(pendingData);
       setReviewing(false);
@@ -1639,7 +1779,7 @@ export function ContentForm({
     } finally {
       setSubmitting(false);
     }
-  }, [pendingData, form]);
+  }, [pendingData, form, store]);
 
   const handleCancelReview = useCallback(() => {
     setReviewing(false);
@@ -1648,8 +1788,9 @@ export function ContentForm({
   }, []);
 
   const handleReset = useCallback(() => {
+    store.clear();
     form.reset(baseline);
-  }, [form, baseline]);
+  }, [form, baseline, store]);
 
   const ActiveSection = SECTION_MAP[activeKey];
 
@@ -1657,7 +1798,7 @@ export function ContentForm({
     <div className="min-h-screen flex flex-col">
       <AdminNavbar
         onReset={handleReset}
-        isDirty={isDirty}
+        isDirty={hasChanges}
         reviewing={reviewing}
         submitting={submitting}
         onCancelReview={handleCancelReview}

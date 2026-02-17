@@ -1,5 +1,5 @@
 import { cookies, headers } from "next/headers";
-import { writeFile, copyFile } from "fs/promises";
+import { writeFile, copyFile, mkdir } from "fs/promises";
 import path from "path";
 import { Octokit } from "octokit";
 
@@ -14,6 +14,11 @@ function backupName() {
   )}_${now.getFullYear()}_${p(now.getHours())}${p(now.getMinutes())}${p(
     now.getSeconds()
   )}.json`;
+}
+
+interface NewImage {
+  targetPath: string;
+  file: File;
 }
 
 export async function POST(request: Request) {
@@ -54,17 +59,35 @@ export async function POST(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  /* ── 3. Parse and validate incoming JSON ── */
+  /* ── 3. Parse FormData ── */
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch {
+    return Response.json({ error: "Invalid form data" }, { status: 400 });
+  }
+
+  const cmsRaw = formData.get("cms");
+  if (typeof cmsRaw !== "string") {
+    return Response.json(
+      { error: "Missing 'cms' field in form data" },
+      { status: 400 }
+    );
+  }
+
   let content: unknown;
   try {
-    content = await request.json();
+    content = JSON.parse(cmsRaw);
   } catch {
-    return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+    return Response.json(
+      { error: "Invalid JSON in cms field" },
+      { status: 400 }
+    );
   }
 
   if (!content || typeof content !== "object" || Array.isArray(content)) {
     return Response.json(
-      { error: "Content must be a JSON object" },
+      { error: "CMS content must be a JSON object" },
       { status: 400 }
     );
   }
@@ -77,24 +100,36 @@ export async function POST(request: Request) {
     );
   }
 
+  const newImages: NewImage[] = [];
+  for (const [key, value] of formData.entries()) {
+    if (
+      key.startsWith("file_") &&
+      typeof value === "object" &&
+      "arrayBuffer" in value
+    ) {
+      newImages.push({ targetPath: key.slice(5), file: value as File });
+    }
+  }
+
   const prettyJson = JSON.stringify(content, null, 2) + "\n";
 
   /* ── 4. Route by environment ── */
   const isDev = process.env.NODE_ENV === "development";
 
   if (isDev) {
-    return handleLocal(prettyJson);
+    return handleLocal(prettyJson, newImages);
   }
-  return handleGit(prettyJson);
+  return handleGit(prettyJson, newImages);
 }
 
 /* ════════════════════════════════════════════════════
  * LOCAL / DEVELOPMENT — file-system writes
  * ════════════════════════════════════════════════════ */
 
-async function handleLocal(prettyJson: string) {
-  const activePath = path.join(process.cwd(), ACTIVE_PATH);
-  const bkPath = path.join(process.cwd(), backupName());
+async function handleLocal(prettyJson: string, newImages: NewImage[]) {
+  const cwd = process.cwd();
+  const activePath = path.join(cwd, ACTIVE_PATH);
+  const bkPath = path.join(cwd, backupName());
 
   try {
     await copyFile(activePath, bkPath);
@@ -108,6 +143,22 @@ async function handleLocal(prettyJson: string) {
     return Response.json({ error: "Failed to write content" }, { status: 500 });
   }
 
+  for (const { targetPath, file } of newImages) {
+    const fullPath = path.join(cwd, "public", targetPath);
+    const dir = path.dirname(fullPath);
+    try {
+      await mkdir(dir, { recursive: true });
+      const buffer = Buffer.from(await file.arrayBuffer());
+      await writeFile(fullPath, buffer);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      return Response.json(
+        { error: `Failed to write image ${targetPath}: ${msg}` },
+        { status: 500 }
+      );
+    }
+  }
+
   return Response.json({ success: true });
 }
 
@@ -115,7 +166,7 @@ async function handleLocal(prettyJson: string) {
  * PRODUCTION — commit via GitHub API (Octokit)
  * ════════════════════════════════════════════════════ */
 
-async function handleGit(prettyJson: string) {
+async function handleGit(prettyJson: string, newImages: NewImage[]) {
   const token = process.env.gh_pat;
   const owner = process.env.gh_username;
   const repo = process.env.gh_repo;
@@ -162,15 +213,39 @@ async function handleGit(prettyJson: string) {
     });
     const baseTreeSha = commit.tree.sha;
 
-    /* 3. Create blob for the new content */
-    const { data: newBlob } = await octokit.rest.git.createBlob({
+    /* 3. Create blob for the new JSON content */
+    const { data: newJsonBlob } = await octokit.rest.git.createBlob({
       owner,
       repo,
       content: Buffer.from(prettyJson).toString("base64"),
       encoding: "base64",
     });
 
-    /* 4. Create tree: backup old file + write new file */
+    /* 4. Create blobs for new images */
+    const imageTreeEntries: {
+      path: string;
+      mode: "100644";
+      type: "blob";
+      sha: string;
+    }[] = [];
+
+    for (const { targetPath, file } of newImages) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const { data: imgBlob } = await octokit.rest.git.createBlob({
+        owner,
+        repo,
+        content: buffer.toString("base64"),
+        encoding: "base64",
+      });
+      imageTreeEntries.push({
+        path: `public${targetPath}`,
+        mode: "100644",
+        type: "blob",
+        sha: imgBlob.sha,
+      });
+    }
+
+    /* 5. Create tree: backup + new JSON + new images */
     const backupGitPath = backupName();
 
     const { data: newTree } = await octokit.rest.git.createTree({
@@ -188,12 +263,13 @@ async function handleGit(prettyJson: string) {
           path: ACTIVE_PATH,
           mode: "100644",
           type: "blob",
-          sha: newBlob.sha,
+          sha: newJsonBlob.sha,
         },
+        ...imageTreeEntries,
       ],
     });
 
-    /* 5. Create commit */
+    /* 7. Create commit */
     const { data: newCommit } = await octokit.rest.git.createCommit({
       owner,
       repo,
@@ -202,7 +278,7 @@ async function handleGit(prettyJson: string) {
       parents: [latestCommitSha],
     });
 
-    /* 6. Update branch ref (fast-forward only — fails safely on conflict) */
+    /* 8. Update branch ref (fast-forward only — fails safely on conflict) */
     await octokit.rest.git.updateRef({
       owner,
       repo,

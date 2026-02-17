@@ -1,8 +1,28 @@
 import type { MDXComponents } from "mdx/types";
+import type { ReactNode } from "react";
+import { Children, isValidElement } from "react";
 import Image from "next/image";
+
+function containsOnlyImage(children: ReactNode): boolean {
+  const kids = Children.toArray(children);
+  if (kids.length !== 1) return false;
+  const child = kids[0];
+  return (
+    isValidElement(child) &&
+    typeof child.props === "object" &&
+    child.props !== null &&
+    "src" in (child.props as Record<string, unknown>)
+  );
+}
 
 export function useMDXComponents(): MDXComponents {
   return {
+    p({ children }) {
+      if (containsOnlyImage(children)) {
+        return <>{children}</>;
+      }
+      return <p>{children}</p>;
+    },
     wrapper({ children }) {
       return (
         <article
