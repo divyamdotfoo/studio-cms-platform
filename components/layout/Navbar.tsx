@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useMotionValueEvent, useScroll } from "motion/react";
 import { Phone } from "lucide-react";
 import { HoverLink } from "@/components/effects/nav-link";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button/variants";
 import { useContent } from "@/lib/content-ctx";
 import { cn } from "@/lib/utils";
 

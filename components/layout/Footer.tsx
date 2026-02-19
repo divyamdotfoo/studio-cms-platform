@@ -120,7 +120,10 @@ export function Footer() {
   const { general } = useContent();
   const contactRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
-  const isContactInView = useInView(contactRef, { once: true, margin: "-40px" });
+  const isContactInView = useInView(contactRef, {
+    once: true,
+    margin: "-40px",
+  });
   const isFooterInView = useInView(footerRef, { once: true, margin: "-40px" });
 
   const year = new Date().getFullYear();
