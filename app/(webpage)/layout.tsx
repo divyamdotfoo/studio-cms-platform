@@ -28,6 +28,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://visionarchitect.in"),
   title: "Vision Architect — Haridwar's Trusted Architecture Partner",
   description:
     "Professional architecture services in Haridwar. Specializing in homes, cafes, and commercial spaces. Designing spaces that inspire lives.",
@@ -37,6 +38,11 @@ export const metadata: Metadata = {
     title: "Vision Architect — Haridwar",
     description: "Professional architecture services in Haridwar",
     locale: "en_IN",
+    siteName: "Vision Architect",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

@@ -67,7 +67,7 @@ export function useMDXComponents(): MDXComponents {
             alt={props.alt || ""}
             width={1200}
             height={675}
-            className="w-full h-auto object-cover"
+            className="w-full max-h-128 object-cover rounded-lg"
           />
           {props.alt && (
             <figcaption className="mt-3 px-5 lg:px-12 text-center text-sm text-drift">
