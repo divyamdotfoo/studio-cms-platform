@@ -382,6 +382,196 @@ function ProjectInfo({
   );
 }
 
+/* ── Architectural Sketch Illustrations ─────────── */
+
+interface SketchPath {
+  d: string;
+  /** Optional: use lighter sand colour instead of default drift */
+  accent?: boolean;
+  /** Optional: dashed stroke for construction/dimension lines */
+  dashed?: boolean;
+}
+
+interface SketchDef {
+  viewBox: string;
+  className: string;
+  paths: SketchPath[];
+}
+
+const SKETCHES: SketchDef[] = [
+  {
+    viewBox: "0 0 100 90",
+    className: "w-20 sm:w-28 lg:w-36",
+    paths: [
+      { d: "M6 46 L50 10 L94 46" },
+      { d: "M16 46 L16 82 L84 82 L84 46" },
+      { d: "M40 82 L40 62 L60 62 L60 82" },
+      { d: "M22 52 L34 52 L34 66 L22 66 Z" },
+      { d: "M66 52 L78 52 L78 66 L66 66 Z" },
+      { d: "M28 52 L28 66", accent: true },
+      { d: "M72 52 L72 66", accent: true },
+      { d: "M44 6 L44 10", accent: true },
+      { d: "M44 6 L50 6 L50 10", accent: true },
+    ],
+  },
+  {
+    viewBox: "0 0 80 80",
+    className: "w-16 sm:w-24 lg:w-32",
+    paths: [
+      { d: "M6 74 L6 6 L74 74 Z" },
+      { d: "M6 54 L26 74", accent: true },
+      { d: "M6 34 L46 74", accent: true, dashed: true },
+      { d: "M18 6 L18 10" },
+      { d: "M30 6 L30 10" },
+      { d: "M42 6 L42 10" },
+    ],
+  },
+  {
+    viewBox: "0 0 80 80",
+    className: "w-16 sm:w-24 lg:w-32",
+    paths: [
+      { d: "M10 76 L10 28" },
+      { d: "M70 76 L70 28" },
+      { d: "M10 28 A 30 30 0 0 1 70 28" },
+      { d: "M40 28 L40 4", accent: true },
+      { d: "M20 76 L20 42", accent: true, dashed: true },
+      { d: "M60 76 L60 42", accent: true, dashed: true },
+    ],
+  },
+  {
+    viewBox: "0 0 80 80",
+    className: "w-16 sm:w-24 lg:w-32",
+    paths: [
+      { d: "M12 72 L12 8" },
+      { d: "M12 72 L72 24" },
+      { d: "M12 30 A 42 42 0 0 1 42 46" },
+      { d: "M12 44 A 28 28 0 0 1 32 54", accent: true, dashed: true },
+      { d: "M22 8 L22 12" },
+      { d: "M32 8 L32 12" },
+    ],
+  },
+  {
+    viewBox: "0 0 70 90",
+    className: "w-14 sm:w-20 lg:w-28",
+    paths: [
+      { d: "M8 90 L8 30" },
+      { d: "M62 90 L62 30" },
+      { d: "M8 30 Q8 6 35 6 Q62 6 62 30" },
+      { d: "M8 56 L62 56", accent: true },
+      { d: "M35 6 L35 90", accent: true },
+      { d: "M8 30 L62 30", accent: true, dashed: true },
+    ],
+  },
+];
+
+function ArchSketch({
+  sketch,
+  isInView,
+  delay = 0,
+}: {
+  sketch: SketchDef;
+  isInView: boolean;
+  delay?: number;
+}) {
+  return (
+    <svg viewBox={sketch.viewBox} fill="none" className={sketch.className}>
+      {sketch.paths.map((p, i) => (
+        <motion.path
+          key={p.d}
+          d={p.d}
+          stroke={p.accent ? "var(--color-sand)" : "var(--color-drift)"}
+          strokeWidth={p.accent ? 0.8 : 1.2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray={p.dashed ? "4 3" : undefined}
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={isInView ? { pathLength: 1, opacity: 0.7 } : {}}
+          transition={{
+            pathLength: {
+              duration: 2,
+              ease: [0.22, 1, 0.36, 1],
+              delay: delay + i * 0.18,
+            },
+            opacity: { duration: 0.5, delay: delay + i * 0.18 },
+          }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+/* ── GapDecoration — divider line + sketch pair ─── */
+
+interface SketchPlacement {
+  sketchIndex: number;
+  left?: string;
+  right?: string;
+  top: string;
+  rotate: number;
+}
+
+const GAP_LAYOUTS: SketchPlacement[][] = [
+  [
+    { sketchIndex: 0, left: "4%", top: "-40px", rotate: -3 },
+    { sketchIndex: 1, right: "5%", top: "14px", rotate: 2 },
+  ],
+  [
+    { sketchIndex: 2, right: "6%", top: "-36px", rotate: 4 },
+    { sketchIndex: 3, left: "5%", top: "18px", rotate: -2 },
+  ],
+  [
+    { sketchIndex: 4, left: "8%", top: "-34px", rotate: -2 },
+    { sketchIndex: 0, right: "4%", top: "16px", rotate: 3 },
+  ],
+];
+
+function GapDecoration({
+  gapIndex,
+  isInView,
+  scrollProgress,
+}: {
+  gapIndex: number;
+  isInView: boolean;
+  scrollProgress: MotionValue<number>;
+}) {
+  const placements = GAP_LAYOUTS[gapIndex % GAP_LAYOUTS.length];
+  const yA = useTransform(scrollProgress, [0, 1], [30, -30]);
+  const yB = useTransform(scrollProgress, [0, 1], [-20, 20]);
+  const parallaxY = [yA, yB];
+
+  return (
+    <div className="relative my-6 lg:my-10">
+      <motion.div
+        className="h-px bg-sand mx-auto max-w-[200px] lg:max-w-[300px] origin-center"
+        initial={{ scaleX: 0 }}
+        animate={isInView ? { scaleX: 1 } : {}}
+        transition={{ ...spring }}
+      />
+
+      {placements.map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute pointer-events-none"
+          style={{
+            left: p.left,
+            right: p.right,
+            top: p.top,
+            y: parallaxY[i],
+            rotate: p.rotate,
+            opacity: 0.55,
+          }}
+        >
+          <ArchSketch
+            sketch={SKETCHES[p.sketchIndex]}
+            isInView={isInView}
+            delay={0.15 + i * 0.4}
+          />
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 /* ── ProjectShowcase — single project row ────────── */
 
 function ProjectShowcase({
@@ -409,13 +599,11 @@ function ProjectShowcase({
 
   return (
     <div ref={ref}>
-      {/* Divider between projects */}
       {index > 0 && (
-        <motion.div
-          className="h-px bg-sand mx-auto max-w-[200px] lg:max-w-[300px] origin-center my-6 lg:my-10"
-          initial={{ scaleX: 0 }}
-          animate={isInView ? { scaleX: 1 } : {}}
-          transition={{ ...spring, delay: 0 }}
+        <GapDecoration
+          gapIndex={index - 1}
+          isInView={isInView}
+          scrollProgress={scrollYProgress}
         />
       )}
 

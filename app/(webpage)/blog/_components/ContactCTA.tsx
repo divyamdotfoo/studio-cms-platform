@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * ContactCTA — Two variants for use inside blog posts.
@@ -48,7 +50,10 @@ export function ContactCTA({
       </p>
       <Link
         href="/whatsapp"
-        className="mt-5 inline-block bg-ink text-cream px-7 py-3 text-sm font-medium tracking-wide uppercase transition-colors duration-200 hover:bg-bronze"
+        className={cn(
+          buttonVariants({ variant: "default" }),
+          "mt-5 px-7 py-3 h-auto text-sm tracking-wide uppercase"
+        )}
       >
         Get in Touch
       </Link>
