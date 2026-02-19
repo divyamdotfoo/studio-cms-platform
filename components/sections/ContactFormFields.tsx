@@ -1,32 +1,30 @@
 "use client";
 
-import { useId, useState, useTransition } from "react";
+import { useId, useRef, useState, useTransition } from "react";
+import { motion, useInView } from "motion/react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { submitContact } from "@/app/(webpage)/contact-us/actions";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { submitContact } from "@/actions/contact";
+import { springGentle, STAGGER } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\d{10}$/;
 
-interface ContactFormFieldsProps {
-  /** "light" for the /contact-us page, "dark" for the footer */
-  theme?: "light" | "dark";
-  className?: string;
-}
-
-export function ContactFormFields({
-  theme = "light",
-  className,
-}: ContactFormFieldsProps) {
+export function ContactFormFields({ className }: { className?: string }) {
   const uid = useId();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const isInView = useInView(formRef, { once: true, margin: "-60px" });
 
   function validate(): boolean {
     const next: Record<string, string> = {};
@@ -60,6 +58,7 @@ export function ContactFormFields({
         name: name.trim(),
         email: email.trim() || undefined,
         phone: phone.trim() || undefined,
+        message: message.trim() || undefined,
       });
 
       if (result.success) {
@@ -67,6 +66,7 @@ export function ContactFormFields({
         setName("");
         setEmail("");
         setPhone("");
+        setMessage("");
         setErrors({});
       } else {
         toast.error(result.error ?? "Something went wrong.");
@@ -74,29 +74,25 @@ export function ContactFormFields({
     });
   }
 
-  const isDark = theme === "dark";
+  const fieldMotion = (index: number) => ({
+    initial: { opacity: 0, y: 14 } as const,
+    animate: isInView ? { opacity: 1, y: 0 } : {},
+    transition: { ...springGentle, delay: STAGGER * index * 2 },
+  });
 
-  const labelCn = cn(
-    "text-[13px] uppercase tracking-widest",
-    isDark ? "text-sand" : "text-drift"
-  );
+  const labelCn = "text-[13px] uppercase tracking-widest text-drift";
 
-  const inputCn = cn(
-    "h-11 px-4 text-sm placeholder:text-drift/50 focus-visible:ring-bronze/20",
-    isDark
-      ? "border-stone bg-[#1e1d1c] text-ivory placeholder:text-drift focus-visible:border-sand"
-      : "border-sand bg-ivory/50 focus-visible:border-bronze"
-  );
+  const inputCn =
+    "h-11 px-4 text-sm placeholder:text-drift/50 focus-visible:ring-bronze/20 border-sand bg-ivory/50 focus-visible:border-bronze";
 
   const errorCn = "text-xs text-red-500";
 
   return (
-    <form onSubmit={handleSubmit} className={className}>
+    <form ref={formRef} onSubmit={handleSubmit} className={className}>
       <div className="space-y-5">
-        {/* Name */}
-        <div className="space-y-2">
+        <motion.div className="space-y-2" {...fieldMotion(0)}>
           <Label htmlFor={`${uid}-name`} className={labelCn}>
-            Name <span className={isDark ? "text-ivory/50" : "text-bronze"}>*</span>
+            Name <span className="text-bronze">*</span>
           </Label>
           <Input
             id={`${uid}-name`}
@@ -108,10 +104,9 @@ export function ContactFormFields({
             className={inputCn}
           />
           {errors.name && <p className={errorCn}>{errors.name}</p>}
-        </div>
+        </motion.div>
 
-        {/* Email */}
-        <div className="space-y-2">
+        <motion.div className="space-y-2" {...fieldMotion(1)}>
           <Label htmlFor={`${uid}-email`} className={labelCn}>
             Email
           </Label>
@@ -125,10 +120,9 @@ export function ContactFormFields({
             className={inputCn}
           />
           {errors.email && <p className={errorCn}>{errors.email}</p>}
-        </div>
+        </motion.div>
 
-        {/* Phone */}
-        <div className="space-y-2">
+        <motion.div className="space-y-2" {...fieldMotion(2)}>
           <Label htmlFor={`${uid}-phone`} className={labelCn}>
             Phone
           </Label>
@@ -142,24 +136,35 @@ export function ContactFormFields({
             className={inputCn}
           />
           {errors.phone && <p className={errorCn}>{errors.phone}</p>}
-        </div>
+        </motion.div>
 
-        {/* Cross-field error */}
+        <motion.div className="space-y-2" {...fieldMotion(3)}>
+          <Label htmlFor={`${uid}-message`} className={labelCn}>
+            Message
+          </Label>
+          <Textarea
+            id={`${uid}-message`}
+            placeholder="Tell us about your project..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="px-4 py-3 text-sm placeholder:text-drift/50 focus-visible:ring-bronze/20 min-h-[100px] border-sand bg-ivory/50 focus-visible:border-bronze"
+          />
+        </motion.div>
+
         {errors.contact && <p className={errorCn}>{errors.contact}</p>}
 
-        {/* Submit */}
-        <Button
-          type="submit"
-          disabled={isPending}
-          className={cn(
-            "h-11 px-8 text-sm uppercase tracking-widest transition-colors duration-200 w-full lg:w-auto",
-            isDark
-              ? "bg-ivory text-[#131211] hover:bg-sand"
-              : "bg-ink text-cream hover:bg-bronze"
-          )}
-        >
-          {isPending ? "Sending..." : "Send Message"}
-        </Button>
+        <motion.div {...fieldMotion(4)}>
+          <Button
+            type="submit"
+            disabled={isPending}
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "h-11 px-8 text-sm uppercase tracking-widest w-full lg:w-auto"
+            )}
+          >
+            {isPending ? "Sending..." : "Send Message"}
+          </Button>
+        </motion.div>
       </div>
     </form>
   );

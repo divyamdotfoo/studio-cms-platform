@@ -18,7 +18,6 @@ const NAV_LINKS = [
   { label: "Projects", href: "/projects" },
   { label: "Services", href: "/services" },
   { label: "Blogs", href: "/blogs" },
-  { label: "Contact Us", href: "/contact-us" },
 ];
 
 /* ────────────────────────────────────────────────────
@@ -119,189 +118,220 @@ function YouTubeIcon({ className }: { className?: string }) {
 
 export function Footer() {
   const { general } = useContent();
-  const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const contactRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
+  const isContactInView = useInView(contactRef, { once: true, margin: "-40px" });
+  const isFooterInView = useInView(footerRef, { once: true, margin: "-40px" });
 
   const year = new Date().getFullYear();
   const copyright = COPYRIGHT_TEMPLATE.replace("{year}", String(year));
 
   return (
-    <footer ref={ref} className="bg-[#131211]" aria-label="Footer">
-      <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
-        {/* ── Main content ── */}
-        <div className="pt-14 lg:pt-20 pb-10 lg:pb-14">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.2fr] gap-12 lg:gap-10">
-            {/* ── Brand column ── */}
+    <>
+      {/* ── Contact-us section — above the dark footer ── */}
+      <section
+        ref={contactRef}
+        className="bg-[#f0eeea] border-t border-sand/30"
+        aria-label="Contact us"
+      >
+        <div className="mx-auto max-w-[1400px] px-5 lg:px-10 py-16 lg:py-24">
+          <div className="lg:grid lg:grid-cols-[1fr_1fr] lg:gap-16 xl:gap-24 lg:items-start">
+            {/* Left: heading + description */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              className="max-w-[480px] mb-12 lg:mb-0"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isContactInView ? { opacity: 1, y: 0 } : {}}
               transition={springGentle}
             >
-              <Link href="/" aria-label="Vision Architect — Home">
-                <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-ivory">
-                  {BRAND}
-                </span>
-              </Link>
-              <p className="mt-3 text-[15px] leading-relaxed text-sand max-w-[280px]">
-                {general.tagline_footer}
-              </p>
-
-              {/* Socials */}
-              <div className="flex items-center gap-3 mt-6">
-                <a
-                  href={general.insta}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
-                  aria-label="Instagram"
-                >
-                  <InstagramIcon className="w-[16px] h-[16px]" />
-                </a>
-                <a
-                  href={general.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
-                  aria-label="YouTube"
-                >
-                  <YouTubeIcon className="w-[16px] h-[16px]" />
-                </a>
-              </div>
-            </motion.div>
-
-            {/* ── Quick links column ── */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 2 }}
-            >
-              <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
-                Quick links
-              </span>
-
-              <ul className="space-y-3">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            {/* ── Contact column ── */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 3 }}
-            >
-              <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
+              <span className="text-[13px] uppercase tracking-widest text-drift block mb-4">
                 Get in touch
               </span>
-
-              <ul className="space-y-3.5">
-                <li>
-                  <a
-                    href={general.phone}
-                    className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
-                  >
-                    <PhoneIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
-                    Call us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={general.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
-                  >
-                    <WhatsAppIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
-                    WhatsApp
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={general.email}
-                    className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
-                  >
-                    <MailIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
-                    Email us
-                  </a>
-                </li>
-              </ul>
+              <h2 className="font-serif text-[clamp(1.8rem,5vw,2.8rem)] leading-tight tracking-[-0.02em] text-ink">
+                Have a project in mind?
+              </h2>
+              <div className="w-12 h-px bg-bronze my-6 lg:my-8" />
+              <p className="text-[15px] leading-[1.8] text-stone max-w-[400px]">
+                Whether you&rsquo;re planning a home, a cafe, or a commercial
+                space &mdash; share your details and our team will get back to
+                you shortly.
+              </p>
             </motion.div>
 
-            {/* ── Contact form column ── */}
+            {/* Right: contact form */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isContactInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ ...springGentle, delay: STAGGER * 2 }}
+            >
+              <ContactFormFields />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Dark footer ── */}
+      <footer ref={footerRef} className="bg-[#131211]" aria-label="Footer">
+        <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
+          <div className="pt-14 lg:pt-20 pb-10 lg:pb-14">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-12 lg:gap-10">
+              {/* ── Brand column ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
+                transition={springGentle}
+              >
+                <Link href="/" aria-label="Vision Architect — Home">
+                  <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-ivory">
+                    {BRAND}
+                  </span>
+                </Link>
+                <p className="mt-3 text-[15px] leading-relaxed text-sand max-w-[280px]">
+                  {general.tagline_footer}
+                </p>
+
+                <div className="flex items-center gap-3 mt-6">
+                  <a
+                    href={general.insta}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                    aria-label="Instagram"
+                  >
+                    <InstagramIcon className="w-[16px] h-[16px]" />
+                  </a>
+                  <a
+                    href={general.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                    aria-label="YouTube"
+                  >
+                    <YouTubeIcon className="w-[16px] h-[16px]" />
+                  </a>
+                </div>
+              </motion.div>
+
+              {/* ── Quick links column ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ ...springGentle, delay: STAGGER * 2 }}
+              >
+                <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
+                  Quick links
+                </span>
+
+                <ul className="space-y-3">
+                  {NAV_LINKS.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* ── Contact info column ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ ...springGentle, delay: STAGGER * 3 }}
+              >
+                <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
+                  Get in touch
+                </span>
+
+                <ul className="space-y-3.5">
+                  <li>
+                    <a
+                      href={general.phone}
+                      className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                    >
+                      <PhoneIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
+                      Call us
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href={general.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                    >
+                      <WhatsAppIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
+                      WhatsApp
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href={general.email}
+                      className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                    >
+                      <MailIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
+                      Email us
+                    </a>
+                  </li>
+                </ul>
+              </motion.div>
+            </div>
+
+            {/* ── Map embed — full width below ── */}
+            <motion.div
+              className="mt-12 lg:mt-14 overflow-hidden border border-stone"
+              initial={{ opacity: 0, y: 12 }}
+              animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...springGentle, delay: STAGGER * 4 }}
             >
-              <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
-                Send us a message
-              </span>
-
-              <ContactFormFields theme="dark" />
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d671.5169117158848!2d78.13765208010588!3d29.93671897216422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39094706cf38250d%3A0x4e520b77699b721!2sVISION%20ARCHITECT!5e0!3m2!1sen!2sin!4v1771153421760!5m2!1sen!2sin"
+                width="100%"
+                height="200"
+                style={{
+                  border: 0,
+                  display: "block",
+                  filter: "grayscale(0.1) brightness(0.75)",
+                }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Vision Architect location on Google Maps"
+              />
             </motion.div>
           </div>
 
-          {/* ── Map embed — full width below ── */}
+          {/* ── Bottom bar ── */}
           <motion.div
-            className="mt-12 lg:mt-14 overflow-hidden border border-stone"
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ ...springGentle, delay: STAGGER * 5 }}
-          >
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d671.5169117158848!2d78.13765208010588!3d29.93671897216422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39094706cf38250d%3A0x4e520b77699b721!2sVISION%20ARCHITECT!5e0!3m2!1sen!2sin!4v1771153421760!5m2!1sen!2sin"
-              width="100%"
-              height="200"
-              style={{
-                border: 0,
-                display: "block",
-                filter: "grayscale(0.1) brightness(0.75)",
-              }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Vision Architect location on Google Maps"
-            />
-          </motion.div>
+            className="h-px bg-stone origin-left"
+            initial={{ scaleX: 0 }}
+            animate={isFooterInView ? { scaleX: 1 } : { scaleX: 0 }}
+            transition={spring}
+          />
+
+          <div className="py-5 pb-32 lg:py-6 lg:pb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <motion.p
+              className="text-[13px] text-drift tracking-wide"
+              initial={{ opacity: 0 }}
+              animate={isFooterInView ? { opacity: 1 } : {}}
+              transition={{ ...springGentle, delay: STAGGER * 5 }}
+            >
+              {copyright}
+            </motion.p>
+
+            <motion.p
+              className="text-[13px] text-drift tracking-wide"
+              initial={{ opacity: 0 }}
+              animate={isFooterInView ? { opacity: 1 } : {}}
+              transition={{ ...springGentle, delay: STAGGER * 6 }}
+            >
+              Crafted with care in Haridwar
+            </motion.p>
+          </div>
         </div>
-
-        {/* ── Bottom bar ── */}
-        <motion.div
-          className="h-px bg-stone origin-left"
-          initial={{ scaleX: 0 }}
-          animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-          transition={spring}
-        />
-
-        <div className="py-5 pb-32 lg:py-6 lg:pb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <motion.p
-            className="text-[13px] text-drift tracking-wide"
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ ...springGentle, delay: STAGGER * 6 }}
-          >
-            {copyright}
-          </motion.p>
-
-          <motion.p
-            className="text-[13px] text-drift tracking-wide"
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ ...springGentle, delay: STAGGER * 7 }}
-          >
-            Crafted with care in Haridwar
-          </motion.p>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }
