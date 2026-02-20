@@ -292,6 +292,44 @@
           ]
         }
       },
+      "faq": {
+        "label": "Common questions",
+        "heading": {
+          "line1": "Questions we",
+          "line2": "hear {italic}",
+          "italicWord": "often"
+        },
+        "description": "Building or renovating in Uttarakhand? Here are the answers to the questions families and business owners ask us most.",
+        "items": {
+          "extendable": true,
+          "values": [
+            {
+              "question": "How much does it cost to build a house in Haridwar?",
+              "answer": "Construction costs in Haridwar typically range from ₹1,600 to ₹2,800 per sq.ft depending on the design complexity, materials, and finishes you choose. We always begin with a transparent budget discussion so there are no surprises later. Costs vary based on site conditions and specifications — reach out and we'll give you an honest estimate."
+            },
+            {
+              "question": "Do you follow Vastu principles in your designs?",
+              "answer": "Absolutely. Most families in Haridwar and Rishikesh feel strongly about Vastu, and we respect that. We integrate Vastu-compliant layouts — entrance direction, puja room placement, kitchen positioning — right from the initial floor plan, without compromising on modern aesthetics or functionality."
+            },
+            {
+              "question": "Can you design homes for hilly or sloped terrain?",
+              "answer": "Yes — hill construction is part of what makes designing in Uttarakhand unique. We have experience working with sloped sites in Rishikesh and surrounding areas. Our designs account for soil conditions, drainage, retaining walls, and the natural contour of the land to create homes that sit naturally in the landscape."
+            },
+            {
+              "question": "How long does a typical home project take?",
+              "answer": "A standard residential project usually takes 6–14 months from initial design to handover, depending on the size and complexity. The design phase itself is typically 4–6 weeks. We provide a clear timeline at the start and keep you updated at every stage."
+            },
+            {
+              "question": "Do you handle construction or only design?",
+              "answer": "We offer both. While our core strength is architectural design and planning, we also provide end-to-end project execution — from construction supervision to material sourcing — so you have a single point of contact throughout the entire build."
+            },
+            {
+              "question": "Which areas in Uttarakhand do you serve?",
+              "answer": "We're based in Haridwar and actively work across Rishikesh, Dehradun, and the surrounding towns in Uttarakhand. Whether your site is in the city or tucked into the hills, we're happy to visit and assess it in person."
+            }
+          ]
+        }
+      },
       "social": {
         "label": "Follow our journey",
         "heading": {

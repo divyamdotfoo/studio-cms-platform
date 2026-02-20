@@ -513,7 +513,9 @@ function HeaderSketches() {
           key={i}
           className="relative"
           style={{
-            transform: `translateY(${i % 2 === 0 ? -12 : 12}px) rotate(${i === 0 ? -3 : i === 1 ? 2 : -1.5}deg)`,
+            transform: `translateY(${i % 2 === 0 ? -12 : 12}px) rotate(${
+              i === 0 ? -3 : i === 1 ? 2 : -1.5
+            }deg)`,
           }}
         >
           <ArchSketch sketch={sketch} inView={inView} delay={i * 0.4} />

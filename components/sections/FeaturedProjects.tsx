@@ -608,7 +608,7 @@ function ProjectShowcase({
         />
       )}
 
-      <div className="py-6 lg:py-14">
+      <div className="py-6">
         {/* Mobile: always collage first, then text */}
         <div className="lg:hidden">
           <ImageCollage
@@ -685,7 +685,7 @@ function SeeAllButton() {
   return (
     <motion.div
       ref={ref}
-      className="flex justify-center mt-12 lg:mt-16 pb-6"
+      className="flex justify-center"
       initial={{ opacity: 0, y: 16 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ ...spring }}

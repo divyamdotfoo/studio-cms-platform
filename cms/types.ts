@@ -134,11 +134,24 @@ export interface SocialContent {
   channels: ContentArray<SocialChannel>;
 }
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface FaqContent {
+  label: string;
+  heading: SectionHeading;
+  description: string;
+  items: ContentArray<FaqItem>;
+}
+
 export interface HomepageContent {
   hero: HeroContent;
   projectGallery: ProjectGalleryContent;
   services: ServicesContent;
   reviews: ReviewsContent;
+  faq: FaqContent;
   social: SocialContent;
 }
 
