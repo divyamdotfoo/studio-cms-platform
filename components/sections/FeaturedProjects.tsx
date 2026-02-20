@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import {
   motion,
   useInView,
@@ -8,7 +9,7 @@ import {
   useTransform,
   MotionValue,
 } from "motion/react";
-import { XIcon } from "lucide-react";
+import { ArrowRight, XIcon } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER, T_FEATURED } from "@/lib/motion";
 import type { FeaturedProject } from "@/cms/types";
@@ -675,6 +676,31 @@ function ProjectShowcase({
   );
 }
 
+/* ── See All Projects CTA ────────────────────────── */
+
+function SeeAllButton() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      className="flex justify-center mt-12 lg:mt-16 pb-6"
+      initial={{ opacity: 0, y: 16 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ ...spring }}
+    >
+      <Link
+        href="/projects"
+        className="group inline-flex items-center gap-2 border border-sand px-6 py-3 text-[13px] uppercase tracking-widest text-stone transition-colors hover:border-bronze hover:text-ink"
+      >
+        See all projects
+        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+      </Link>
+    </motion.div>
+  );
+}
+
 /* ── FeaturedProjects — main section ─────────────── */
 
 export function FeaturedProjects() {
@@ -733,6 +759,9 @@ export function FeaturedProjects() {
             isFirst={i === 0}
           />
         ))}
+
+        {/* ── See all projects CTA ── */}
+        <SeeAllButton />
       </div>
     </section>
   );

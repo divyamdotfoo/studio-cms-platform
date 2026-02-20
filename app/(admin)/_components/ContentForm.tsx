@@ -332,6 +332,7 @@ function ProjectsSection({ form }: FormProps) {
             description: "",
             images: [],
             details: [],
+            features: [],
           })
         }
       />
@@ -383,6 +384,7 @@ function SingleProjectFields({
   const e = (p: string) => hasErr(errors, p);
   const pre = `projects.${index}` as const;
   const details = useFieldArray({ control, name: `${pre}.details` as never });
+  const features = useFieldArray({ control, name: `${pre}.features` as never });
   const images = useFieldArray({ control, name: `${pre}.images` as never });
   const projectId = watch(`${pre}.id` as never) as unknown as string;
   const store = useImageStore();
@@ -536,6 +538,24 @@ function SingleProjectFields({
               className={INPUT_CLS}
             />
             <RemoveButton onClick={() => details.remove(detIdx)} />
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        <ArrayHeader
+          label="Features"
+          onAdd={() => features.append("" as never)}
+        />
+        {features.fields.map((featField, featIdx) => (
+          <div key={featField.id} className="flex items-center gap-3">
+            <Input
+              placeholder="Feature point"
+              {...register(`${pre}.features.${featIdx}` as never, REQ)}
+              aria-invalid={e(`${pre}.features.${featIdx}`)}
+              className={INPUT_CLS}
+            />
+            <RemoveButton onClick={() => features.remove(featIdx)} />
           </div>
         ))}
       </div>

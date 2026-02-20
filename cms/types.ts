@@ -59,6 +59,7 @@ export interface Project {
   description: string;
   images: string[];
   details: { label: string; value: string }[];
+  features: string[];
 }
 
 /* ── Featured project reference (used inside the hero gallery) ── */
