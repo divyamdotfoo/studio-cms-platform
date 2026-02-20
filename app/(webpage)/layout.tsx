@@ -3,6 +3,8 @@ import { ContentProvider } from "@/lib/content-ctx";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
 import content from "@/cms/active/content.json";
 
 export const metadata: Metadata = {
@@ -31,6 +33,8 @@ export default function WebpageLayout({
 }>) {
   return (
     <ContentProvider content={content}>
+      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={websiteJsonLd()} />
       <Navbar />
       {children}
       <Footer />

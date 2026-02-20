@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { AboutPage } from "@/components/pages/About";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
   title: "About — Vision Architect | Ar. Ujjwal Kapoor",
@@ -8,5 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <AboutPage />;
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", href: "/" },
+          { name: "About", href: "/about" },
+        ])}
+      />
+      <AboutPage />
+    </>
+  );
 }

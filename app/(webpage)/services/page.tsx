@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ComingSoon } from "@/components/pages/ComingSoon";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
   title: "Services — Vision Architect",
@@ -8,5 +10,15 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <ComingSoon title="Services" />;
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", href: "/" },
+          { name: "Services", href: "/services" },
+        ])}
+      />
+      <ComingSoon title="Services" />
+    </>
+  );
 }

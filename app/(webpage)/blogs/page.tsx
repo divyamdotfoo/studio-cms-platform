@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { posts } from "@/app/(webpage)/blog/_data/posts";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
   title: "Blogs — Vision Architect",
@@ -12,6 +14,12 @@ export const metadata: Metadata = {
 export default function BlogsPage() {
   return (
     <main className="pt-28 lg:pt-36 pb-20 lg:pb-28">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", href: "/" },
+          { name: "Blogs", href: "/blogs" },
+        ])}
+      />
       <div className="mx-auto max-w-[1100px] px-5 lg:px-10">
         {/* Header */}
         <div className="max-w-2xl mb-14 lg:mb-20">
