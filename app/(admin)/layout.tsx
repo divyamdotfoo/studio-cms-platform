@@ -1,13 +1,4 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
-import "../globals.css";
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: "Admin Panel — Vision Architect",
@@ -19,15 +10,5 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" className={dmSans.variable} suppressHydrationWarning>
-      <body
-        className="font-sans antialiased bg-cream text-ink min-h-screen"
-        suppressHydrationWarning
-      >
-        <Toaster />
-        {children}
-      </body>
-    </html>
-  );
+  return <div className="min-h-screen">{children}</div>;
 }

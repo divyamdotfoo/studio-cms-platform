@@ -1,31 +1,9 @@
-import type { Metadata, Viewport } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import type { Metadata } from "next";
 import { ContentProvider } from "@/lib/content-ctx";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
 import content from "@/cms/active/content.json";
-import { Toaster } from "@/components/ui/sonner";
-import "../globals.css";
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  viewportFit: "cover",
-};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://visionarchitect.in"),
@@ -46,22 +24,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default function WebpageLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
-      <body className="font-sans antialiased bg-cream text-ink">
-        <ContentProvider content={content}>
-          <Toaster />
-          <Navbar />
-          {children}
-          <Footer />
-          <Dock />
-        </ContentProvider>
-      </body>
-    </html>
+    <ContentProvider content={content}>
+      <Navbar />
+      {children}
+      <Footer />
+      <Dock />
+    </ContentProvider>
   );
 }
