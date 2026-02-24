@@ -63,12 +63,16 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
-    users: UserAuthOperations;
+    admin: AdminAuthOperations;
   };
   blocks: {};
   collections: {
-    users: User;
+    admin: Admin;
+    faq: Faq;
     media: Media;
+    'micro-offerings': MicroOffering;
+    project: Project;
+    reviews: Review;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,27 +80,37 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    admin: AdminSelect<false> | AdminSelect<true>;
+    faq: FaqSelect<false> | FaqSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'micro-offerings': MicroOfferingsSelect<false> | MicroOfferingsSelect<true>;
+    project: ProjectSelect<false> | ProjectSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    meta: Meta;
+    homepage: Homepage;
+  };
+  globalsSelect: {
+    meta: MetaSelect<false> | MetaSelect<true>;
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+  };
   locale: null;
-  user: User;
+  user: Admin;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
-export interface UserAuthOperations {
+export interface AdminAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -116,10 +130,11 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "admin".
  */
-export interface User {
-  id: string;
+export interface Admin {
+  id: number;
+  name: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -137,15 +152,26 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: 'users';
+  collection: 'admin';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq".
+ */
+export interface Faq {
+  id: number;
+  question: string;
+  answer: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
-  alt: string;
+  id: number;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -159,11 +185,64 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Micro Offerings are the small services that we offer to our clients. They are not part of our main services but are offered as a separate service.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "micro-offerings".
+ */
+export interface MicroOffering {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project".
+ */
+export interface Project {
+  id: number;
+  name: string;
+  projectImage?:
+    | {
+        relationTo: 'media';
+        value: number | Media;
+      }[]
+    | null;
+  descriptionShort: string;
+  descriptionLong: string;
+  features: {
+    feature: string;
+    id?: string | null;
+  }[];
+  area: string;
+  timeline: string;
+  type: 'residential' | 'shops-showrooms' | 'offices' | 'restaurants';
+  location: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  name: string;
+  content: string;
+  video?: {
+    relationTo: 'media';
+    value: number | Media;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -180,20 +259,36 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'admin';
+        value: number | Admin;
+      } | null)
+    | ({
+        relationTo: 'faq';
+        value: number | Faq;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'micro-offerings';
+        value: number | MicroOffering;
+      } | null)
+    | ({
+        relationTo: 'project';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: 'users';
-    value: string | User;
+    relationTo: 'admin';
+    value: number | Admin;
   };
   updatedAt: string;
   createdAt: string;
@@ -203,10 +298,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
-    relationTo: 'users';
-    value: string | User;
+    relationTo: 'admin';
+    value: number | Admin;
   };
   key?: string | null;
   value?:
@@ -226,7 +321,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -234,9 +329,10 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "admin_select".
  */
-export interface UsersSelect<T extends boolean = true> {
+export interface AdminSelect<T extends boolean = true> {
+  name?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -256,10 +352,20 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq_select".
+ */
+export interface FaqSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -271,6 +377,48 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "micro-offerings_select".
+ */
+export interface MicroOfferingsSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project_select".
+ */
+export interface ProjectSelect<T extends boolean = true> {
+  name?: T;
+  projectImage?: T;
+  descriptionShort?: T;
+  descriptionLong?: T;
+  features?:
+    | T
+    | {
+        feature?: T;
+        id?: T;
+      };
+  area?: T;
+  timeline?: T;
+  type?: T;
+  location?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  name?: T;
+  content?: T;
+  video?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -311,6 +459,150 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "meta".
+ */
+export interface Meta {
+  id: number;
+  phone: string;
+  whatsapp: string;
+  email: string;
+  insta: string;
+  youtube: string;
+  tagline_footer: string;
+  instaFollowers: string;
+  youtubeSubscribers: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  heroHeadlinePartOne: string;
+  heroHeadlinePartTwo: string;
+  heroDescription: string;
+  heroLocation: string;
+  featuredProjectsSectionLabel: string;
+  featuredProjectsSectionHeadlinePartOne: string;
+  featuredProjectsSectionHeadlinePartTwo: string;
+  featuredProjects: (number | Project)[];
+  servicesSectionLabel: string;
+  servicesSectionHeadlinePartOne: string;
+  servicesSectionHeadlinePartTwo: string;
+  servicesSectionDescription: string;
+  servicesSectionStats: {
+    stat: string;
+    label: string;
+    id?: string | null;
+  }[];
+  servicesSectionList: {
+    serviceHeading?: string | null;
+    serviceDescription?: string | null;
+    serviceDeliverables?:
+      | {
+          relationTo: 'micro-offerings';
+          value: number | MicroOffering;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  reviewsSectionLabel: string;
+  reviewsSectionHeadlinePartOne?: string | null;
+  reviewsSectionHeadlinePartTwo?: string | null;
+  featuredReview: {
+    relationTo: 'reviews';
+    value: number | Review;
+  };
+  reviewsItems: {
+    relationTo: 'reviews';
+    value: number | Review;
+  }[];
+  faqSectionLabel: string;
+  faqSectionHeadlinePartOne: string;
+  faqSectionHeadlinePartTwo: string;
+  faqSectionDescription: string;
+  faqSectionItems: {
+    relationTo: 'faq';
+    value: number | Faq;
+  }[];
+  socialSectionLabel: string;
+  socialSectionHeadlinePartOne?: string | null;
+  socialSectionHeadlinePartTwo?: string | null;
+  socialSectionDescription: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "meta_select".
+ */
+export interface MetaSelect<T extends boolean = true> {
+  phone?: T;
+  whatsapp?: T;
+  email?: T;
+  insta?: T;
+  youtube?: T;
+  tagline_footer?: T;
+  instaFollowers?: T;
+  youtubeSubscribers?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  heroHeadlinePartOne?: T;
+  heroHeadlinePartTwo?: T;
+  heroDescription?: T;
+  heroLocation?: T;
+  featuredProjectsSectionLabel?: T;
+  featuredProjectsSectionHeadlinePartOne?: T;
+  featuredProjectsSectionHeadlinePartTwo?: T;
+  featuredProjects?: T;
+  servicesSectionLabel?: T;
+  servicesSectionHeadlinePartOne?: T;
+  servicesSectionHeadlinePartTwo?: T;
+  servicesSectionDescription?: T;
+  servicesSectionStats?:
+    | T
+    | {
+        stat?: T;
+        label?: T;
+        id?: T;
+      };
+  servicesSectionList?:
+    | T
+    | {
+        serviceHeading?: T;
+        serviceDescription?: T;
+        serviceDeliverables?: T;
+        id?: T;
+      };
+  reviewsSectionLabel?: T;
+  reviewsSectionHeadlinePartOne?: T;
+  reviewsSectionHeadlinePartTwo?: T;
+  featuredReview?: T;
+  reviewsItems?: T;
+  faqSectionLabel?: T;
+  faqSectionHeadlinePartOne?: T;
+  faqSectionHeadlinePartTwo?: T;
+  faqSectionDescription?: T;
+  faqSectionItems?: T;
+  socialSectionLabel?: T;
+  socialSectionHeadlinePartOne?: T;
+  socialSectionHeadlinePartTwo?: T;
+  socialSectionDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
