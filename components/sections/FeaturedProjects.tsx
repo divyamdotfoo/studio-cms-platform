@@ -12,7 +12,7 @@ import {
 import { ArrowRight, XIcon } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER, T_FEATURED } from "@/lib/motion";
-import type { FeaturedProject } from "@/cms/types";
+import type { Project } from "@/payload-types";
 import {
   MorphingDialog,
   MorphingDialogTrigger,
@@ -43,6 +43,13 @@ interface CollageSlot {
   z: number;
   /** Per-image parallax multiplier (higher z = more travel) */
   parallaxFactor: number;
+}
+
+interface FeaturedProject {
+  name: string;
+  description: string;
+  images: string[];
+  details: { label: string; value: string }[];
 }
 
 const COLLAGE_LAYOUTS: CollageSlot[][] = [
@@ -704,25 +711,43 @@ function SeeAllButton() {
 /* ── FeaturedProjects — main section ─────────────── */
 
 export function FeaturedProjects() {
-  const {
-    projects: allProjects,
-    pages: {
-      homepage: { projectGallery },
-    },
-  } = useContent();
+  const { homepage, projects } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 
-  const resolvedProjects: FeaturedProject[] = projectGallery.projects.values
-    .map((ref) => {
-      const project = allProjects.find((p) => p.id === ref.id);
+  const projectById = new Map(projects.map((project) => [project.id, project]));
+
+  const toFeaturedProject = (project: Project): FeaturedProject => {
+    const images =
+      project.projectImage
+        ?.map((image) => {
+          if (typeof image.value === "number") return null;
+          return image.value.url ?? null;
+        })
+        .filter((url): url is string => Boolean(url)) ?? [];
+
+    return {
+      name: project.name,
+      description: project.descriptionLong || project.descriptionShort,
+      images,
+      details: [
+        { label: "Area", value: project.area },
+        { label: "Timeline", value: project.timeline },
+        { label: "Type", value: project.type },
+        { label: "Location", value: project.location },
+      ],
+    };
+  };
+
+  const resolvedProjects: FeaturedProject[] = homepage.featuredProjects
+    .map((featuredProject) => {
+      const project =
+        typeof featuredProject === "number"
+          ? projectById.get(featuredProject)
+          : featuredProject;
+
       if (!project) return null;
-      return {
-        name: project.name,
-        description: project.description,
-        images: ref.featuredImages,
-        details: project.details,
-      } satisfies FeaturedProject;
+      return toFeaturedProject(project);
     })
     .filter((p): p is FeaturedProject => p !== null);
 
@@ -746,7 +771,7 @@ export function FeaturedProjects() {
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...spring, delay: T_FEATURED + 0.05 }}
           >
-            {projectGallery.label}
+            {homepage.featuredProjectsSectionLabel}
           </motion.span>
         </div>
 

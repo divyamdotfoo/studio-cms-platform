@@ -117,7 +117,7 @@ function YouTubeIcon({ className }: { className?: string }) {
  * ──────────────────────────────────────────────────── */
 
 export function Footer() {
-  const { general } = useContent();
+  const { meta } = useContent();
   const contactRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const isContactInView = useInView(contactRef, {
@@ -189,12 +189,12 @@ export function Footer() {
                   </span>
                 </Link>
                 <p className="mt-3 text-[15px] leading-relaxed text-sand max-w-[280px]">
-                  {general.tagline_footer}
+                  {meta.tagline_footer}
                 </p>
 
                 <div className="flex items-center gap-3 mt-6">
                   <a
-                    href={general.insta}
+                    href={meta.insta}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
@@ -203,7 +203,7 @@ export function Footer() {
                     <InstagramIcon className="w-[16px] h-[16px]" />
                   </a>
                   <a
-                    href={general.youtube}
+                    href={meta.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
@@ -251,7 +251,7 @@ export function Footer() {
                 <ul className="space-y-3.5">
                   <li>
                     <a
-                      href={general.phone}
+                      href={meta.phone}
                       className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                     >
                       <PhoneIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
@@ -260,7 +260,7 @@ export function Footer() {
                   </li>
                   <li>
                     <a
-                      href={general.whatsapp}
+                      href={meta.whatsapp}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
@@ -271,7 +271,7 @@ export function Footer() {
                   </li>
                   <li>
                     <a
-                      href={general.email}
+                      href={meta.email}
                       className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                     >
                       <MailIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />

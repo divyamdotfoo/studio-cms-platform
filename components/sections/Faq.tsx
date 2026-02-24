@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
-import type { FaqItem } from "@/cms/types";
+import type { Faq as FaqItem } from "@/payload-types";
 
 /* ────────────────────────────────────────────────────
  * FaqRow — expandable on hover (desktop) / tap (mobile)
@@ -125,27 +125,6 @@ function FaqRow({
 }
 
 /* ────────────────────────────────────────────────────
- * Heading renderer — replaces {italic} token
- * ──────────────────────────────────────────────────── */
-
-function RichHeadingLine({
-  template,
-  italicWord,
-}: {
-  template: string;
-  italicWord: string;
-}) {
-  const parts = template.split("{italic}");
-  return (
-    <>
-      {parts[0]}
-      <span className="italic">{italicWord}</span>
-      {parts[1]}
-    </>
-  );
-}
-
-/* ────────────────────────────────────────────────────
  * FAQ section
  *
  * Layout mirrors Reviews & Social:
@@ -154,10 +133,17 @@ function RichHeadingLine({
  * ──────────────────────────────────────────────────── */
 
 export function Faq() {
-  const { pages: { homepage: { faq } } } = useContent();
+  const { homepage, faq } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+  const faqById = new Map(faq.map((item) => [item.id, item]));
+  const faqItems = homepage.faqSectionItems
+    .map((item) =>
+      typeof item.value === "number" ? faqById.get(item.value) ?? null : item.value
+    )
+    .filter((item): item is FaqItem => item !== null);
 
   const handleToggle = (index: number) => {
     setExpandedIndex((prev) => (prev === index ? null : index));
@@ -184,15 +170,12 @@ export function Faq() {
               transition={springGentle}
             >
               <span className="text-[13px] uppercase tracking-[0.12em] text-drift block mb-4 lg:mb-5">
-                {faq.label}
+                {homepage.faqSectionLabel}
               </span>
               <h2 className="font-serif text-[clamp(1.8rem,6vw,3.4rem)] leading-[1.05] tracking-[-0.015em] text-ink">
-                {faq.heading.line1}
+                {homepage.faqSectionHeadlinePartOne}
                 <br />
-                <RichHeadingLine
-                  template={faq.heading.line2}
-                  italicWord={faq.heading.italicWord}
-                />
+                {homepage.faqSectionHeadlinePartTwo}
               </h2>
 
               <motion.p
@@ -201,14 +184,14 @@ export function Faq() {
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...springGentle, delay: 0.15 }}
               >
-                {faq.description}
+                {homepage.faqSectionDescription}
               </motion.p>
             </motion.div>
           </div>
 
           {/* ── Right — FAQ rows ── */}
           <div className="mt-10 lg:mt-0">
-            {faq.items.values.map((item, i) => (
+            {faqItems.map((item, i) => (
               <FaqRow
                 key={item.question}
                 item={item}
@@ -228,7 +211,7 @@ export function Faq() {
               animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
               transition={{
                 ...spring,
-                delay: faq.items.values.length * STAGGER * 2.5 + 0.05,
+                delay: faqItems.length * STAGGER * 2.5 + 0.05,
               }}
             />
           </div>

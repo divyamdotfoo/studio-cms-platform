@@ -4,7 +4,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView } from "motion/react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle } from "@/lib/motion";
-import type { ReviewItem } from "@/cms/types";
+import type { Review } from "@/payload-types";
 
 /* ────────────────────────────────────────────────────
  * VideoPlayer
@@ -108,7 +108,7 @@ function VideoPlayer({
  * FeaturedReview — big pull-quote
  * ──────────────────────────────────────────────────── */
 
-function FeaturedReview({ review }: { review: ReviewItem }) {
+function FeaturedReview({ review }: { review: Review }) {
   const ref = useRef<HTMLQuoteElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -158,10 +158,12 @@ function FeaturedReview({ review }: { review: ReviewItem }) {
 
 function VideoReviewCard({
   review,
+  videoUrl,
   activeVideoId,
   onActivate,
 }: {
-  review: ReviewItem;
+  review: Review;
+  videoUrl: string;
   activeVideoId: string | null;
   onActivate: (id: string | null) => void;
 }) {
@@ -180,7 +182,7 @@ function VideoReviewCard({
       <div className="aspect-9/16 max-h-[360px] overflow-hidden">
         <VideoPlayer
           id={review.name}
-          src={review.videoUrl!}
+          src={videoUrl}
           activeVideoId={activeVideoId}
           onActivate={onActivate}
         />
@@ -215,7 +217,7 @@ function VideoReviewCard({
  * TextReviewCard — text-only reviews
  * ──────────────────────────────────────────────────── */
 
-function TextReviewCard({ review }: { review: ReviewItem }) {
+function TextReviewCard({ review }: { review: Review }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -259,27 +261,6 @@ function TextReviewCard({ review }: { review: ReviewItem }) {
 }
 
 /* ────────────────────────────────────────────────────
- * Heading renderer
- * ──────────────────────────────────────────────────── */
-
-function RichHeadingLine({
-  template,
-  italicWord,
-}: {
-  template: string;
-  italicWord: string;
-}) {
-  const parts = template.split("{italic}");
-  return (
-    <>
-      {parts[0]}
-      <span className="italic">{italicWord}</span>
-      {parts[1]}
-    </>
-  );
-}
-
-/* ────────────────────────────────────────────────────
  * Reviews section
  *
  * Rendering order:
@@ -294,7 +275,7 @@ function RichHeadingLine({
  * ──────────────────────────────────────────────────── */
 
 export function Reviews() {
-  const { pages: { homepage: { reviews } } } = useContent();
+  const { homepage, reviews } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
 
@@ -304,10 +285,23 @@ export function Reviews() {
     setActiveVideoId(id);
   }, []);
 
-  /* Split reviews into three groups */
-  const featured = reviews.items.values.find((r) => r.featured);
-  const videoReviews = reviews.items.values.filter((r) => !r.featured && r.videoUrl);
-  const textReviews = reviews.items.values.filter((r) => !r.featured && !r.videoUrl);
+  const reviewById = new Map(reviews.map((review) => [review.id, review]));
+
+  const resolveReview = (value: number | Review) =>
+    typeof value === "number" ? reviewById.get(value) ?? null : value;
+
+  const getVideoUrl = (review: Review) => {
+    if (!review.video) return null;
+    if (typeof review.video.value === "number") return null;
+    return review.video.value.url ?? null;
+  };
+
+  const featured = resolveReview(homepage.featuredReview.value);
+  const selectedReviews = homepage.reviewsItems
+    .map((item) => resolveReview(item.value))
+    .filter((item): item is Review => item !== null);
+  const videoReviews = selectedReviews.filter((review) => Boolean(getVideoUrl(review)));
+  const textReviews = selectedReviews.filter((review) => !getVideoUrl(review));
 
   return (
     <section className="py-16 lg:py-28" aria-label="Reviews">
@@ -322,15 +316,12 @@ export function Reviews() {
               transition={springGentle}
             >
               <span className="text-[13px] uppercase tracking-[0.12em] text-drift block mb-4 lg:mb-5">
-                {reviews.label}
+                {homepage.reviewsSectionLabel}
               </span>
               <h2 className="font-serif text-[clamp(1.8rem,6vw,3.4rem)] leading-[1.05] tracking-[-0.015em] text-ink">
-                {reviews.heading.line1}
+                {homepage.reviewsSectionHeadlinePartOne}
                 <br />
-                <RichHeadingLine
-                  template={reviews.heading.line2}
-                  italicWord={reviews.heading.italicWord}
-                />
+                {homepage.reviewsSectionHeadlinePartTwo}
               </h2>
 
               <motion.p
@@ -339,7 +330,7 @@ export function Reviews() {
                 animate={headerInView ? { opacity: 1 } : {}}
                 transition={{ ...spring, delay: 0.3 }}
               >
-                {reviews.items.values.length} reviews from Google
+                {selectedReviews.length} reviews from Google
               </motion.p>
             </motion.div>
           </div>
@@ -360,14 +351,20 @@ export function Reviews() {
                   transition={spring}
                 />
                 <div className="flex flex-wrap gap-5 lg:gap-6 py-8 lg:py-10">
-                  {videoReviews.map((review) => (
+                  {videoReviews.map((review) => {
+                    const videoUrl = getVideoUrl(review);
+                    if (!videoUrl) return null;
+
+                    return (
                     <VideoReviewCard
                       key={review.name}
                       review={review}
+                      videoUrl={videoUrl}
                       activeVideoId={activeVideoId}
                       onActivate={handleActivate}
                     />
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}

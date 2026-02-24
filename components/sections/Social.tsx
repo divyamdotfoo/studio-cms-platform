@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
-import type { SocialChannel } from "@/cms/types";
 
 /* ────────────────────────────────────────────────────
  * Platform icons (inline SVGs)
@@ -80,7 +79,12 @@ function ChannelCard({
   index,
   isInView,
 }: {
-  channel: SocialChannel;
+  channel: {
+    platform: string;
+    handle: string;
+    url: string;
+    followers: string;
+  };
   index: number;
   isInView: boolean;
 }) {
@@ -135,27 +139,6 @@ function ChannelCard({
 }
 
 /* ────────────────────────────────────────────────────
- * Heading renderer
- * ──────────────────────────────────────────────────── */
-
-function RichHeadingLine({
-  template,
-  italicWord,
-}: {
-  template: string;
-  italicWord: string;
-}) {
-  const parts = template.split("{italic}");
-  return (
-    <>
-      {parts[0]}
-      <span className="italic">{italicWord}</span>
-      {parts[1]}
-    </>
-  );
-}
-
-/* ────────────────────────────────────────────────────
  * Social section
  *
  * Same sticky-heading-left / content-right layout
@@ -166,9 +149,24 @@ function RichHeadingLine({
  * ──────────────────────────────────────────────────── */
 
 export function Social() {
-  const { pages: { homepage: { social } } } = useContent();
+  const { homepage, meta } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+
+  const channels = [
+    {
+      platform: "instagram",
+      handle: "@vision_architect_",
+      url: meta.insta,
+      followers: meta.instaFollowers,
+    },
+    {
+      platform: "youtube",
+      handle: "Vision Architect",
+      url: meta.youtube,
+      followers: meta.youtubeSubscribers,
+    },
+  ];
 
   return (
     <section ref={sectionRef} className="py-16 lg:py-28" aria-label="Social">
@@ -191,15 +189,12 @@ export function Social() {
               transition={springGentle}
             >
               <span className="text-[13px] uppercase tracking-[0.12em] text-drift block mb-4 lg:mb-5">
-                {social.label}
+                {homepage.socialSectionLabel}
               </span>
               <h2 className="font-serif text-[clamp(1.8rem,6vw,3.4rem)] leading-[1.05] tracking-[-0.015em] text-ink">
-                {social.heading.line1}
+                {homepage.socialSectionHeadlinePartOne}
                 <br />
-                <RichHeadingLine
-                  template={social.heading.line2}
-                  italicWord={social.heading.italicWord}
-                />
+                {homepage.socialSectionHeadlinePartTwo}
               </h2>
 
               <motion.p
@@ -208,14 +203,14 @@ export function Social() {
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...springGentle, delay: 0.15 }}
               >
-                {social.description}
+                {homepage.socialSectionDescription}
               </motion.p>
             </motion.div>
           </div>
 
           {/* ── Right — channel cards ── */}
           <div className="mt-10 lg:mt-0 grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5 self-start">
-            {social.channels.values.map((channel, i) => (
+            {channels.map((channel, i) => (
               <ChannelCard
                 key={channel.platform}
                 channel={channel}

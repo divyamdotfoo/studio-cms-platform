@@ -4,14 +4,16 @@ import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
-import type { ServiceItem } from "@/cms/types";
+import type { Homepage } from "@/payload-types";
 
 /* ────────────────────────────────────────────────────
  * ServiceRow — expandable on hover (desktop) / tap (mobile)
  * ──────────────────────────────────────────────────── */
 
 interface RowProps {
-  service: ServiceItem;
+  service: Homepage["servicesSectionList"][number] & {
+    deliverableNames: string[];
+  };
   index: number;
   isInView: boolean;
   isExpanded: boolean;
@@ -57,7 +59,7 @@ function ServiceRow({
           animate={{ color: isExpanded ? "#8B7355" : "#94908A" }}
           transition={springSnap}
         >
-          {service.num}
+          {String(index + 1).padStart(2, "0")}
         </motion.span>
 
         {/* Title */}
@@ -66,7 +68,7 @@ function ServiceRow({
           animate={{ x: isExpanded ? 6 : 0 }}
           transition={springSnap}
         >
-          {service.title}
+          {service.serviceHeading}
         </motion.h3>
 
         {/* Arrow */}
@@ -114,14 +116,14 @@ function ServiceRow({
                 transition={springSnap}
                 className="text-[15px] leading-[1.8] text-stone max-w-[440px]"
               >
-                {service.description}
+                {service.serviceDescription}
               </motion.p>
 
               {/* Deliverables */}
               <div className="flex flex-wrap gap-x-4 lg:gap-x-6 gap-y-2 items-start">
-                {service.deliverables.map((item, i) => (
+                {service.deliverableNames.map((item, i) => (
                   <motion.span
-                    key={item}
+                    key={`${index}-${i}`}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ ...springSnap, delay: i * 0.04 }}
@@ -140,35 +142,27 @@ function ServiceRow({
 }
 
 /* ────────────────────────────────────────────────────
- * Heading renderer — replaces {italic} token
- * ──────────────────────────────────────────────────── */
-
-function RichHeadingLine({
-  template,
-  italicWord,
-}: {
-  template: string;
-  italicWord: string;
-}) {
-  const parts = template.split("{italic}");
-  return (
-    <>
-      {parts[0]}
-      <span className="italic">{italicWord}</span>
-      {parts[1]}
-    </>
-  );
-}
-
-/* ────────────────────────────────────────────────────
  * Services section
  * ──────────────────────────────────────────────────── */
 
 export function Services() {
-  const { pages: { homepage: { services } } } = useContent();
+  const { homepage, microOfferings } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+  const microOfferingById = new Map(
+    microOfferings.map((offering) => [offering.id, offering])
+  );
+
+  const serviceList = homepage.servicesSectionList.map((service) => ({
+    ...service,
+    deliverableNames: (service.serviceDeliverables ?? []).map((item) =>
+      typeof item.value === "number"
+        ? microOfferingById.get(item.value)?.name || `Offering #${item.value}`
+        : item.value.name
+    ),
+  }));
 
   const handleToggle = (index: number) => {
     setExpandedIndex((prev) => (prev === index ? null : index));
@@ -185,15 +179,12 @@ export function Services() {
             transition={springGentle}
           >
             <span className="text-[13px] uppercase tracking-[0.12em] text-drift block mb-4 lg:mb-5">
-              {services.label}
+              {homepage.servicesSectionLabel}
             </span>
             <h2 className="font-serif text-[clamp(1.8rem,6vw,3.4rem)] leading-[1.05] tracking-[-0.015em] text-ink">
-              {services.heading.line1}
+              {homepage.servicesSectionHeadlinePartOne}
               <br />
-              <RichHeadingLine
-                template={services.heading.line2}
-                italicWord={services.heading.italicWord}
-              />
+              {homepage.servicesSectionHeadlinePartTwo}
             </h2>
           </motion.div>
 
@@ -203,7 +194,7 @@ export function Services() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...springGentle, delay: STAGGER * 3 }}
           >
-            {services.description}
+            {homepage.servicesSectionDescription}
           </motion.p>
         </div>
 
@@ -214,7 +205,7 @@ export function Services() {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ ...spring, delay: STAGGER * 4 }}
         >
-          {services.stats.values.map((stat, i) => (
+          {homepage.servicesSectionStats.map((stat, i) => (
             <motion.div
               key={stat.label}
               className="relative py-4 lg:py-8"
@@ -240,7 +231,7 @@ export function Services() {
 
               <div className={`${i > 0 ? "lg:pl-10" : ""}`}>
                 <span className="font-serif text-[2rem] lg:text-[2.8rem] leading-none tracking-tight text-ink">
-                  {stat.value}
+                  {stat.stat}
                 </span>
                 <span className="block mt-1.5 lg:mt-2 text-xs lg:text-[13px] uppercase tracking-[0.08em] text-drift">
                   {stat.label}
@@ -252,9 +243,9 @@ export function Services() {
 
         {/* ── Service rows ── */}
         <div>
-          {services.items.values.map((service, i) => (
+          {serviceList.map((service, i) => (
             <ServiceRow
-              key={service.num}
+              key={`${service.serviceHeading}-${i}`}
               service={service}
               index={i}
               isInView={isInView}
@@ -272,7 +263,7 @@ export function Services() {
             animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
             transition={{
               ...spring,
-              delay: services.items.values.length * STAGGER * 2.5 + 0.05,
+                delay: serviceList.length * STAGGER * 2.5 + 0.05,
             }}
           />
         </div>

@@ -5,7 +5,7 @@ import { motion, useInView, Transition } from "motion/react";
 import { XIcon, Check } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
-import type { Project } from "@/cms/types";
+import type { Project as PayloadProject } from "@/payload-types";
 import { cn } from "@/lib/utils";
 import {
   MorphingDialog,
@@ -27,6 +27,15 @@ import {
  * ──────────────────────────────────────────────────── */
 
 const VIEW_MARGIN = "-12%";
+
+interface Project {
+  id: number;
+  name: string;
+  description: string;
+  images: string[];
+  features: string[];
+  details: { label: string; value: string }[];
+}
 
 /* ── Reveal — self-observing animated wrapper ─────── */
 
@@ -529,6 +538,25 @@ function HeaderSketches() {
 
 export function ProjectsPage() {
   const { projects } = useContent();
+  const normalizedProjects: Project[] = projects.map((project: PayloadProject) => ({
+    id: project.id,
+    name: project.name,
+    description: project.descriptionLong || project.descriptionShort,
+    images:
+      project.projectImage
+        ?.map((image) => {
+          if (typeof image.value === "number") return null;
+          return image.value.url ?? null;
+        })
+        .filter((url): url is string => Boolean(url)) ?? [],
+    features: project.features.map((item) => item.feature),
+    details: [
+      { label: "Area", value: project.area },
+      { label: "Timeline", value: project.timeline },
+      { label: "Type", value: project.type },
+      { label: "Location", value: project.location },
+    ],
+  }));
 
   return (
     <main>
@@ -571,7 +599,7 @@ export function ProjectsPage() {
           </div>
 
           {/* ── Project list ── */}
-          {projects.map((project, i) => (
+          {normalizedProjects.map((project, i) => (
             <ProjectSection key={project.id} project={project} index={i} />
           ))}
         </div>

@@ -14,7 +14,7 @@ const T = T_HERO;
  *  Desktop: headline left | location + description right
  * ──────────────────────────────────────────────────── */
 export function Hero() {
-  const { pages: { homepage: { hero } } } = useContent();
+  const { homepage } = useContent();
 
   return (
     <section className="pt-20 lg:pt-28" aria-label="Hero">
@@ -28,7 +28,7 @@ export function Hero() {
             transition={{ ...spring, delay: T }}
             className="lg:hidden text-[13px] uppercase tracking-[0.12em] text-drift mb-5"
           >
-            {hero.location}
+            {homepage.heroLocation}
           </motion.div>
 
           <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-14">
@@ -36,17 +36,12 @@ export function Hero() {
             <div className="lg:pt-4">
               <h1 className="font-serif text-[clamp(2.2rem,10vw,3.2rem)] lg:text-[clamp(2.2rem,6vw,5rem)] leading-[0.95] tracking-[-0.015em] font-normal text-ink">
                 <span className="block">
-                  <RevealText text={hero.headline.line1} delay={T} />
+                  <RevealText text={homepage.heroHeadlinePartOne} delay={T} />
                 </span>
                 <span className="block">
                   <RevealText
-                    text={hero.headline.line2}
+                    text={homepage.heroHeadlinePartTwo}
                     delay={T + STAGGER * 3}
-                  />{" "}
-                  <RevealText
-                    text={hero.headline.line2Italic}
-                    delay={T + STAGGER * 5}
-                    className="italic"
                   />
                 </span>
               </h1>
@@ -61,7 +56,7 @@ export function Hero() {
                 transition={{ ...spring, delay: T + 0.35 }}
                 className="hidden lg:block text-[13px] uppercase tracking-[0.12em] text-drift text-right"
               >
-                {hero.location}
+                {homepage.heroLocation}
               </motion.div>
 
               {/* Description */}
@@ -71,7 +66,7 @@ export function Hero() {
                 transition={{ ...spring, delay: T + 0.45 }}
                 className="text-[15px] leading-[1.75] text-stone"
               >
-                {hero.description}
+                {homepage.heroDescription}
               </motion.p>
             </div>
           </div>

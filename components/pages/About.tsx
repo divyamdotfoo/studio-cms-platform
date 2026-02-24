@@ -4,7 +4,56 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
-import { useContent } from "@/lib/content-ctx";
+
+const ABOUT_CONTENT = {
+  intro: {
+    label: "The founder",
+    headline: [
+      "A simple dream —",
+      "to build homes that",
+      "people truly call their own",
+    ],
+    name: "Ar. Ujjwal Kapoor",
+    role: "Founder & Principal Architect",
+    brief:
+      "Armed with an architecture degree since 2018 and a lifelong passion for building homes, Ujjwal started Vision Architect with one clear idea — your home, designed your way.",
+    profileImage: "/images/profile.jpeg",
+    captionLeft: "Haridwar, India",
+    captionRight: "Est. 2018",
+  },
+  story: {
+    label: "The journey",
+    pullQuote: "Design isn't just about appearance — it has to be lived in.",
+    paragraphs: [
+      "While others were settling into routine careers, Ujjwal took on his first project — a small house, but an enormous dream. No team, no office. Just a laptop, AutoCAD, and the drive to work past 2 AM every night.",
+      "Today, with over 50 projects and 100 happy families behind us, Vision Architect has become a trusted name in Haridwar. What started here has now grown to Rishikesh and the surrounding cities.",
+      "But one thing has never changed — the same dedication, the same attention to detail, as on day one. Because for Ujjwal, every home is a responsibility, not just a project.",
+    ],
+  },
+  values: {
+    label: "Our approach",
+    items: [
+      {
+        num: "01",
+        title: "Listen first, design later",
+        description:
+          "We understand your needs before we pick up a pen. Every home is different because every family is different.",
+      },
+      {
+        num: "02",
+        title: "Respect for your budget",
+        description:
+          "It's easy to dream big on paper. Delivering within budget is the hard part — and that's exactly what we do.",
+      },
+      {
+        num: "03",
+        title: "Delivered on time",
+        description:
+          "When we commit to a deadline, we mean it. Few things are more frustrating than delays — and we understand that.",
+      },
+    ],
+  },
+} as const;
 
 /* ────────────────────────────────────────────────────
  * About page
@@ -24,7 +73,7 @@ const T = 0;
  * ──────────────────────────────────────────────────── */
 
 function FounderHero() {
-  const { pages: { about: { intro } } } = useContent();
+  const intro = ABOUT_CONTENT.intro;
   const imgRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: imgRef,
@@ -55,7 +104,7 @@ function FounderHero() {
           <div>
             {/* Headline */}
             <h1 className="font-serif text-[clamp(2rem,8vw,3.6rem)] lg:text-[clamp(2.4rem,5vw,4.2rem)] leading-none tracking-[-0.02em] text-ink mb-8 lg:mb-10">
-              {intro.headline.values.map((line, i) => (
+              {intro.headline.map((line, i) => (
                 <motion.span
                   key={i}
                   className="block"
@@ -159,7 +208,7 @@ function FounderHero() {
  * ──────────────────────────────────────────────────── */
 
 function StorySection() {
-  const { pages: { about: { story } } } = useContent();
+  const story = ABOUT_CONTENT.story;
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -197,7 +246,7 @@ function StorySection() {
 
           {/* Right — narrative paragraphs */}
           <div className="space-y-6">
-            {story.paragraphs.values.map((p, i) => (
+            {story.paragraphs.map((p, i) => (
               <motion.p
                 key={i}
                 className="text-[15px] lg:text-base leading-[1.8] text-stone"
@@ -220,7 +269,7 @@ function StorySection() {
  * ──────────────────────────────────────────────────── */
 
 function ValuesSection() {
-  const { pages: { about: { values } } } = useContent();
+  const values = ABOUT_CONTENT.values;
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -247,7 +296,7 @@ function ValuesSection() {
 
         {/* Values grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
-          {values.items.values.map((value, i) => (
+          {values.items.map((value, i) => (
             <motion.div
               key={value.num}
               className="relative py-8 lg:py-10 lg:px-8 first:lg:pl-0 last:lg:pr-0"

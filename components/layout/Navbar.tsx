@@ -42,7 +42,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
  * ──────────────────────────────────────────────────── */
 
 export function Navbar() {
-  const { general } = useContent();
+  const { meta } = useContent();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
@@ -93,7 +93,7 @@ export function Navbar() {
           {/* CTA buttons */}
           <div className="flex items-center gap-2 ml-2">
             <Link
-              href={general.phone}
+              href={meta.phone}
               className={cn(
                 buttonVariants({ variant: "outline", size: "default" }),
                 "gap-1.5"
@@ -103,7 +103,7 @@ export function Navbar() {
               <span>Call Us</span>
             </Link>
             <Link
-              href={general.whatsapp}
+              href={meta.whatsapp}
               className={cn(
                 buttonVariants({ variant: "default", size: "default" }),
                 "gap-1.5"
@@ -130,7 +130,7 @@ export function Navbar() {
         {/* CTA buttons */}
         <div className="flex items-center gap-1.5">
           <Link
-            href={general.phone}
+            href={meta.phone}
             className={cn(
               buttonVariants({ variant: "outline", size: "default" })
             )}
@@ -139,7 +139,7 @@ export function Navbar() {
             <Phone className="size-4" />
           </Link>
           <Link
-            href={general.whatsapp}
+            href={meta.whatsapp}
             className={cn(
               buttonVariants({ variant: "default", size: "default" })
             )}
