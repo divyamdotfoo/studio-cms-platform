@@ -1,5 +1,6 @@
 import type { CollectionConfig, CollectionSlug } from "payload";
 import { MediaCollection } from "./media";
+import { withMediaRelationshipPicker } from "./utils/media-relationship-picker";
 
 export const ProjectCollection: CollectionConfig = {
   slug: "project",
@@ -13,13 +14,20 @@ export const ProjectCollection: CollectionConfig = {
       type: "text",
       required: true,
     },
-    {
-      name: "projectImage",
-      type: "relationship",
-      relationTo: [MediaCollection.slug as CollectionSlug],
-      required: false,
-      hasMany: true,
-    },
+    withMediaRelationshipPicker(
+      {
+        name: "projectImage",
+        type: "relationship",
+        relationTo: [MediaCollection.slug as CollectionSlug],
+        required: false,
+        hasMany: true,
+      },
+      {
+        buttonLabel: "Select project images",
+        modalTitle: "Project media library",
+        helperText: "Choose project photos from your media library.",
+      }
+    ),
     {
       name: "description",
       label: "Description",

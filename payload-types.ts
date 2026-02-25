@@ -176,7 +176,6 @@ export interface Faq {
 export interface Media {
   id: number;
   alt?: string | null;
-  _key?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -190,7 +189,6 @@ export interface Media {
   focalY?: number | null;
   sizes?: {
     thumbnail?: {
-      _key?: string | null;
       url?: string | null;
       width?: number | null;
       height?: number | null;
@@ -381,7 +379,6 @@ export interface FaqSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  _key?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -399,7 +396,6 @@ export interface MediaSelect<T extends boolean = true> {
         thumbnail?:
           | T
           | {
-              _key?: T;
               url?: T;
               width?: T;
               height?: T;

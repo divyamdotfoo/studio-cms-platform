@@ -12,10 +12,10 @@ import { HomepageCollection } from "./src/collections/home-page";
 import { FaqCollection } from "./src/collections/faq";
 import { MicroOfferingsCollection } from "./src/collections/micro-offering";
 import { ReviewsCollection } from "./src/collections/reviews";
-import { uploadthingStorage } from "@payloadcms/storage-uploadthing";
 import { ProjectsPageCollection } from "@/collections/projects-page";
 import { AboutPageCollection } from "@/collections/about-page";
 import { resendAdapter } from "@payloadcms/email-resend";
+import { s3Storage } from "@payloadcms/storage-s3";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -57,13 +57,27 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    uploadthingStorage({
+    // uploadthingStorage({
+    //   collections: {
+    //     media: true,
+    //   },
+    //   options: {
+    //     token: process.env.UPLOADTHING_TOKEN || "",
+    //     acl: "public-read",
+    //   },
+    // }),
+    s3Storage({
       collections: {
         media: true,
       },
-      options: {
-        token: process.env.UPLOADTHING_TOKEN || "",
-        acl: "public-read",
+      bucket: process.env.S3_BUCKET || "",
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
+        },
+        region: process.env.S3_REGION,
+        endpoint: process.env.S3_ENDPOINT || "",
       },
     }),
   ],

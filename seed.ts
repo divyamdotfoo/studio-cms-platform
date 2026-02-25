@@ -259,6 +259,7 @@ const SEED_PROJECTS_PAGE = {
   heroHeadlinePartTwo: "a different story",
   heroDescription:
     "From family homes in Haridwar to contemporary villas in Rishikesh — each space is designed around the people who live in it. Browse our work and see the details that make a difference.",
+  projectKeys: ["project-01", "project-02", "project-03"],
 };
 
 const SEED_ABOUT_PAGE = {
@@ -268,7 +269,8 @@ const SEED_ABOUT_PAGE = {
   heroDescription:
     "Armed with an architecture degree since 2018 and a lifelong passion for building homes, Ujjwal started Vision Architect with one clear idea — your home, designed your way.",
   sectionTwoLabel: "The journey",
-  sectionTwoHeadline: "Design isn't just about appearance — it has to be lived in.",
+  sectionTwoHeadline:
+    "Design isn't just about appearance — it has to be lived in.",
   sectionTwoDescription: [
     "While others were settling into routine careers, Ujjwal took on his first project — a small house, but an enormous dream. No team, no office. Just a laptop, AutoCAD, and the drive to work past 2 AM every night.",
     "Today, with over 50 projects and 100 happy families behind us, Vision Architect has become a trusted name in Haridwar. What started here has now grown to Rishikesh and the surrounding cities.",
@@ -370,6 +372,9 @@ export const script = async (config: SanitizedConfig) => {
   const featuredProjects = SEED_HOMEPAGE.featuredProjectKeys
     .map((key) => projectIdMap.get(key))
     .filter((id): id is number => typeof id === "number");
+  const projectsPageProjects = SEED_PROJECTS_PAGE.projectKeys
+    .map((key) => projectIdMap.get(key))
+    .filter((id): id is number => typeof id === "number");
 
   const featuredReviewId = reviewIdMap.get(SEED_HOMEPAGE.featuredReviewName);
 
@@ -447,7 +452,12 @@ export const script = async (config: SanitizedConfig) => {
 
   await payload.updateGlobal({
     slug: "projects-page",
-    data: SEED_PROJECTS_PAGE,
+    data: {
+      heroHeadlinePartOne: SEED_PROJECTS_PAGE.heroHeadlinePartOne,
+      heroHeadlinePartTwo: SEED_PROJECTS_PAGE.heroHeadlinePartTwo,
+      heroDescription: SEED_PROJECTS_PAGE.heroDescription,
+      projects: projectsPageProjects,
+    },
   });
 
   await payload.updateGlobal({
