@@ -714,6 +714,7 @@ export function FeaturedProjects() {
   const { homepage, projects } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
+  console.log(homepage.featuredProjects);
 
   const projectById = new Map(projects.map((project) => [project.id, project]));
 
@@ -728,7 +729,7 @@ export function FeaturedProjects() {
 
     return {
       name: project.name,
-      description: project.descriptionLong || project.descriptionShort,
+      description: project.description,
       images,
       details: [
         { label: "Area", value: project.area },

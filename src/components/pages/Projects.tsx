@@ -537,26 +537,28 @@ function HeaderSketches() {
 /* ── ProjectsPage — main export ──────────────────── */
 
 export function ProjectsPage() {
-  const { projects } = useContent();
-  const normalizedProjects: Project[] = projects.map((project: PayloadProject) => ({
-    id: project.id,
-    name: project.name,
-    description: project.descriptionLong || project.descriptionShort,
-    images:
-      project.projectImage
-        ?.map((image) => {
-          if (typeof image.value === "number") return null;
-          return image.value.url ?? null;
-        })
-        .filter((url): url is string => Boolean(url)) ?? [],
-    features: project.features.map((item) => item.feature),
-    details: [
-      { label: "Area", value: project.area },
-      { label: "Timeline", value: project.timeline },
-      { label: "Type", value: project.type },
-      { label: "Location", value: project.location },
-    ],
-  }));
+  const { projects, projectsPage } = useContent();
+  const normalizedProjects: Project[] = projects.map(
+    (project: PayloadProject) => ({
+      id: project.id,
+      name: project.name,
+      description: project.description,
+      images:
+        project.projectImage
+          ?.map((image) => {
+            if (typeof image.value === "number") return null;
+            return image.value.url ?? null;
+          })
+          .filter((url): url is string => Boolean(url)) ?? [],
+      features: project.features.map((item) => item.feature),
+      details: [
+        { label: "Area", value: project.area },
+        { label: "Timeline", value: project.timeline },
+        { label: "Type", value: project.type },
+        { label: "Location", value: project.location },
+      ],
+    })
+  );
 
   return (
     <main>
@@ -570,10 +572,13 @@ export function ProjectsPage() {
             <div>
               <Reveal y={30} transition={springGentle}>
                 <h1 className="font-serif text-[clamp(1.8rem,8vw,3.6rem)] lg:text-[clamp(2.4rem,5vw,4.2rem)] leading-none tracking-[-0.02em] text-ink mb-5 sm:mb-6 lg:mb-8">
-                  <span className="block">Every project tells</span>
                   <span className="block">
-                    a different{" "}
-                    <em className="font-serif italic text-bronze">story</em>
+                    {projectsPage.heroHeadlinePartOne}
+                  </span>
+                  <span className="block">
+                    <em className="font-serif italic text-bronze">
+                      {projectsPage.heroHeadlinePartTwo}
+                    </em>
                   </span>
                 </h1>
               </Reveal>
@@ -587,10 +592,7 @@ export function ProjectsPage() {
 
               <Reveal y={14}>
                 <p className="text-[14px] sm:text-[15px] lg:text-base leading-[1.75] sm:leading-[1.8] text-stone max-w-[560px] mb-10 sm:mb-12 lg:mb-0">
-                  From family homes in Haridwar to contemporary villas in
-                  Rishikesh — each space is designed around the people who live
-                  in it. Browse our work and see the details that make a
-                  difference.
+                  {projectsPage.heroDescription}
                 </p>
               </Reveal>
             </div>

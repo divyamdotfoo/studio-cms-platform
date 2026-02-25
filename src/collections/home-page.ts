@@ -25,12 +25,6 @@ export const HomepageCollection: GlobalConfig = {
       required: true,
     },
     {
-      name: "heroLocation",
-      label: "Hero Location (Below description)",
-      type: "text",
-      required: true,
-    },
-    {
       name: "featuredProjectsSectionLabel",
       label: "Featured Projects Section Label",
       type: "text",

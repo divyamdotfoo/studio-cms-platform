@@ -45,8 +45,8 @@ export async function submitContact(data: ContactData): Promise<ContactResult> {
     };
   }
 
-  const adEmail = process.env.ad_email;
-  const resendKey = process.env.resend;
+  const adEmail = process.env.CLIENT_EMAIL;
+  const resendKey = process.env.RESEND_API_KEY;
 
   if (!adEmail || !resendKey) {
     console.error("Missing env vars: ad_email or resend");

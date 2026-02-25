@@ -14,7 +14,7 @@ const T = T_HERO;
  *  Desktop: headline left | location + description right
  * ──────────────────────────────────────────────────── */
 export function Hero() {
-  const { homepage } = useContent();
+  const { homepage, meta } = useContent();
 
   return (
     <section className="pt-20 lg:pt-28" aria-label="Hero">
@@ -28,7 +28,7 @@ export function Hero() {
             transition={{ ...spring, delay: T }}
             className="lg:hidden text-[13px] uppercase tracking-[0.12em] text-drift mb-5"
           >
-            {homepage.heroLocation}
+            {meta.headquartersLocation}
           </motion.div>
 
           <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-14">
@@ -56,7 +56,7 @@ export function Hero() {
                 transition={{ ...spring, delay: T + 0.35 }}
                 className="hidden lg:block text-[13px] uppercase tracking-[0.12em] text-drift text-right"
               >
-                {homepage.heroLocation}
+                {meta.headquartersLocation}
               </motion.div>
 
               {/* Description */}

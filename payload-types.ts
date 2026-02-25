@@ -98,10 +98,14 @@ export interface Config {
   globals: {
     meta: Meta;
     homepage: Homepage;
+    'projects-page': ProjectsPage;
+    'about-page': AboutPage;
   };
   globalsSelect: {
     meta: MetaSelect<false> | MetaSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
   };
   locale: null;
   user: Admin;
@@ -171,6 +175,7 @@ export interface Faq {
  */
 export interface Media {
   id: number;
+  alt?: string | null;
   _key?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -183,6 +188,17 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      _key?: string | null;
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * Micro Offerings are the small services that we offer to our clients. They are not part of our main services but are offered as a separate service.
@@ -209,8 +225,7 @@ export interface Project {
         value: number | Media;
       }[]
     | null;
-  descriptionShort: string;
-  descriptionLong: string;
+  description: string;
   features: {
     feature: string;
     id?: string | null;
@@ -365,6 +380,7 @@ export interface FaqSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
   _key?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -377,6 +393,21 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              _key?: T;
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -394,8 +425,7 @@ export interface MicroOfferingsSelect<T extends boolean = true> {
 export interface ProjectSelect<T extends boolean = true> {
   name?: T;
   projectImage?: T;
-  descriptionShort?: T;
-  descriptionLong?: T;
+  description?: T;
   features?:
     | T
     | {
@@ -474,6 +504,10 @@ export interface Meta {
   tagline_footer: string;
   instaFollowers: string;
   youtubeSubscribers: string;
+  ownerName: string;
+  ownerRole: string;
+  yearOfEstablishment: number;
+  headquartersLocation: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -486,7 +520,6 @@ export interface Homepage {
   heroHeadlinePartOne: string;
   heroHeadlinePartTwo: string;
   heroDescription: string;
-  heroLocation: string;
   featuredProjectsSectionLabel: string;
   featuredProjectsSectionHeadlinePartOne: string;
   featuredProjectsSectionHeadlinePartTwo: string;
@@ -539,6 +572,44 @@ export interface Homepage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page".
+ */
+export interface ProjectsPage {
+  id: number;
+  heroHeadlinePartOne: string;
+  heroHeadlinePartTwo: string;
+  heroDescription: string;
+  projects: (number | Project)[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  heroLabel: string;
+  heroHeadlinePartOne: string;
+  heroHeadlinePartTwo?: string | null;
+  heroDescription: string;
+  sectionTwoLabel: string;
+  sectionTwoHeadline: string;
+  sectionTwoDescription: {
+    journeyItem: string;
+    id?: string | null;
+  }[];
+  sectionThreeLabel: string;
+  approachSectionItems: {
+    approachItemTitle: string;
+    approachItemDescription: string;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "meta_select".
  */
 export interface MetaSelect<T extends boolean = true> {
@@ -550,6 +621,10 @@ export interface MetaSelect<T extends boolean = true> {
   tagline_footer?: T;
   instaFollowers?: T;
   youtubeSubscribers?: T;
+  ownerName?: T;
+  ownerRole?: T;
+  yearOfEstablishment?: T;
+  headquartersLocation?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -562,7 +637,6 @@ export interface HomepageSelect<T extends boolean = true> {
   heroHeadlinePartOne?: T;
   heroHeadlinePartTwo?: T;
   heroDescription?: T;
-  heroLocation?: T;
   featuredProjectsSectionLabel?: T;
   featuredProjectsSectionHeadlinePartOne?: T;
   featuredProjectsSectionHeadlinePartTwo?: T;
@@ -600,6 +674,48 @@ export interface HomepageSelect<T extends boolean = true> {
   socialSectionHeadlinePartOne?: T;
   socialSectionHeadlinePartTwo?: T;
   socialSectionDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page_select".
+ */
+export interface ProjectsPageSelect<T extends boolean = true> {
+  heroHeadlinePartOne?: T;
+  heroHeadlinePartTwo?: T;
+  heroDescription?: T;
+  projects?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  heroLabel?: T;
+  heroHeadlinePartOne?: T;
+  heroHeadlinePartTwo?: T;
+  heroDescription?: T;
+  sectionTwoLabel?: T;
+  sectionTwoHeadline?: T;
+  sectionTwoDescription?:
+    | T
+    | {
+        journeyItem?: T;
+        id?: T;
+      };
+  sectionThreeLabel?: T;
+  approachSectionItems?:
+    | T
+    | {
+        approachItemTitle?: T;
+        approachItemDescription?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -21,14 +21,8 @@ export const ProjectCollection: CollectionConfig = {
       hasMany: true,
     },
     {
-      name: "descriptionShort",
-      label: "Short Description",
-      type: "textarea",
-      required: true,
-    },
-    {
-      name: "descriptionLong",
-      label: "Long Description",
+      name: "description",
+      label: "Description",
       type: "textarea",
       required: true,
     },

@@ -51,5 +51,29 @@ export const MetaCollection: GlobalConfig = {
       type: "text",
       required: true,
     },
+    {
+      name: "ownerName",
+      label: "Owner Name",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "ownerRole",
+      label: "Owner Role",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "yearOfEstablishment",
+      label: "Year of Establishment",
+      type: "number",
+      required: true,
+    },
+    {
+      name: "headquartersLocation",
+      label: "Headquarters Location",
+      type: "text",
+      required: true,
+    },
   ],
 };

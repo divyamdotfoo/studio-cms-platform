@@ -9,15 +9,17 @@ const SEED_META = {
   tagline_footer: "From concept to creation.",
   instaFollowers: "10k+",
   youtubeSubscribers: "3k+",
+  ownerName: "Ar. Ujjwal Kapoor",
+  ownerRole: "Founder & Principal Architect",
+  yearOfEstablishment: 2018,
+  headquartersLocation: "Haridwar, Uttarakhand",
 };
 
 const SEED_PROJECTS = [
   {
     key: "project-01",
     name: "Arya Residence",
-    descriptionShort:
-      "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
-    descriptionLong:
+    description:
       "A modern family home that blends warmth with style. Every room is thoughtfully designed — from the living room to the kitchen, everything is tailored to your lifestyle.",
     features: [
       { feature: "Vastu-compliant floor plan with east-facing entrance" },
@@ -35,9 +37,7 @@ const SEED_PROJECTS = [
   {
     key: "project-02",
     name: "Nanda Villa",
-    descriptionShort:
-      "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
-    descriptionLong:
+    description:
       "A spacious villa with contemporary design and a traditional touch. Double-height living areas, an open courtyard, and greenery visible from every angle.",
     features: [
       { feature: "Double-height living area with floor-to-ceiling glazing" },
@@ -57,9 +57,7 @@ const SEED_PROJECTS = [
   {
     key: "project-03",
     name: "Kapoor House",
-    descriptionShort:
-      "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
-    descriptionLong:
+    description:
       "Compact yet elegant — designed for a young couple. Smart storage, clean lines, and plenty of natural light. A small home with a big feel.",
     features: [
       { feature: "Space-efficient layout maximising every square foot" },
@@ -163,7 +161,6 @@ const SEED_HOMEPAGE = {
   heroHeadlinePartTwo: "INSPIRE LIVES",
   heroDescription:
     "We design spaces that feel like home the moment you walk in. Whether it's a residence, a cafe, or any place in between — every project is shaped to match the vision you had in mind.",
-  heroLocation: "Haridwar, Uttarakhand",
   featuredProjectsSectionLabel: "Featured Work",
   featuredProjectsSectionHeadlinePartOne: "Our work speaks",
   featuredProjectsSectionHeadlinePartTwo: "for itself",
@@ -257,6 +254,46 @@ const SEED_HOMEPAGE = {
     "From the design process to the final reveal — we share it all. Follow along and see how an idea becomes a home.",
 };
 
+const SEED_PROJECTS_PAGE = {
+  heroHeadlinePartOne: "Every project tells",
+  heroHeadlinePartTwo: "a different story",
+  heroDescription:
+    "From family homes in Haridwar to contemporary villas in Rishikesh — each space is designed around the people who live in it. Browse our work and see the details that make a difference.",
+};
+
+const SEED_ABOUT_PAGE = {
+  heroLabel: "The founder",
+  heroHeadlinePartOne: "A simple dream —",
+  heroHeadlinePartTwo: "to build homes that people truly call their own",
+  heroDescription:
+    "Armed with an architecture degree since 2018 and a lifelong passion for building homes, Ujjwal started Vision Architect with one clear idea — your home, designed your way.",
+  sectionTwoLabel: "The journey",
+  sectionTwoHeadline: "Design isn't just about appearance — it has to be lived in.",
+  sectionTwoDescription: [
+    "While others were settling into routine careers, Ujjwal took on his first project — a small house, but an enormous dream. No team, no office. Just a laptop, AutoCAD, and the drive to work past 2 AM every night.",
+    "Today, with over 50 projects and 100 happy families behind us, Vision Architect has become a trusted name in Haridwar. What started here has now grown to Rishikesh and the surrounding cities.",
+    "But one thing has never changed — the same dedication, the same attention to detail, as on day one. Because for Ujjwal, every home is a responsibility, not just a project.",
+  ],
+  sectionThreeLabel: "Our approach",
+  approachSectionItems: [
+    {
+      approachItemTitle: "Listen first, design later",
+      approachItemDescription:
+        "We understand your needs before we pick up a pen. Every home is different because every family is different.",
+    },
+    {
+      approachItemTitle: "Respect for your budget",
+      approachItemDescription:
+        "It's easy to dream big on paper. Delivering within budget is the hard part — and that's exactly what we do.",
+    },
+    {
+      approachItemTitle: "Delivered on time",
+      approachItemDescription:
+        "When we commit to a deadline, we mean it. Few things are more frustrating than delays — and we understand that.",
+    },
+  ],
+};
+
 const clearCollection = async (collection: string) => {
   await payload.delete({
     collection: collection as never,
@@ -319,8 +356,7 @@ export const script = async (config: SanitizedConfig) => {
       collection: "project",
       data: {
         name: project.name,
-        descriptionShort: project.descriptionShort,
-        descriptionLong: project.descriptionLong,
+        description: project.description,
         features: project.features,
         area: project.area,
         timeline: project.timeline,
@@ -343,7 +379,6 @@ export const script = async (config: SanitizedConfig) => {
       heroHeadlinePartOne: SEED_HOMEPAGE.heroHeadlinePartOne,
       heroHeadlinePartTwo: SEED_HOMEPAGE.heroHeadlinePartTwo,
       heroDescription: SEED_HOMEPAGE.heroDescription,
-      heroLocation: SEED_HOMEPAGE.heroLocation,
       featuredProjectsSectionLabel: SEED_HOMEPAGE.featuredProjectsSectionLabel,
       featuredProjectsSectionHeadlinePartOne:
         SEED_HOMEPAGE.featuredProjectsSectionHeadlinePartOne,
@@ -408,6 +443,30 @@ export const script = async (config: SanitizedConfig) => {
   await payload.updateGlobal({
     slug: "meta",
     data: SEED_META,
+  });
+
+  await payload.updateGlobal({
+    slug: "projects-page",
+    data: SEED_PROJECTS_PAGE,
+  });
+
+  await payload.updateGlobal({
+    slug: "about-page",
+    data: {
+      heroLabel: SEED_ABOUT_PAGE.heroLabel,
+      heroHeadlinePartOne: SEED_ABOUT_PAGE.heroHeadlinePartOne,
+      heroHeadlinePartTwo: SEED_ABOUT_PAGE.heroHeadlinePartTwo,
+      heroDescription: SEED_ABOUT_PAGE.heroDescription,
+      sectionTwoLabel: SEED_ABOUT_PAGE.sectionTwoLabel,
+      sectionTwoHeadline: SEED_ABOUT_PAGE.sectionTwoHeadline,
+      sectionTwoDescription: SEED_ABOUT_PAGE.sectionTwoDescription.map(
+        (journeyItem) => ({
+          journeyItem,
+        })
+      ),
+      sectionThreeLabel: SEED_ABOUT_PAGE.sectionThreeLabel,
+      approachSectionItems: SEED_ABOUT_PAGE.approachSectionItems,
+    },
   });
 
   payload.logger.info(

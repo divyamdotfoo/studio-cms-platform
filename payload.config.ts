@@ -8,12 +8,14 @@ import { AdminCollection } from "./src/collections/admin";
 import { MediaCollection } from "./src/collections/media";
 import { ProjectCollection } from "./src/collections/project";
 import { MetaCollection } from "./src/collections/meta";
-import { HomepageCollection } from "./src/collections/homepage";
+import { HomepageCollection } from "./src/collections/home-page";
 import { FaqCollection } from "./src/collections/faq";
 import { MicroOfferingsCollection } from "./src/collections/micro-offering";
 import { ReviewsCollection } from "./src/collections/reviews";
 import { uploadthingStorage } from "@payloadcms/storage-uploadthing";
-
+import { ProjectsPageCollection } from "@/collections/projects-page";
+import { AboutPageCollection } from "@/collections/about-page";
+import { resendAdapter } from "@payloadcms/email-resend";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -24,6 +26,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
+  email: resendAdapter({
+    defaultFromAddress: "Divyam <onboarding@resend.dev>",
+    defaultFromName: "Divyam gupta",
+    apiKey: process.env.RESEND_API_KEY || "",
+  }),
   collections: [
     AdminCollection,
     FaqCollection,
@@ -32,7 +39,12 @@ export default buildConfig({
     ProjectCollection,
     ReviewsCollection,
   ],
-  globals: [MetaCollection, HomepageCollection],
+  globals: [
+    MetaCollection,
+    HomepageCollection,
+    ProjectsPageCollection,
+    AboutPageCollection,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
