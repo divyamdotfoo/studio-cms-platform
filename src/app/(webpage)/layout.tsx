@@ -5,7 +5,31 @@ import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
-import { getSiteContent } from "@/lib/site-content";
+import { getSiteContent } from "@/lib/get-site-content";
+
+import type { Viewport } from "next";
+import { DM_Sans, Playfair_Display } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
+import "./globals.css";
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://visionarchitect.in"),
@@ -34,13 +58,24 @@ export default async function WebpageLayout({
   const content = await getSiteContent();
 
   return (
-    <ContentProvider content={content}>
-      <JsonLd data={organizationJsonLd()} />
-      <JsonLd data={websiteJsonLd()} />
-      <Navbar />
-      {children}
-      <Footer />
-      <Dock />
-    </ContentProvider>
+    <html
+      lang="en"
+      className={`${dmSans.variable} ${playfair.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="font-sans antialiased bg-cream text-ink">
+        <Toaster />
+        <ContentProvider content={content}>
+          <JsonLd data={organizationJsonLd()} />
+          <JsonLd data={websiteJsonLd()} />
+          <Navbar />
+          {children}
+          <Footer />
+          <Dock />
+        </ContentProvider>
+      </body>
+    </html>
   );
 }
+
+export const revalidate = 10;

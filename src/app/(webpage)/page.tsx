@@ -6,7 +6,7 @@ import { Faq } from "@/components/sections/Faq";
 import { Social } from "@/components/sections/Social";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd, faqJsonLd } from "@/lib/json-ld";
-import { getSiteContent } from "@/lib/site-content";
+import { getSiteContent } from "@/lib/get-site-content";
 
 export default async function Page() {
   const { faq } = await getSiteContent();
@@ -14,7 +14,11 @@ export default async function Page() {
   return (
     <main>
       <JsonLd data={localBusinessJsonLd()} />
-      <JsonLd data={faqJsonLd(faq.map((item) => ({ question: item.question, answer: item.answer })))} />
+      <JsonLd
+        data={faqJsonLd(
+          faq.map((item) => ({ question: item.question, answer: item.answer }))
+        )}
+      />
       <Hero />
       <FeaturedProjects />
       <Services />

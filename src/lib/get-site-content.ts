@@ -8,7 +8,7 @@ import type {
   MicroOffering,
   Project,
   Review,
-} from "@/payload-types";
+} from "../../payload-types";
 
 export type SiteContent = {
   homepage: Homepage;

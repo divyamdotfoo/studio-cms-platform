@@ -8,9 +8,9 @@
     "build": "pnpm next build",
     "start": "pnpm next start",
     "lint": "pnpm eslint",
-    "db:up": "docker compose -f docker/postgres/docker-compose.yml up -d",
-    "db:down": "docker compose -f docker/postgres/docker-compose.yml down",
-    "db:reset": "docker compose -f docker/postgres/docker-compose.yml down -v",
+    "db:up": "docker compose -f postgres/docker-compose.yml up -d",
+    "db:down": "docker compose -f postgres/docker-compose.yml down",
+    "db:reset": "docker compose -f postgres/docker-compose.yml down -v",
     "db:generate": "payload migrate:create",
     "db:migrate": "payload migrate",
     "db:seed": "payload seed"

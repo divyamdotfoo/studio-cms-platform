@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { posts } from "./(webpage)/blog/_data/posts";
+import { posts } from "./blog/_data/posts";
 
 const BASE = "https://visionarchitect.in";
 
