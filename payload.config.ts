@@ -8,11 +8,11 @@ import { AdminCollection } from "./src/collections/admin";
 import { MediaCollection } from "./src/collections/media";
 import { ProjectCollection } from "./src/collections/project";
 import { MetaCollection } from "./src/collections/meta";
-import { s3Storage } from "@payloadcms/storage-s3";
 import { HomepageCollection } from "./src/collections/homepage";
 import { FaqCollection } from "./src/collections/faq";
 import { MicroOfferingsCollection } from "./src/collections/micro-offering";
 import { ReviewsCollection } from "./src/collections/reviews";
+import { uploadthingStorage } from "@payloadcms/storage-uploadthing";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -45,21 +45,13 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    s3Storage({
+    uploadthingStorage({
       collections: {
-        media: {
-          prefix: "dev",
-        },
+        media: true,
       },
-      bucket: process.env.S3_BUCKET || "",
-      config: {
-        forcePathStyle: true,
-        credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
-        },
-        region: process.env.S3_REGION || "",
-        endpoint: process.env.S3_ENDPOINT || "",
+      options: {
+        token: process.env.UPLOADTHING_TOKEN || "",
+        acl: "public-read",
       },
     }),
   ],

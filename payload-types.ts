@@ -171,7 +171,7 @@ export interface Faq {
  */
 export interface Media {
   id: number;
-  prefix?: string | null;
+  _key?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -365,7 +365,7 @@ export interface FaqSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  prefix?: T;
+  _key?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
