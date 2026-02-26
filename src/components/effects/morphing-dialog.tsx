@@ -356,6 +356,8 @@ export type MorphingDialogImageProps = {
   alt: string;
   className?: string;
   style?: React.CSSProperties;
+  loading?: "eager" | "lazy";
+  fetchPriority?: "high" | "low" | "auto";
 };
 
 function MorphingDialogImage({
@@ -363,6 +365,8 @@ function MorphingDialogImage({
   alt,
   className,
   style,
+  loading,
+  fetchPriority,
 }: MorphingDialogImageProps) {
   const { uniqueId, transition } = useMorphingDialog();
 
@@ -374,6 +378,8 @@ function MorphingDialogImage({
       layoutId={`dialog-img-${uniqueId}`}
       style={style}
       transition={transition}
+      loading={loading}
+      fetchPriority={fetchPriority}
     />
   );
 }

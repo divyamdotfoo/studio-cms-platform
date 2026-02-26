@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, useInView, Transition } from "motion/react";
 import { XIcon, Check } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
@@ -15,6 +15,12 @@ import {
   MorphingDialogImage,
   MorphingDialogContainer,
 } from "@/components/effects/morphing-dialog";
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 /* ────────────────────────────────────────────────────
  * Projects page
@@ -96,10 +102,12 @@ function Reveal({
 function PhotoStrip({
   images,
   name,
+  projectIndex = 0,
   scrollable = false,
 }: {
   images: string[];
   name: string;
+  projectIndex?: number;
   scrollable?: boolean;
 }) {
   return (
@@ -123,6 +131,8 @@ function PhotoStrip({
             src={imgPath}
             alt={`${name} — photo ${i + 1}`}
             index={i}
+            loading={projectIndex === 0 && i === 0 ? "eager" : "lazy"}
+            fetchPriority={projectIndex === 0 && i === 0 ? "high" : "auto"}
           />
         ))}
       </div>
@@ -134,10 +144,14 @@ function PhotoFrame({
   src,
   alt,
   index,
+  loading = "lazy",
+  fetchPriority = "auto",
 }: {
   src: string;
   alt: string;
   index: number;
+  loading?: "eager" | "lazy";
+  fetchPriority?: "high" | "low" | "auto";
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-4%" });
@@ -159,6 +173,8 @@ function PhotoFrame({
             src={src}
             alt={alt}
             className="w-full aspect-4/3 object-cover select-none"
+            loading={loading}
+            fetchPriority={fetchPriority}
           />
         </MorphingDialogTrigger>
         <MorphingDialogContainer>
@@ -167,6 +183,8 @@ function PhotoFrame({
               src={src}
               alt={alt}
               className="h-auto w-full max-w-[90vw] max-h-[90vh] md:max-w-[70vw] lg:max-h-[70vh] rounded-[4px] object-contain"
+              loading="lazy"
+              fetchPriority="auto"
             />
           </MorphingDialogContent>
           <MorphingDialogClose
@@ -185,6 +203,79 @@ function PhotoFrame({
         </MorphingDialogContainer>
       </MorphingDialog>
     </motion.div>
+  );
+}
+
+function MobilePhotoCarousel({
+  images,
+  name,
+  projectIndex,
+}: {
+  images: string[];
+  name: string;
+  projectIndex: number;
+}) {
+  const [api, setApi] = useState<CarouselApi>();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const visibleImages = images.slice(0, 4);
+
+  useEffect(() => {
+    if (!api) return;
+
+    const updateActiveIndex = () => setActiveIndex(api.selectedScrollSnap());
+    updateActiveIndex();
+    api.on("select", updateActiveIndex);
+    api.on("reInit", updateActiveIndex);
+
+    return () => {
+      api.off("select", updateActiveIndex);
+      api.off("reInit", updateActiveIndex);
+    };
+  }, [api]);
+
+  return (
+    <div className="bg-ivory shadow-[0_2px_20px_-4px_rgba(26,26,26,0.10)] p-1.5 sm:p-2">
+      <Carousel
+        setApi={setApi}
+        opts={{ align: "start" }}
+        aria-label={`${name} images`}
+      >
+        <CarouselContent className="ml-0">
+          {visibleImages.map((imgPath, i) => (
+            <CarouselItem key={imgPath} className="pl-0">
+              <PhotoFrame
+                src={imgPath}
+                alt={`${name} — photo ${i + 1}`}
+                index={i}
+                loading={projectIndex === 0 && i === 0 ? "eager" : "lazy"}
+                fetchPriority={projectIndex === 0 && i === 0 ? "high" : "auto"}
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+
+      {visibleImages.length > 1 && (
+        <div className="mt-3 flex items-center justify-center gap-2">
+          {visibleImages.map((_, dotIndex) => {
+            const isActive = activeIndex === dotIndex;
+            return (
+              <button
+                key={dotIndex}
+                type="button"
+                onClick={() => api?.scrollTo(dotIndex)}
+                aria-label={`Go to image ${dotIndex + 1}`}
+                aria-current={isActive}
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all",
+                  isActive ? "bg-bronze scale-110" : "bg-sand/70"
+                )}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -382,14 +473,22 @@ function ProjectSection({
 
       {/* Mobile + tablet: photos in scrollable container, then content */}
       <div className="lg:hidden">
-        <PhotoStrip images={project.images} name={project.name} scrollable />
+        <MobilePhotoCarousel
+          images={project.images}
+          name={project.name}
+          projectIndex={index}
+        />
         <ProjectContent project={project} index={index} reversed={false} />
       </div>
 
       {/* Desktop: photos scroll, content sticks */}
       <div className="hidden lg:grid lg:grid-cols-2 lg:gap-16 xl:gap-24 lg:items-start">
         <div className={reversed ? "lg:order-2" : ""}>
-          <PhotoStrip images={project.images} name={project.name} />
+          <PhotoStrip
+            images={project.images}
+            name={project.name}
+            projectIndex={index}
+          />
         </div>
         <div
           className={cn(

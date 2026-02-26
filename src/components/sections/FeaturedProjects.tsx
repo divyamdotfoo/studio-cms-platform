@@ -169,6 +169,8 @@ function PhotoFrame({
   isInView,
   delay,
   scrollProgress,
+  imageIndex,
+  isFirstProject,
 }: {
   src: string;
   alt: string;
@@ -176,6 +178,8 @@ function PhotoFrame({
   isInView: boolean;
   delay: number;
   scrollProgress: MotionValue<number>;
+  imageIndex: number;
+  isFirstProject: boolean;
 }) {
   const range = 120 * slot.parallaxFactor;
   const y = useTransform(scrollProgress, [0, 1], [range, -range]);
@@ -219,6 +223,10 @@ function PhotoFrame({
               src={src}
               alt={alt}
               className="w-full aspect-4/3 object-cover select-none"
+              loading={isFirstProject && imageIndex === 0 ? "eager" : "lazy"}
+              fetchPriority={
+                isFirstProject && imageIndex === 0 ? "high" : "auto"
+              }
             />
           </MorphingDialogTrigger>
           <MorphingDialogContainer>
@@ -227,6 +235,8 @@ function PhotoFrame({
                 src={src}
                 alt={alt}
                 className="h-auto w-full max-w-[90vw] max-h-[90vh] md:max-w-[70vw] lg:max-h-[70vh] rounded-[4px] object-contain"
+                loading="lazy"
+                fetchPriority="auto"
               />
             </MorphingDialogContent>
             <MorphingDialogClose
@@ -284,6 +294,8 @@ function ImageCollage({
           isInView={isInView}
           delay={baseDelay + i * STAGGER * 4}
           scrollProgress={scrollProgress}
+          imageIndex={i}
+          isFirstProject={layoutIndex === 0}
         />
       ))}
     </motion.div>

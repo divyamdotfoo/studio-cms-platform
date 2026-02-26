@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button/variants";
+import { ServiceItemImageCarousel } from "@/components/pages/services/ServiceItemImageCarousel";
 import { cn } from "@/lib/utils";
 import type { ServiceContent, ServiceItemContent } from "@/server/types";
 
@@ -43,18 +44,29 @@ export function ServiceItemPage({
           </header>
 
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 xl:gap-24 lg:items-start">
-            <div className="bg-ivory shadow-[0_2px_20px_-4px_rgba(26,26,26,0.10)] p-2 sm:p-3 mb-8 lg:mb-0">
-              <div className="flex flex-col gap-2 sm:gap-3">
-                {serviceItem.imageUrls.map((imageUrl, index) => (
-                  <Image
-                    key={`${imageUrl}-${index}`}
-                    src={imageUrl}
-                    alt={`${serviceItem.name} image ${index + 1}`}
-                    width={1200}
-                    height={900}
-                    className="w-full aspect-4/3 object-cover"
-                  />
-                ))}
+            <div>
+              <div className="lg:hidden">
+                <ServiceItemImageCarousel
+                  imageUrls={serviceItem.imageUrls}
+                  serviceItemName={serviceItem.name}
+                />
+              </div>
+              <div className="hidden lg:block bg-ivory shadow-[0_2px_20px_-4px_rgba(26,26,26,0.10)] p-2 sm:p-3 mb-8 lg:mb-0">
+                <div className="flex flex-col gap-2 sm:gap-3">
+                  {serviceItem.imageUrls.map((imageUrl, index) => (
+                    <Image
+                      key={`${imageUrl}-${index}`}
+                      src={imageUrl}
+                      alt={`${serviceItem.name} image ${index + 1}`}
+                      width={1200}
+                      height={900}
+                      className="w-full aspect-4/3 object-cover"
+                      unoptimized
+                      loading={index === 0 ? "eager" : "lazy"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 

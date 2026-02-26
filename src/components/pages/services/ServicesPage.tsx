@@ -29,7 +29,7 @@ export function ServicesPage({ services }: ServicesPageProps) {
           </header>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-            {services.map((service) => (
+            {services.map((service, index) => (
               <Link
                 key={service.id}
                 href={`/services/${service.slug}`}
@@ -42,7 +42,9 @@ export function ServicesPage({ services }: ServicesPageProps) {
                     width={1200}
                     height={900}
                     className="h-full w-full object-cover"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    unoptimized
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                   />
                 </div>
 

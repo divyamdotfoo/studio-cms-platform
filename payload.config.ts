@@ -90,8 +90,11 @@ export default buildConfig({
     s3Storage({
       collections: {
         media: {
-          generateFileURL: ({ filename }) =>
-            `${process.env.CLOUDFLARE_PUBLIC_URL}/${filename}`,
+          generateFileURL:
+            process.env.NODE_ENV === "development"
+              ? undefined
+              : ({ filename }) =>
+                  `${process.env.CLOUDFLARE_PUBLIC_URL}/${filename}`,
         },
       },
       bucket: process.env.S3_BUCKET || "",
