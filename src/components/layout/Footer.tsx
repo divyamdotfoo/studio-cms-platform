@@ -20,6 +20,11 @@ const NAV_LINKS = [
   { label: "Blogs", href: "/blogs" },
 ];
 
+type FooterBlog = {
+  slug: string;
+  title: string;
+};
+
 /* ────────────────────────────────────────────────────
  * Inline SVG icons
  * ──────────────────────────────────────────────────── */
@@ -116,8 +121,12 @@ function YouTubeIcon({ className }: { className?: string }) {
  * Mobile:  Single column
  * ──────────────────────────────────────────────────── */
 
-export function Footer() {
-  const { meta } = useContent();
+interface FooterProps {
+  blogs: FooterBlog[];
+}
+
+export function Footer({ blogs }: FooterProps) {
+  const { meta, services } = useContent();
   const contactRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const isContactInView = useInView(contactRef, {
@@ -128,6 +137,13 @@ export function Footer() {
 
   const year = new Date().getFullYear();
   const copyright = COPYRIGHT_TEMPLATE.replace("{year}", String(year));
+  const featuredBlogs = blogs.slice(0, 4);
+  const serviceItemLinks = services.flatMap((service) =>
+    service.serviceItems.map((item) => ({
+      href: `/services/${service.slug}/${item.slug}`,
+      label: `See ${item.name} (${service.name})`,
+    }))
+  );
 
   return (
     <>
@@ -176,7 +192,7 @@ export function Footer() {
       <footer ref={footerRef} className="bg-[#131211]" aria-label="Footer">
         <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
           <div className="pt-14 lg:pt-20 pb-10 lg:pb-14">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-12 lg:gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-12 lg:gap-10">
               {/* ── Brand column ── */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
@@ -238,12 +254,79 @@ export function Footer() {
                 </ul>
               </motion.div>
 
-              {/* ── Contact info column ── */}
+              {/* ── Services ── */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...springGentle, delay: STAGGER * 3 }}
               >
+                <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
+                  Services
+                </span>
+
+                <ul className="space-y-3">
+                  <li>
+                    <Link
+                      href="/services"
+                      className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                    >
+                      See all services
+                    </Link>
+                  </li>
+                  {services.map((service) => (
+                    <li key={service.slug}>
+                      <Link
+                        href={`/services/${service.slug}`}
+                        className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                      >
+                        {service.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* ── Blogs ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ ...springGentle, delay: STAGGER * 4 }}
+              >
+                <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
+                  Blogs
+                </span>
+
+                <ul className="space-y-3">
+                  <li>
+                    <Link
+                      href="/blogs"
+                      className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                    >
+                      Explore all blog posts
+                    </Link>
+                  </li>
+                  {featuredBlogs.map((blog) => (
+                    <li key={blog.slug}>
+                      <Link
+                        href={`/blog/${blog.slug}`}
+                        className="text-[15px] leading-relaxed text-mist transition-colors duration-200 hover:text-ivory line-clamp-2"
+                      >
+                        {blog.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </div>
+
+            {/* ── Contact + map and deep links ── */}
+            <motion.div
+              className="mt-12 lg:mt-14 pt-10 border-t border-stone/60 grid grid-cols-1 xl:grid-cols-[1fr_1.45fr] gap-12 lg:gap-10"
+              initial={{ opacity: 0, y: 12 }}
+              animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ ...springGentle, delay: STAGGER * 5 }}
+            >
+              <div>
                 <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
                   Get in touch
                 </span>
@@ -279,30 +362,43 @@ export function Footer() {
                     </a>
                   </li>
                 </ul>
-              </motion.div>
-            </div>
 
-            {/* ── Map embed — full width below ── */}
-            <motion.div
-              className="mt-12 lg:mt-14 overflow-hidden border border-stone"
-              initial={{ opacity: 0, y: 12 }}
-              animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 4 }}
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d671.5169117158848!2d78.13765208010588!3d29.93671897216422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39094706cf38250d%3A0x4e520b77699b721!2sVISION%20ARCHITECT!5e0!3m2!1sen!2sin!4v1771153421760!5m2!1sen!2sin"
-                width="100%"
-                height="200"
-                style={{
-                  border: 0,
-                  display: "block",
-                  filter: "grayscale(0.1) brightness(0.75)",
-                }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Vision Architect location on Google Maps"
-              />
+                <div className="mt-8 overflow-hidden border border-stone w-full max-w-[420px] aspect-3/2">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d671.5169117158848!2d78.13765208010588!3d29.93671897216422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39094706cf38250d%3A0x4e520b77699b721!2sVISION%20ARCHITECT!5e0!3m2!1sen!2sin!4v1771153421760!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{
+                      border: 0,
+                      display: "block",
+                      filter: "grayscale(0.1) brightness(0.75)",
+                    }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Vision Architect location on Google Maps"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
+                  Explore service routes
+                </span>
+
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                  {serviceItemLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-[14px] leading-relaxed text-drift transition-colors duration-200 hover:text-ivory"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </motion.div>
           </div>
 
@@ -319,7 +415,7 @@ export function Footer() {
               className="text-[13px] text-drift tracking-wide"
               initial={{ opacity: 0 }}
               animate={isFooterInView ? { opacity: 1 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 5 }}
+              transition={{ ...springGentle, delay: STAGGER * 6 }}
             >
               {copyright}
             </motion.p>
@@ -328,7 +424,7 @@ export function Footer() {
               className="text-[13px] text-drift tracking-wide"
               initial={{ opacity: 0 }}
               animate={isFooterInView ? { opacity: 1 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 6 }}
+              transition={{ ...springGentle, delay: STAGGER * 7 }}
             >
               Crafted with care in Haridwar
             </motion.p>

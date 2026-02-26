@@ -5,7 +5,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
-import { getSiteContent } from "@/lib/get-site-content";
+import { getSiteContent } from "@/server/queries";
+import { posts } from "@/app/(webpage)/blog/_data/posts";
 
 import type { Viewport } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
@@ -57,6 +58,11 @@ export default async function WebpageLayout({
 }>) {
   const content = await getSiteContent();
 
+  const blogLinks = posts.map((post) => ({
+    slug: post.slug,
+    title: post.title,
+  }));
+
   return (
     <html
       lang="en"
@@ -70,7 +76,7 @@ export default async function WebpageLayout({
           <JsonLd data={websiteJsonLd()} />
           <Navbar />
           {children}
-          <Footer />
+          <Footer blogs={blogLinks} />
           <Dock />
         </ContentProvider>
       </body>
