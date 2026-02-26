@@ -39,9 +39,6 @@ function ServiceRow({
       transition={{ ...spring, delay: index * STAGGER * 2.5 }}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      onPointerDown={(e) => {
-        if (e.pointerType === "touch") onToggle();
-      }}
     >
       {/* Top border */}
       <motion.div
@@ -52,7 +49,10 @@ function ServiceRow({
       />
 
       {/* Main row */}
-      <div className="relative grid grid-cols-[36px_1fr_auto] lg:grid-cols-[60px_1fr_auto] items-baseline gap-4 lg:gap-8 py-5 lg:py-7 cursor-pointer">
+      <div
+        className="relative grid grid-cols-[36px_1fr_auto] lg:grid-cols-[60px_1fr_auto] items-baseline gap-4 lg:gap-8 py-5 lg:py-7 cursor-pointer"
+        onClick={onToggle}
+      >
         {/* Number */}
         <motion.span
           className="font-serif text-sm"
@@ -149,7 +149,8 @@ export function Services() {
   const { homepage, microOfferings } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const microOfferingById = new Map(
     microOfferings.map((offering) => [offering.id, offering])
@@ -164,8 +165,16 @@ export function Services() {
     ),
   }));
 
-  const handleToggle = (index: number) => {
-    setExpandedIndex((prev) => (prev === index ? null : index));
+  const handleToggle = (index: number, isExpanded: boolean) => {
+    if (isExpanded) {
+      setExpandedIndexes((prev) => prev.filter((item) => item !== index));
+      setHoveredIndex((prev) => (prev === index ? null : prev));
+      return;
+    }
+
+    setExpandedIndexes((prev) =>
+      prev.includes(index) ? prev : [...prev, index]
+    );
   };
 
   return (
@@ -249,10 +258,12 @@ export function Services() {
               service={service}
               index={i}
               isInView={isInView}
-              isExpanded={expandedIndex === i}
-              onHover={() => setExpandedIndex(i)}
-              onLeave={() => setExpandedIndex(null)}
-              onToggle={() => handleToggle(i)}
+              isExpanded={expandedIndexes.includes(i) || hoveredIndex === i}
+              onHover={() => setHoveredIndex(i)}
+              onLeave={() => setHoveredIndex(null)}
+              onToggle={() =>
+                handleToggle(i, expandedIndexes.includes(i) || hoveredIndex === i)
+              }
             />
           ))}
 

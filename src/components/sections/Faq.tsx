@@ -42,9 +42,6 @@ function FaqRow({
       transition={{ ...spring, delay: index * STAGGER * 2.5 }}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      onPointerDown={(e) => {
-        if (e.pointerType === "touch") onToggle();
-      }}
     >
       {/* Top border */}
       <motion.div
@@ -55,7 +52,10 @@ function FaqRow({
       />
 
       {/* Question row */}
-      <div className="relative grid grid-cols-[36px_1fr_auto] lg:grid-cols-[60px_1fr_auto] items-baseline gap-4 lg:gap-8 py-5 lg:py-7 cursor-pointer">
+      <div
+        className="relative grid grid-cols-[36px_1fr_auto] lg:grid-cols-[60px_1fr_auto] items-baseline gap-4 lg:gap-8 py-5 lg:py-7 cursor-pointer"
+        onClick={onToggle}
+      >
         {/* Number */}
         <motion.span
           className="font-serif text-sm"
@@ -136,21 +136,36 @@ export function Faq() {
   const { homepage, faq } = useContent();
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const faqById = new Map(faq.map((item) => [item.id, item]));
   const faqItems = homepage.faqSectionItems
     .map((item) =>
-      typeof item.value === "number" ? faqById.get(item.value) ?? null : item.value
+      typeof item.value === "number"
+        ? faqById.get(item.value) ?? null
+        : item.value
     )
     .filter((item): item is FaqItem => item !== null);
 
-  const handleToggle = (index: number) => {
-    setExpandedIndex((prev) => (prev === index ? null : index));
+  const handleToggle = (index: number, isExpanded: boolean) => {
+    if (isExpanded) {
+      setExpandedIndexes((prev) => prev.filter((item) => item !== index));
+      setHoveredIndex((prev) => (prev === index ? null : prev));
+      return;
+    }
+
+    setExpandedIndexes((prev) =>
+      prev.includes(index) ? prev : [...prev, index]
+    );
   };
 
   return (
-    <section ref={sectionRef} className="py-16 lg:py-28" aria-label="Frequently asked questions">
+    <section
+      ref={sectionRef}
+      className="py-16 lg:py-28"
+      aria-label="Frequently asked questions"
+    >
       <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
         {/* Top divider */}
         <motion.div
@@ -197,10 +212,12 @@ export function Faq() {
                 item={item}
                 index={i}
                 isInView={isInView}
-                isExpanded={expandedIndex === i}
-                onHover={() => setExpandedIndex(i)}
-                onLeave={() => setExpandedIndex(null)}
-                onToggle={() => handleToggle(i)}
+                isExpanded={expandedIndexes.includes(i) || hoveredIndex === i}
+                onHover={() => setHoveredIndex(i)}
+                onLeave={() => setHoveredIndex(null)}
+                onToggle={() =>
+                  handleToggle(i, expandedIndexes.includes(i) || hoveredIndex === i)
+                }
               />
             ))}
 
