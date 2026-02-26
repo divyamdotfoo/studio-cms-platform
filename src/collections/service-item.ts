@@ -1,5 +1,6 @@
 import type { CollectionConfig, CollectionSlug } from "payload";
 import { MediaCollection } from "./media";
+import { withMediaRelationshipPicker } from "./utils/media-relationship-picker";
 
 const formatSlug = (value: string) =>
   value
@@ -50,14 +51,21 @@ export const ServiceItemCollection: CollectionConfig = {
       type: "textarea",
       required: true,
     },
-    {
-      name: "images",
-      label: "Service Images to show the user",
-      type: "relationship",
-      relationTo: [MediaCollection.slug as CollectionSlug],
-      required: false,
-      hasMany: true,
-    },
+    withMediaRelationshipPicker(
+      {
+        name: "images",
+        label: "Service Images to show the user",
+        type: "relationship",
+        relationTo: [MediaCollection.slug as CollectionSlug],
+        required: false,
+        hasMany: true,
+      },
+      {
+        buttonLabel: "Select service images",
+        modalTitle: "Service media library",
+        helperText: "Choose service images from your media library.",
+      }
+    ),
     {
       name: "componentLayout",
       label: "Component Layout if applicable like ()",

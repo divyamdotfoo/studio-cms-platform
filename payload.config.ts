@@ -83,12 +83,16 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || "",
     },
     migrationDir: path.resolve(dirname, "migrations"),
+    push: false,
   }),
   sharp,
   plugins: [
     s3Storage({
       collections: {
-        media: true,
+        media: {
+          generateFileURL: ({ filename }) =>
+            `${process.env.CLOUDFLARE_PUBLIC_URL}/${filename}`,
+        },
       },
       bucket: process.env.S3_BUCKET || "",
       config: {
