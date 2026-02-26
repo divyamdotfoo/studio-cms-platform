@@ -2,68 +2,11 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
-
-/* ────────────────────────────────────────────────────
- * Platform icons (inline SVGs)
- * ──────────────────────────────────────────────────── */
-
-function InstagramIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <circle cx="12" cy="12" r="5" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
-
-function YouTubeIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 001.94-2A29 29 0 0023 12a29 29 0 00-.46-5.58z" />
-      <polygon
-        points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"
-        fill="currentColor"
-        stroke="none"
-      />
-    </svg>
-  );
-}
-
-function ArrowIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <line x1="7" y1="17" x2="17" y2="7" />
-      <polyline points="7 7 17 7 17 17" />
-    </svg>
-  );
-}
+import { InstagramIcon } from "@/components/icons.tsx/insta";
+import { YouTubeIcon } from "@/components/icons.tsx/yt";
 
 const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
   instagram: InstagramIcon,
@@ -112,7 +55,7 @@ function ChannelCard({
             <Icon className="w-7 h-7 lg:w-8 lg:h-8 text-ink" />
           </motion.div>
         )}
-        <ArrowIcon className="w-4 h-4 lg:w-5 lg:h-5 text-drift transition-colors duration-200 group-hover:text-ink" />
+        <ArrowUpRight className="w-4 h-4 lg:w-5 lg:h-5 text-drift transition-colors duration-200 group-hover:text-ink" />
       </div>
 
       {/* Bottom — handle, followers */}

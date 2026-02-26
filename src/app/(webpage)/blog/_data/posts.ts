@@ -31,7 +31,7 @@ export const posts: BlogPost[] = [
     title:
       "Traditional Pahadi Architecture: Bringing Heritage Into Modern Homes",
     description:
-      "How traditional Uttarakhand architecture — stone walls, carved jharokhas, and sloped roofs — inspires modern home design in Haridwar, Rishikesh, and Dehradun.",
+      "Traditional Uttarakhand house design ideas for Haridwar, Rishikesh, and Dehradun families — stone walls, carved wood details, and sloped pahadi roofs.",
     coverImage:
       "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
     readingTime: "6 min read",

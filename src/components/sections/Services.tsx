@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
 import type { Homepage } from "@/payload-types";
@@ -79,19 +80,10 @@ function ServiceRow({
           }}
           transition={springSnap}
         >
-          <svg
+          <ArrowUpRight
             className="w-4 h-4 lg:w-5 lg:h-5 text-drift"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M7 17L17 7M17 7H7M17 7v10"
-            />
-          </svg>
+            strokeWidth={1.5}
+          />
         </motion.div>
       </div>
 

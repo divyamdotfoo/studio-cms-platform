@@ -53,7 +53,7 @@ export function useMDXComponents(): MDXComponents {
 
     h1({ children }) {
       return (
-        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium leading-[1.1] tracking-tight text-ink mb-6">
+        <h1 className="font-serif text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-ink mb-6">
           {children}
         </h1>
       );

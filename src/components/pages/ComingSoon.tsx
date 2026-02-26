@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
 import { spring, springGentle, STAGGER, T_HERO } from "@/lib/motion";
 
 /* ────────────────────────────────────────────────────
@@ -90,19 +91,7 @@ export function ComingSoon({ title }: Props) {
                 transition={{ ...spring, delay: T + 0.55 }}
               />
               Back to Home
-              <svg
-                className="w-4 h-4 text-drift transition-colors group-hover:text-ink"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M7 17L17 7M17 7H7M17 7v10"
-                />
-              </svg>
+              <ArrowUpRight className="w-4 h-4 text-drift transition-colors group-hover:text-ink" />
             </Link>
           </motion.div>
         </div>

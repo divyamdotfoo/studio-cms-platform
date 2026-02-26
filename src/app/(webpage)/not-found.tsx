@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
+import { ArrowUpRight } from "lucide-react";
 import { spring, springGentle, STAGGER, T_HERO } from "@/lib/motion";
 
 /* ────────────────────────────────────────────────────
@@ -183,8 +184,8 @@ export default function NotFound() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: T + 0.4 }}
         >
-          It looks like you&apos;ve reached a page that doesn&apos;t exist — or it may
-          have been removed.
+          It looks like you&apos;ve reached a page that doesn&apos;t exist — or
+          it may have been removed.
         </motion.p>
 
         {/* CTA */}
@@ -197,19 +198,7 @@ export default function NotFound() {
             href="/"
             className="group inline-flex items-center gap-3 text-xs uppercase tracking-widest text-ink"
           >
-            <svg
-              className="w-4 h-4 text-drift transition-colors group-hover:text-ink rotate-180"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M7 17L17 7M17 7H7M17 7v10"
-              />
-            </svg>
+            <ArrowUpRight className="w-4 h-4 text-drift transition-colors group-hover:text-ink rotate-180" />
             <motion.span
               className="inline-block w-8 h-px bg-ink origin-right"
               initial={{ scaleX: 0 }}

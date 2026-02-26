@@ -6,9 +6,10 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
-  title: "Blogs — Vision Architect",
+  title:
+    "Architecture Blogs for Haridwar, Rishikesh & Dehradun — Vision Architect",
   description:
-    "Insights on architecture, design principles, and the craft of building meaningful spaces.",
+    "SEO-friendly architecture guides for North Indian homeowners and business owners in Haridwar, Rishikesh, and Dehradun.",
 };
 
 export default function BlogsPage() {
@@ -20,6 +21,19 @@ export default function BlogsPage() {
           { name: "Blogs", href: "/blogs" },
         ])}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Vision Architect Blog Posts",
+          itemListElement: posts.map((post, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `https://visionarchitect.in/blog/${post.slug}`,
+            name: post.title,
+          })),
+        }}
+      />
       <div className="mx-auto max-w-[1100px] px-5 lg:px-10">
         {/* Header */}
         <div className="max-w-2xl mb-14 lg:mb-20">
@@ -27,7 +41,8 @@ export default function BlogsPage() {
             Blogs
           </h1>
           <p className="mt-4 text-lg text-stone leading-relaxed">
-            Thoughts on architecture, materiality, and the art of shaping space.
+            Practical architecture tips for Haridwar, Rishikesh, Dehradun, and
+            families across North India.
           </p>
         </div>
 
@@ -56,7 +71,7 @@ export default function BlogsPage() {
                   <span className="text-xs uppercase tracking-widest text-drift">
                     {post.readingTime}
                   </span>
-                  <h2 className="mt-2 font-serif text-2xl lg:text-[1.7rem] font-medium tracking-tight text-ink leading-snug group-hover:text-bronze transition-colors duration-200">
+                  <h2 className="mt-2 font-serif text-xl lg:text-2xl font-medium tracking-tight text-ink leading-snug line-clamp-2 min-h-14 group-hover:text-bronze transition-colors duration-200">
                     {post.title}
                   </h2>
                   <p className="mt-2 text-[15px] leading-relaxed text-stone line-clamp-2">

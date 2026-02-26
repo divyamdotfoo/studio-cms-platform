@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView } from "motion/react";
+import { Volume2, VolumeX } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle } from "@/lib/motion";
 import type { Review } from "@/payload-types";
@@ -74,28 +75,11 @@ function VideoPlayer({
 
       {/* Mute indicator */}
       <div className="absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 bg-cream/80 backdrop-blur-md rounded-full">
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          className="text-ink"
-        >
-          {!isActive ? (
-            <>
-              <path d="M11 5L6 9H2v6h4l5 4V5z" />
-              <line x1="23" y1="9" x2="17" y2="15" />
-              <line x1="17" y1="9" x2="23" y2="15" />
-            </>
-          ) : (
-            <>
-              <path d="M11 5L6 9H2v6h4l5 4V5z" />
-              <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
-            </>
-          )}
-        </svg>
+        {!isActive ? (
+          <VolumeX className="size-[13px] text-ink" strokeWidth={1.8} />
+        ) : (
+          <Volume2 className="size-[13px] text-ink" strokeWidth={1.8} />
+        )}
         <span className="text-[11px] uppercase tracking-[0.04em] font-medium text-ink">
           {!isActive ? "Tap to listen" : "Playing"}
         </span>

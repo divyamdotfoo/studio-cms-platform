@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
+import { Plus } from "lucide-react";
 import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
 import type { Faq as FaqItem } from "@/payload-types";
@@ -80,19 +81,10 @@ function FaqRow({
           animate={{ rotate: isExpanded ? 45 : 0 }}
           transition={springSnap}
         >
-          <svg
+          <Plus
             className="w-4 h-4 lg:w-5 lg:h-5 text-drift"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 5v14M5 12h14"
-            />
-          </svg>
+            strokeWidth={1.5}
+          />
         </motion.div>
       </div>
 
@@ -216,7 +208,10 @@ export function Faq() {
                 onHover={() => setHoveredIndex(i)}
                 onLeave={() => setHoveredIndex(null)}
                 onToggle={() =>
-                  handleToggle(i, expandedIndexes.includes(i) || hoveredIndex === i)
+                  handleToggle(
+                    i,
+                    expandedIndexes.includes(i) || hoveredIndex === i
+                  )
                 }
               />
             ))}

@@ -14,10 +14,10 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Projects", href: "/projects" },
   { label: "Services", href: "/services" },
+  { label: "Projects", href: "/projects" },
   { label: "Blogs", href: "/blogs" },
+  { label: "About", href: "/about" },
 ];
 
 const BRAND = "VISION ARCHITECT";
@@ -137,6 +137,7 @@ export function Navbar() {
             aria-label="Call us"
           >
             <Phone className="size-4" />
+            Call
           </Link>
           <Link
             href={meta.whatsapp}
@@ -146,6 +147,7 @@ export function Navbar() {
             aria-label="WhatsApp us"
           >
             <WhatsAppIcon className="size-4" />
+            Chat
           </Link>
         </div>
       </nav>
