@@ -82,18 +82,10 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || "",
     },
+    migrationDir: path.resolve(dirname, "migrations"),
   }),
   sharp,
   plugins: [
-    // uploadthingStorage({
-    //   collections: {
-    //     media: true,
-    //   },
-    //   options: {
-    //     token: process.env.UPLOADTHING_TOKEN || "",
-    //     acl: "public-read",
-    //   },
-    // }),
     s3Storage({
       collections: {
         media: true,
@@ -111,7 +103,7 @@ export default buildConfig({
   ],
   bin: [
     {
-      scriptPath: path.resolve(dirname, "seed.ts"),
+      scriptPath: path.resolve(dirname, "local/seed.ts"),
       key: "seed",
     },
   ],
