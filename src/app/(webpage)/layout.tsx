@@ -84,4 +84,4 @@ export default async function WebpageLayout({
   );
 }
 
-export const revalidate = 10;
+export const revalidate = 300;
