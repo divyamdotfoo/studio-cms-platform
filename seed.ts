@@ -74,6 +74,208 @@ const SEED_PROJECTS = [
   },
 ];
 
+const SEED_SERVICE_ITEMS = [
+  {
+    key: "service-item-01",
+    serviceKey: "service-01",
+    slug: "parallel-modular-kitchen",
+    name: "Parallel Modular Kitchen",
+    description:
+      "Dual-counter layout focused on smooth cooking movement and practical storage.",
+    componentLayout: "Parallel counter layout",
+    componentDimensions: "8x12 ft",
+    specialFeatures: [
+      { feature: "Soft-close drawer channels" },
+      { feature: "Dedicated pantry pull-out unit" },
+      { feature: "Quartz countertop edge detailing" },
+    ],
+    estimatedTime: "3-4 weeks",
+    estimatedCost: "INR 2.8L - 4.5L",
+    colours: [
+      { colour: "Warm White", component: "Upper cabinets" },
+      { colour: "Walnut Brown", component: "Base cabinets" },
+      { colour: "Grey Stone", component: "Backsplash" },
+    ],
+  },
+  {
+    key: "service-item-02",
+    serviceKey: "service-01",
+    slug: "l-shaped-modular-kitchen",
+    name: "L-Shaped Modular Kitchen",
+    description:
+      "Open kitchen setup that maximizes corners and supports easy workflow.",
+    componentLayout: "L-shape corner format",
+    componentDimensions: "10x10 ft",
+    specialFeatures: [
+      { feature: "Tall unit for appliances" },
+      { feature: "Task-oriented under-cabinet lighting" },
+      { feature: "Ergonomic work triangle planning" },
+    ],
+    estimatedTime: "3-5 weeks",
+    estimatedCost: "INR 3.2L - 5.2L",
+    colours: [
+      { colour: "Sand Beige", component: "Cabinets" },
+      { colour: "Black Galaxy", component: "Countertop" },
+      { colour: "Brushed Steel", component: "Handles" },
+    ],
+  },
+  {
+    key: "service-item-03",
+    serviceKey: "service-02",
+    slug: "minimal-living-room",
+    name: "Minimal Living Room",
+    description:
+      "A clutter-free family lounge with balanced furniture and soft layered lighting.",
+    componentLayout: "Open central seating",
+    componentDimensions: "14x16 ft",
+    specialFeatures: [
+      { feature: "Accent panel TV wall" },
+      { feature: "Concealed cove lighting" },
+      { feature: "Integrated storage bench" },
+    ],
+    estimatedTime: "2-3 weeks",
+    estimatedCost: "INR 1.9L - 3.4L",
+    colours: [
+      { colour: "Soft Greige", component: "Walls" },
+      { colour: "Light Taupe", component: "Sofa" },
+      { colour: "Bronze", component: "Accents" },
+    ],
+  },
+  {
+    key: "service-item-04",
+    serviceKey: "service-03",
+    slug: "sliding-door-wardrobe",
+    name: "Sliding Door Wardrobe",
+    description:
+      "Space-efficient wardrobe with smooth sliding shutters and loft organization.",
+    componentLayout: "Full-height sliding wardrobe",
+    componentDimensions: "7x8 ft",
+    specialFeatures: [
+      { feature: "Soft-closing sliding channels" },
+      { feature: "Internal accessory trays" },
+      { feature: "Overhead loft sections" },
+    ],
+    estimatedTime: "10-14 days",
+    estimatedCost: "INR 1.3L - 2.4L",
+    colours: [
+      { colour: "Matte White", component: "Shutters" },
+      { colour: "Birch", component: "Interiors" },
+      { colour: "Black", component: "Aluminium profile" },
+    ],
+  },
+  {
+    key: "service-item-05",
+    serviceKey: "service-04",
+    slug: "floating-tv-unit",
+    name: "Floating TV Unit",
+    description:
+      "Wall-mounted media setup with concealed wiring and compact storage.",
+    componentLayout: "Floating wall-mounted unit",
+    componentDimensions: "8x7 ft",
+    specialFeatures: [
+      { feature: "Backlit wall panel" },
+      { feature: "Concealed cable channeling" },
+      { feature: "Push-to-open drawers" },
+    ],
+    estimatedTime: "7-10 days",
+    estimatedCost: "INR 70K - 1.5L",
+    colours: [
+      { colour: "Concrete Grey", component: "Panel" },
+      { colour: "Matte White", component: "Console" },
+      { colour: "Teak", component: "Accent strip" },
+    ],
+  },
+  {
+    key: "service-item-06",
+    serviceKey: "service-05",
+    slug: "textured-wallpaper",
+    name: "Textured Wallpaper",
+    description:
+      "Feature wall treatment with tactile textures for visual depth and warmth.",
+    componentLayout: "Single focal wall",
+    componentDimensions: "10x9 ft",
+    specialFeatures: [
+      { feature: "Washable premium surface" },
+      { feature: "Low-VOC installation adhesives" },
+      { feature: "Moisture-aware application" },
+    ],
+    estimatedTime: "2-3 days",
+    estimatedCost: "INR 25K - 70K",
+    colours: [
+      { colour: "Taupe Textured", component: "Feature wall" },
+      { colour: "Ivory", component: "Secondary walls" },
+      { colour: "Bronze", component: "Trim accents" },
+    ],
+  },
+  {
+    key: "service-item-07",
+    serviceKey: "service-06",
+    slug: "dry-wet-zoning-bathroom",
+    name: "Dry-Wet Zoning Bathroom",
+    description:
+      "Functional bathroom layout with practical partitioning and anti-skid safety.",
+    componentLayout: "Linear dry + wet split",
+    componentDimensions: "7x8 ft",
+    specialFeatures: [
+      { feature: "Framed glass partition" },
+      { feature: "Wall-hung vanity with storage" },
+      { feature: "Concealed flush system" },
+    ],
+    estimatedTime: "2-3 weeks",
+    estimatedCost: "INR 1.7L - 3.4L",
+    colours: [
+      { colour: "Slate Grey", component: "Floor tiles" },
+      { colour: "Off White", component: "Wall tiles" },
+      { colour: "Natural Teak", component: "Vanity" },
+    ],
+  },
+];
+
+const SEED_SERVICES = [
+  {
+    key: "service-01",
+    slug: "modular-kitchen-design",
+    name: "Modular Kitchen Design",
+    description:
+      "Smart kitchen planning with efficient layouts and premium modular finishes.",
+  },
+  {
+    key: "service-02",
+    slug: "living-room-design",
+    name: "Living Room Design",
+    description:
+      "Comfort-driven living spaces with aesthetic furniture layouts and focal walls.",
+  },
+  {
+    key: "service-03",
+    slug: "wardrobe-design",
+    name: "Wardrobe Design",
+    description:
+      "Custom wardrobe systems tailored to bedroom dimensions and storage habits.",
+  },
+  {
+    key: "service-04",
+    slug: "tv-unit-design",
+    name: "TV Unit Design",
+    description:
+      "Media walls and TV units designed for both functionality and visual balance.",
+  },
+  {
+    key: "service-05",
+    slug: "wallpaper-and-wall-finish",
+    name: "Wallpaper & Wall Finish",
+    description:
+      "Wall styling solutions with textures, murals, and elegant finish combinations.",
+  },
+  {
+    key: "service-06",
+    slug: "bathroom-design",
+    name: "Bathroom Design",
+    description:
+      "Modern bathroom solutions with durable finishes and practical space planning.",
+  },
+];
+
 const SEED_MICRO_OFFERINGS = [
   "Floor Planning",
   "3D Visualization",
@@ -311,15 +513,57 @@ const clearCollection = async (collection: string) => {
 export const script = async (config: SanitizedConfig) => {
   await payload.init({ config });
 
+  const serviceItemIdMap = new Map<string, number>();
   const microOfferingIdMap = new Map<string, number>();
   const reviewIdMap = new Map<string, number>();
   const faqIdMap = new Map<string, number>();
   const projectIdMap = new Map<string, number>();
 
+  await clearCollection("service");
+  await clearCollection("service-item");
   await clearCollection("project");
   await clearCollection("reviews");
   await clearCollection("faq");
   await clearCollection("micro-offerings");
+
+  for (const item of SEED_SERVICE_ITEMS) {
+    const created = await payload.create({
+      collection: "service-item",
+      data: {
+        name: item.name,
+        slug: item.slug,
+        description: item.description,
+        componentLayout: item.componentLayout,
+        componentDimensions: item.componentDimensions,
+        specialFeatures: item.specialFeatures,
+        estimatedTime: item.estimatedTime,
+        estimatedCost: item.estimatedCost,
+        colours: item.colours,
+      },
+    });
+    serviceItemIdMap.set(item.key, Number(created.id));
+  }
+
+  for (const service of SEED_SERVICES) {
+    const relatedServiceItems = SEED_SERVICE_ITEMS.filter(
+      (item) => item.serviceKey === service.key
+    )
+      .map((item) => serviceItemIdMap.get(item.key))
+      .filter((id): id is number => typeof id === "number");
+
+    await payload.create({
+      collection: "service",
+      data: {
+        name: service.name,
+        slug: service.slug,
+        description: service.description,
+        serviceItems: relatedServiceItems.map((id) => ({
+          relationTo: "service-item" as const,
+          value: id,
+        })),
+      },
+    });
+  }
 
   for (const name of SEED_MICRO_OFFERINGS) {
     const created = await payload.create({
@@ -480,7 +724,7 @@ export const script = async (config: SanitizedConfig) => {
   });
 
   payload.logger.info(
-    "Seed complete (all target collections cleared and reseeded)"
+    "Seed complete (all target collections, services, and service items reseeded)"
   );
   process.exit(0);
 };

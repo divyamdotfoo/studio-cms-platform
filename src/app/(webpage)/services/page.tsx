@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/pages/ComingSoon";
+import { ServicesPage } from "@/components/pages/services/ServicesPage";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
+import { getServicesContent } from "@/server/queries";
 
 export const metadata: Metadata = {
   title: "Services — Vision Architect",
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
     "Our architecture services — residential design, commercial spaces, interiors, and consultation. Coming soon.",
 };
 
-export default function Page() {
+export default async function Page() {
+  const services = await getServicesContent();
+
   return (
     <>
       <JsonLd
@@ -18,7 +21,7 @@ export default function Page() {
           { name: "Services", href: "/services" },
         ])}
       />
-      <ComingSoon title="Services" />
+      <ServicesPage services={services} />
     </>
   );
 }

@@ -73,6 +73,8 @@ export interface Config {
     'micro-offerings': MicroOffering;
     project: Project;
     reviews: Review;
+    service: Service;
+    'service-item': ServiceItem;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +88,8 @@ export interface Config {
     'micro-offerings': MicroOfferingsSelect<false> | MicroOfferingsSelect<true>;
     project: ProjectSelect<false> | ProjectSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    service: ServiceSelect<false> | ServiceSelect<true>;
+    'service-item': ServiceItemSelect<false> | ServiceItemSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -252,6 +256,63 @@ export interface Review {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service".
+ */
+export interface Service {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  serviceThumbnail?: {
+    relationTo: 'media';
+    value: number | Media;
+  } | null;
+  serviceItems?:
+    | {
+        relationTo: 'service-item';
+        value: number | ServiceItem;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-item".
+ */
+export interface ServiceItem {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  images?:
+    | {
+        relationTo: 'media';
+        value: number | Media;
+      }[]
+    | null;
+  componentLayout?: string | null;
+  componentDimensions?: string | null;
+  specialFeatures?:
+    | {
+        feature: string;
+        id?: string | null;
+      }[]
+    | null;
+  estimatedTime: string;
+  estimatedCost?: string | null;
+  colours?:
+    | {
+        colour: string;
+        component: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -297,6 +358,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reviews';
         value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'service';
+        value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'service-item';
+        value: number | ServiceItem;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -443,6 +512,48 @@ export interface ReviewsSelect<T extends boolean = true> {
   name?: T;
   content?: T;
   video?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service_select".
+ */
+export interface ServiceSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  serviceThumbnail?: T;
+  serviceItems?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-item_select".
+ */
+export interface ServiceItemSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  images?: T;
+  componentLayout?: T;
+  componentDimensions?: T;
+  specialFeatures?:
+    | T
+    | {
+        feature?: T;
+        id?: T;
+      };
+  estimatedTime?: T;
+  estimatedCost?: T;
+  colours?:
+    | T
+    | {
+        colour?: T;
+        component?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

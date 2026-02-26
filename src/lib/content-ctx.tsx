@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { SiteContent } from "@/lib/get-site-content";
+import type { SiteContent } from "@/server/types";
 
 /* ────────────────────────────────────────────────────
  * Content Context

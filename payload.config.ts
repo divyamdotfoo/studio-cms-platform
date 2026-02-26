@@ -1,7 +1,7 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import path from "path";
-import { buildConfig } from "payload";
+import { buildConfig, type CollectionConfig, type GlobalConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
 import { AdminCollection } from "./src/collections/admin";
@@ -16,8 +16,34 @@ import { ProjectsPageCollection } from "@/collections/projects-page";
 import { AboutPageCollection } from "@/collections/about-page";
 import { resendAdapter } from "@payloadcms/email-resend";
 import { s3Storage } from "@payloadcms/storage-s3";
+import { ServiceCollection } from "@/collections/service";
+import { ServiceItemCollection } from "@/collections/service-item";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+
+const isAdmin = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
+
+const publicReadCollectionAccess = {
+  read: () => true,
+  create: isAdmin,
+  update: isAdmin,
+  delete: isAdmin,
+};
+
+const publicReadGlobalAccess = {
+  read: () => true,
+  update: isAdmin,
+};
+
+const publicCollection = <T extends CollectionConfig>(collection: T): T => ({
+  ...collection,
+  access: publicReadCollectionAccess,
+});
+
+const publicGlobal = <T extends GlobalConfig>(globalConfig: T): T => ({
+  ...globalConfig,
+  access: publicReadGlobalAccess,
+});
 
 export default buildConfig({
   admin: {
@@ -33,17 +59,19 @@ export default buildConfig({
   }),
   collections: [
     AdminCollection,
-    FaqCollection,
-    MediaCollection,
-    MicroOfferingsCollection,
-    ProjectCollection,
-    ReviewsCollection,
+    publicCollection(FaqCollection),
+    publicCollection(MediaCollection),
+    publicCollection(MicroOfferingsCollection),
+    publicCollection(ProjectCollection),
+    publicCollection(ReviewsCollection),
+    publicCollection(ServiceCollection),
+    publicCollection(ServiceItemCollection),
   ],
   globals: [
-    MetaCollection,
-    HomepageCollection,
-    ProjectsPageCollection,
-    AboutPageCollection,
+    publicGlobal(MetaCollection),
+    publicGlobal(HomepageCollection),
+    publicGlobal(ProjectsPageCollection),
+    publicGlobal(AboutPageCollection),
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

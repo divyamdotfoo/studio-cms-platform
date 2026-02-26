@@ -1,0 +1,9 @@
+<svg width="1600" height="1100" viewBox="0 0 1600 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1100" fill="#F8F4EC"/>
+  <rect x="80" y="80" width="1440" height="940" stroke="#CFBBA3" stroke-width="2"/>
+  <path d="M220 780L500 520L740 700L980 430L1380 780" stroke="#A2968A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="520" cy="350" r="70" stroke="#C49A6C" stroke-width="6"/>
+  <path d="M220 860H1380" stroke="#CFBBA3" stroke-width="2" stroke-dasharray="12 12"/>
+  <text x="50%" y="52%" text-anchor="middle" fill="#6A6057" font-size="54" font-family="Arial, sans-serif" letter-spacing="3">VISION ARCHITECT</text>
+  <text x="50%" y="58%" text-anchor="middle" fill="#A2968A" font-size="26" font-family="Arial, sans-serif" letter-spacing="2">SERVICE IMAGE PLACEHOLDER</text>
+</svg>

@@ -6,7 +6,7 @@ import { Faq } from "@/components/sections/Faq";
 import { Social } from "@/components/sections/Social";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd, faqJsonLd } from "@/lib/json-ld";
-import { getSiteContent } from "@/lib/get-site-content";
+import { getSiteContent } from "@/server/queries";
 
 export default async function Page() {
   const { faq } = await getSiteContent();
