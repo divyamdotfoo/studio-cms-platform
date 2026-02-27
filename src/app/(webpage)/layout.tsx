@@ -46,9 +46,18 @@ export const metadata: Metadata = {
     locale: "en_IN",
     siteName: "Vision Architect",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Vision Architect in Haridwar, Uttarakhand",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/opengraph-image.jpg"],
   },
   robots: {
     index: true,
@@ -97,4 +106,4 @@ export default async function WebpageLayout({
   );
 }
 
-export const revalidate = 300;
+export const revalidate = 60;

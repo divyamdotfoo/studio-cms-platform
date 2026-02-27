@@ -726,7 +726,6 @@ export function FeaturedProjects() {
   const { homepage, projects } = useContent();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
-  console.log(homepage.featuredProjects);
 
   const projectById = new Map(projects.map((project) => [project.id, project]));
 

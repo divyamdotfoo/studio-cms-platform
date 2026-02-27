@@ -11,5 +11,7 @@ export async function GET() {
 
   revalidatePath("/");
 
+  await fetch(`${process.env.NEXT_PUBLIC_API_URL}`);
+
   return NextResponse.json({ cron: "successfull" }, { status: 200 });
 }

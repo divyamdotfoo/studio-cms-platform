@@ -51,6 +51,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      beforeDashboard: ["@/components/payload/AdminCacheNotice"],
+    },
   },
   email: resendAdapter({
     defaultFromAddress: "Divyam <onboarding@resend.dev>",
