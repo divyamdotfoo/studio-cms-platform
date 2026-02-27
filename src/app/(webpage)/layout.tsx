@@ -1,4 +1,4 @@
-import { Analytics, type BeforeSendEvent } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { ContentProvider } from "@/lib/content-ctx";
 import { Navbar } from "@/components/layout/Navbar";
@@ -91,14 +91,7 @@ export default async function WebpageLayout({
           <Footer blogs={blogLinks} />
           <Dock />
         </ContentProvider>
-        <Analytics
-          beforeSend={(event: BeforeSendEvent) => {
-            if (event.url.includes("/admin") || event.url.includes("/api")) {
-              return null;
-            }
-            return event;
-          }}
-        />
+        <Analytics />
       </body>
     </html>
   );
