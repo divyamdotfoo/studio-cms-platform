@@ -7,8 +7,8 @@ import { useMotionValueEvent, useScroll } from "motion/react";
 import { Phone } from "lucide-react";
 import { HoverLink } from "@/components/effects/nav-link";
 import { buttonVariants } from "@/components/ui/button/variants";
-import { useContent } from "@/lib/content-ctx";
 import { cn } from "@/lib/utils";
+import type { Meta } from "@/payload-types";
 
 /* ── Hardcoded navigation data ── */
 
@@ -41,8 +41,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
  * No entry animations — visible immediately on page load.
  * ──────────────────────────────────────────────────── */
 
-export function Navbar() {
-  const { meta } = useContent();
+export function Navbar({ meta }: { meta: Meta }) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();

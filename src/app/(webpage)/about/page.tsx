@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AboutPage } from "@/components/pages/About";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
+import { getAboutPage, getMeta } from "@/server/queries";
 
 export const metadata: Metadata = {
   title: "About — Vision Architect | Ar. Ujjwal Kapoor",
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
+export default async function Page() {
+  const aboutPage = await getAboutPage();
+  const meta = await getMeta();
+
   return (
     <>
       <JsonLd
@@ -21,7 +25,7 @@ export default function Page() {
           { name: "About", href: "/about" },
         ])}
       />
-      <AboutPage />
+      <AboutPage aboutPage={aboutPage} meta={meta} />
     </>
   );
 }

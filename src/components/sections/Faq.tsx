@@ -3,9 +3,8 @@
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Plus } from "lucide-react";
-import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
-import type { Faq as FaqItem } from "@/payload-types";
+import type { Faq as FaqItem, Homepage } from "@/payload-types";
 
 /* ────────────────────────────────────────────────────
  * FaqRow — expandable on hover (desktop) / tap (mobile)
@@ -124,8 +123,7 @@ function FaqRow({
  * Mobile:  heading top, rows below
  * ──────────────────────────────────────────────────── */
 
-export function Faq() {
-  const { homepage, faq } = useContent();
+export function Faq({ homepage, faq }: { homepage: Homepage; faq: FaqItem[] }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);

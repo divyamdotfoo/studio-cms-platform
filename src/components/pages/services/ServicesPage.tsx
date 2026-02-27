@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { ServiceContent } from "@/server/types";
+import type { ServiceCardContent } from "@/server/types";
 
 interface ServicesPageProps {
-  services: ServiceContent[];
+  services: ServiceCardContent[];
 }
 
 export function ServicesPage({ services }: ServicesPageProps) {

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { posts } from "./blog/_data/posts";
-import { getServicesContent } from "@/server/queries";
+import { getServiceItemParams, getServiceSlugs } from "@/server/queries";
 
 const BASE = "https://visionarchitect.in";
 
@@ -47,20 +47,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const services = await getServicesContent();
-  const servicePages: MetadataRoute.Sitemap = services.map((service) => ({
-    url: `${BASE}/services/${service.slug}`,
+  const serviceSlugs = await getServiceSlugs();
+  const serviceItemParams = await getServiceItemParams();
+
+  const servicePages: MetadataRoute.Sitemap = serviceSlugs.map((serviceSlug) => ({
+    url: `${BASE}/services/${serviceSlug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
-  const serviceItemPages: MetadataRoute.Sitemap = services.flatMap((service) =>
-    service.serviceItems.map((item) => ({
-      url: `${BASE}/services/${service.slug}/${item.slug}`,
+  const serviceItemPages: MetadataRoute.Sitemap = serviceItemParams.map(
+    ({ serviceSlug, serviceItemSlug }) => ({
+      url: `${BASE}/services/${serviceSlug}/${serviceItemSlug}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.6,
-    }))
+    })
   );
 
   return [...staticPages, ...blogPages, ...servicePages, ...serviceItemPages];

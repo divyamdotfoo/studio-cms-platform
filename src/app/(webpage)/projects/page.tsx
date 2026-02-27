@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ProjectsPage } from "@/components/pages/Projects";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
+import { getProjects, getProjectsPage } from "@/server/queries";
 
 export const metadata: Metadata = {
   title: "Projects — Vision Architect",
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
+export default async function Page() {
+  const projects = await getProjects();
+  const projectsPage = await getProjectsPage();
+
   return (
     <>
       <JsonLd
@@ -21,7 +25,7 @@ export default function Page() {
           { name: "Projects", href: "/projects" },
         ])}
       />
-      <ProjectsPage />
+      <ProjectsPage projects={projects} projectsPage={projectsPage} />
     </>
   );
 }

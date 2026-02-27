@@ -2,8 +2,8 @@
 
 import { motion } from "motion/react";
 import { RevealText } from "@/components/effects/text-effects";
-import { useContent } from "@/lib/content-ctx";
 import { spring, STAGGER, T_HERO } from "@/lib/motion";
+import type { Homepage, Meta } from "@/payload-types";
 
 const T = T_HERO;
 
@@ -13,8 +13,7 @@ const T = T_HERO;
  *  Mobile:  location → headline → description (stacked)
  *  Desktop: headline left | location + description right
  * ──────────────────────────────────────────────────── */
-export function Hero() {
-  const { homepage, meta } = useContent();
+export function Hero({ homepage, meta }: { homepage: Homepage; meta: Meta }) {
 
   return (
     <section className="pt-20 lg:pt-28" aria-label="Hero">

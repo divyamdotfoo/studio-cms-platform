@@ -1,4 +1,5 @@
 import config from "@payload-config";
+import { cache } from "react";
 import { getPayload } from "payload";
 
-export const getPayloadClient = async () => getPayload({ config });
+export const getPayloadClient = cache(async () => getPayload({ config }));

@@ -1,12 +1,11 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
-import { ContentProvider } from "@/lib/content-ctx";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
-import { getSiteContent } from "@/server/queries";
+import { getFooterServices, getMeta } from "@/server/queries";
 import { posts } from "@/app/(webpage)/blog/_data/posts";
 
 import type { Viewport } from "next";
@@ -77,7 +76,8 @@ export default async function WebpageLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const content = await getSiteContent();
+  const meta = await getMeta();
+  const services = await getFooterServices();
 
   const blogLinks = posts.map((post) => ({
     slug: post.slug,
@@ -92,14 +92,12 @@ export default async function WebpageLayout({
     >
       <body className="font-sans antialiased bg-cream text-ink">
         <Toaster />
-        <ContentProvider content={content}>
-          <JsonLd data={organizationJsonLd()} />
-          <JsonLd data={websiteJsonLd()} />
-          <Navbar />
-          {children}
-          <Footer blogs={blogLinks} />
-          <Dock />
-        </ContentProvider>
+        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={websiteJsonLd()} />
+        <Navbar meta={meta} />
+        {children}
+        <Footer blogs={blogLinks} meta={meta} services={services} />
+        <Dock />
         <Analytics />
       </body>
     </html>

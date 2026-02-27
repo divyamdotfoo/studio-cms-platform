@@ -1,13 +1,5 @@
 import type {
-  AboutPage,
-  Faq,
-  Homepage,
   Media,
-  Meta,
-  MicroOffering,
-  Project,
-  ProjectsPage,
-  Review,
   Service,
   ServiceItem,
 } from "@/payload-types";
@@ -34,16 +26,13 @@ export type ServiceContent = Pick<Service, "id" | "name" | "description"> & {
   serviceItems: ServiceItemContent[];
 };
 
-export type MediaRelation = { relationTo: "media"; value: number | Media };
+export type ServiceCardContent = Pick<
+  ServiceContent,
+  "id" | "slug" | "name" | "description" | "thumbnailUrl"
+>;
 
-export type SiteContent = {
-  homepage: Homepage;
-  aboutPage: AboutPage;
-  projectsPage: ProjectsPage;
-  meta: Meta;
-  projects: Project[];
-  reviews: Review[];
-  faq: Faq[];
-  microOfferings: MicroOffering[];
-  services: ServiceContent[];
+export type FooterServiceContent = Pick<ServiceContent, "slug" | "name"> & {
+  serviceItems: Array<Pick<ServiceItemContent, "slug" | "name">>;
 };
+
+export type MediaRelation = { relationTo: "media"; value: number | Media };

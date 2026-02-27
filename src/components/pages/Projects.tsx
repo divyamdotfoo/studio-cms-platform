@@ -3,9 +3,11 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView, Transition } from "motion/react";
 import { XIcon, Check } from "lucide-react";
-import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
-import type { Project as PayloadProject } from "@/payload-types";
+import type {
+  Project as PayloadProject,
+  ProjectsPage as PayloadProjectsPage,
+} from "@/payload-types";
 import { cn } from "@/lib/utils";
 import {
   MorphingDialog,
@@ -635,8 +637,13 @@ function HeaderSketches() {
 
 /* ── ProjectsPage — main export ──────────────────── */
 
-export function ProjectsPage() {
-  const { projects, projectsPage } = useContent();
+export function ProjectsPage({
+  projects,
+  projectsPage,
+}: {
+  projects: PayloadProject[];
+  projectsPage: PayloadProjectsPage;
+}) {
   const normalizedProjects: Project[] = projects.map(
     (project: PayloadProject) => ({
       id: project.id,

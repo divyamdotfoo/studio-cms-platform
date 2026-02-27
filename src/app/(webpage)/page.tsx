@@ -7,7 +7,14 @@ import { Faq } from "@/components/sections/Faq";
 import { Social } from "@/components/sections/Social";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd, faqJsonLd } from "@/lib/json-ld";
-import { getSiteContent } from "@/server/queries";
+import {
+  getFaq,
+  getHomepage,
+  getMeta,
+  getMicroOfferings,
+  getProjects,
+  getReviews,
+} from "@/server/queries";
 
 export const metadata: Metadata = {
   title: "Vision Architect — Haridwar's Trusted Architecture Partner",
@@ -19,7 +26,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const { faq } = await getSiteContent();
+  const homepage = await getHomepage();
+  const meta = await getMeta();
+  const faq = await getFaq();
+  const projects = await getProjects();
+  const reviews = await getReviews();
+  const microOfferings = await getMicroOfferings();
 
   return (
     <main>
@@ -29,12 +41,12 @@ export default async function Page() {
           faq.map((item) => ({ question: item.question, answer: item.answer }))
         )}
       />
-      <Hero />
-      <FeaturedProjects />
-      <Services />
-      <Reviews />
-      <Faq />
-      <Social />
+      <Hero homepage={homepage} meta={meta} />
+      <FeaturedProjects homepage={homepage} projects={projects} />
+      <Services homepage={homepage} microOfferings={microOfferings} />
+      <Reviews homepage={homepage} reviews={reviews} />
+      <Faq homepage={homepage} faq={faq} />
+      <Social homepage={homepage} meta={meta} />
     </main>
   );
 }

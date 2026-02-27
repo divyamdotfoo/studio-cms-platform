@@ -4,9 +4,9 @@ import { ServiceItemPage } from "@/components/pages/services/ServiceItemPage";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
 import {
-  getSiteContent,
+  getMeta,
+  getServiceItemParams,
   getServiceItemBySlug,
-  getServicesContent,
 } from "@/server/queries";
 
 interface ServiceItemRouteProps {
@@ -17,13 +17,7 @@ interface ServiceItemRouteProps {
 }
 
 export async function generateStaticParams() {
-  const services = await getServicesContent();
-  return services.flatMap((service) =>
-    service.serviceItems.map((item) => ({
-      serviceSlug: service.slug,
-      serviceItemSlug: item.slug,
-    }))
-  );
+  return getServiceItemParams();
 }
 
 export async function generateMetadata({
@@ -66,7 +60,7 @@ export default async function ServiceItemSlugPage({
 }: ServiceItemRouteProps) {
   const { serviceSlug, serviceItemSlug } = await params;
   const resolved = await getServiceItemBySlug(serviceSlug, serviceItemSlug);
-  const { meta } = await getSiteContent();
+  const meta = await getMeta();
 
   if (!resolved) {
     notFound();

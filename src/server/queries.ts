@@ -1,12 +1,24 @@
-import config from "@payload-config";
-import { getPayload } from "payload";
+import { cache } from "react";
 import type {
+  AboutPage,
+  Faq,
+  Homepage,
+  Meta,
+  MicroOffering,
+  Project,
+  ProjectsPage,
+  Review,
+  Service as PayloadService,
+  ServiceItem,
+} from "@/payload-types";
+import { getPayloadClient } from "@/server/payload/client";
+import type {
+  FooterServiceContent,
   MediaRelation,
+  ServiceCardContent,
   ServiceContent,
   ServiceItemContent,
-  SiteContent,
 } from "@/server/types";
-import type { Service as PayloadService, ServiceItem } from "@/payload-types";
 
 const FALLBACK_IMAGE = "/images/service-placeholder.svg";
 
@@ -61,97 +73,198 @@ function toServiceContent(service: PayloadService): ServiceContent {
   };
 }
 
-export const getSiteContent = async (): Promise<SiteContent> => {
-  const payload = await getPayload({ config });
+export const getMeta = cache(async (): Promise<Meta> => {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({ slug: "meta", depth: 2 });
+});
 
-  const [
-    homepage,
-    aboutPage,
-    projectsPage,
-    meta,
-    projects,
-    reviews,
-    faq,
-    microOfferings,
-    servicesRes,
-  ] = await Promise.all([
-    payload.findGlobal({
-      slug: "homepage",
-      depth: 2,
-    }),
-    payload.findGlobal({
-      slug: "about-page",
-    }),
-    payload.findGlobal({
-      slug: "projects-page",
-    }),
-    payload.findGlobal({
-      slug: "meta",
-    }),
-    payload.find({
-      collection: "project",
-      depth: 2,
-    }),
-    payload.find({
-      collection: "reviews",
-      depth: 2,
-    }),
-    payload.find({
-      collection: "faq",
-      depth: 0,
+export const getHomepage = cache(async (): Promise<Homepage> => {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({ slug: "homepage", depth: 2 });
+});
+
+export const getAboutPage = cache(async (): Promise<AboutPage> => {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({ slug: "about-page", depth: 2 });
+});
+
+export const getProjectsPage = cache(async (): Promise<ProjectsPage> => {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({ slug: "projects-page", depth: 2 });
+});
+
+export const getProjects = cache(async (): Promise<Project[]> => {
+  const payload = await getPayloadClient();
+  const response = await payload.find({ collection: "project", depth: 2 });
+  return response.docs as Project[];
+});
+
+export const getReviews = cache(async (): Promise<Review[]> => {
+  const payload = await getPayloadClient();
+  const response = await payload.find({ collection: "reviews", depth: 2 });
+  return response.docs as Review[];
+});
+
+export const getFaq = cache(async (): Promise<Faq[]> => {
+  const payload = await getPayloadClient();
+  const response = await payload.find({
+    collection: "faq",
+    depth: 0,
+    limit: 100,
+  });
+  return response.docs as Faq[];
+});
+
+export const getMicroOfferings = cache(async (): Promise<MicroOffering[]> => {
+  const payload = await getPayloadClient();
+  const response = await payload.find({
+    collection: "micro-offerings",
+    depth: 0,
+    limit: 100,
+  });
+  return response.docs as MicroOffering[];
+});
+
+export const getServicesContent = cache(async (): Promise<ServiceContent[]> => {
+  const payload = await getPayloadClient();
+  const response = await payload.find({
+    collection: "service",
+    depth: 2,
+    limit: 100,
+    sort: "createdAt",
+  });
+
+  return response.docs.map((service) =>
+    toServiceContent(service as PayloadService)
+  );
+});
+
+export const getServiceCards = cache(
+  async (): Promise<ServiceCardContent[]> => {
+    const payload = await getPayloadClient();
+    const response = await payload.find({
+      collection: "service",
+      depth: 1,
       limit: 100,
-    }),
-    payload.find({
-      collection: "micro-offerings",
-      depth: 0,
-      limit: 100,
-    }),
-    payload.find({
+      sort: "createdAt",
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        description: true,
+        serviceThumbnail: true,
+      },
+    });
+
+    return response.docs.map((service) => {
+      const typedService = service as PayloadService;
+      return {
+        id: typedService.id,
+        slug: typedService.slug,
+        name: typedService.name,
+        description: typedService.description,
+        thumbnailUrl:
+          getMediaUrl(
+            typedService.serviceThumbnail as MediaRelation | null | undefined
+          ) ?? FALLBACK_IMAGE,
+      };
+    });
+  }
+);
+
+export const getFooterServices = cache(
+  async (): Promise<FooterServiceContent[]> => {
+    const payload = await getPayloadClient();
+    const response = await payload.find({
       collection: "service",
       depth: 2,
       limit: 100,
       sort: "createdAt",
-    }),
-  ]);
+      select: {
+        slug: true,
+        name: true,
+        serviceItems: true,
+      },
+    });
 
-  return {
-    homepage,
-    aboutPage,
-    projectsPage,
-    meta,
-    projects: projects.docs,
-    reviews: reviews.docs,
-    faq: faq.docs,
-    microOfferings: microOfferings.docs,
-    services: servicesRes.docs.map((service) =>
-      toServiceContent(service as PayloadService)
-    ),
-  };
-};
+    return response.docs.flatMap((service) => {
+      if (!service.slug || !service.name) return [];
 
-export const getServicesContent = async (): Promise<ServiceContent[]> => {
-  const content = await getSiteContent();
-  return content.services;
-};
+      const serviceItems = (service.serviceItems ?? [])
+        .map((relation) => {
+          if (typeof relation.value === "number") return null;
+          return {
+            slug: relation.value.slug,
+            name: relation.value.name,
+          };
+        })
+        .filter(
+          (
+            item
+          ): item is Pick<ServiceItemContent, "slug" | "name"> =>
+            Boolean(item && item.slug && item.name)
+        );
 
-export const getServiceBySlug = async (serviceSlug: string) => {
-  const services = await getServicesContent();
-  return services.find((service) => service.slug === serviceSlug) ?? null;
-};
+      return [
+        {
+          slug: service.slug,
+          name: service.name,
+          serviceItems,
+        },
+      ];
+    });
+  }
+);
 
-export const getServiceItemBySlug = async (
-  serviceSlug: string,
-  serviceItemSlug: string
-) => {
-  const service = await getServiceBySlug(serviceSlug);
+export const getServiceSlugs = cache(async (): Promise<string[]> => {
+  const services = await getFooterServices();
+  return services
+    .map((service) => service.slug)
+    .filter((slug): slug is string => Boolean(slug));
+});
+
+export const getServiceItemParams = cache(
+  async (): Promise<Array<{ serviceSlug: string; serviceItemSlug: string }>> => {
+    const services = await getFooterServices();
+    return services.flatMap((service) =>
+      service.serviceItems
+        .map((item) => ({
+          serviceSlug: service.slug,
+          serviceItemSlug: item.slug,
+        }))
+        .filter((item) => Boolean(item.serviceItemSlug))
+    );
+  }
+);
+
+export const getServiceBySlug = cache(async (serviceSlug: string) => {
+  const payload = await getPayloadClient();
+  const response = await payload.find({
+    collection: "service",
+    depth: 2,
+    limit: 1,
+    where: {
+      slug: { equals: serviceSlug },
+    },
+  });
+
+  const service = response.docs[0];
   if (!service) return null;
+  return toServiceContent(service as PayloadService);
+});
 
-  const serviceItem =
-    service.serviceItems.find((item) => item.slug === serviceItemSlug) ?? null;
-  if (!serviceItem) return null;
+export const getServiceItemBySlug = cache(
+  async (serviceSlug: string, serviceItemSlug: string) => {
+    const service = await getServiceBySlug(serviceSlug);
+    if (!service) return null;
 
-  return {
-    service,
-    serviceItem,
-  };
-};
+    const serviceItem =
+      service.serviceItems.find((item) => item.slug === serviceItemSlug) ?? null;
+    if (!serviceItem) return null;
+
+    return {
+      service,
+      serviceItem,
+    };
+  }
+);

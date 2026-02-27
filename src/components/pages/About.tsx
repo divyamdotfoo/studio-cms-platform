@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
-import { useContent } from "@/lib/content-ctx";
+import type { AboutPage as PayloadAboutPage, Meta } from "@/payload-types";
 
 const PROFILE_IMAGE = "/images/profile.jpeg";
 
@@ -25,8 +25,13 @@ const T = 0;
  * AboutPage — main export
  * ──────────────────────────────────────────────────── */
 
-export function AboutPage() {
-  const { aboutPage, meta } = useContent();
+export function AboutPage({
+  aboutPage,
+  meta,
+}: {
+  aboutPage: PayloadAboutPage;
+  meta: Meta;
+}) {
   const {
     heroLabel,
     heroHeadlinePartOne,

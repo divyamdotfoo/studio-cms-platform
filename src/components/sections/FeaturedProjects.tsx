@@ -10,9 +10,8 @@ import {
   MotionValue,
 } from "motion/react";
 import { ArrowRight, XIcon } from "lucide-react";
-import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER, T_FEATURED } from "@/lib/motion";
-import type { Project } from "@/payload-types";
+import type { Homepage, Project } from "@/payload-types";
 import {
   MorphingDialog,
   MorphingDialogTrigger,
@@ -722,8 +721,13 @@ function SeeAllButton() {
 
 /* ── FeaturedProjects — main section ─────────────── */
 
-export function FeaturedProjects() {
-  const { homepage, projects } = useContent();
+export function FeaturedProjects({
+  homepage,
+  projects,
+}: {
+  homepage: Homepage;
+  projects: Project[];
+}) {
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 

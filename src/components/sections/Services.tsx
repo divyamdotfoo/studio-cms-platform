@@ -3,9 +3,8 @@
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, springSnap, STAGGER } from "@/lib/motion";
-import type { Homepage } from "@/payload-types";
+import type { Homepage, MicroOffering } from "@/payload-types";
 
 /* ────────────────────────────────────────────────────
  * ServiceRow — expandable on hover (desktop) / tap (mobile)
@@ -137,8 +136,13 @@ function ServiceRow({
  * Services section
  * ──────────────────────────────────────────────────── */
 
-export function Services() {
-  const { homepage, microOfferings } = useContent();
+export function Services({
+  homepage,
+  microOfferings,
+}: {
+  homepage: Homepage;
+  microOfferings: MicroOffering[];
+}) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);

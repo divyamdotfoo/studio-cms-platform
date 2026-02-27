@@ -4,12 +4,13 @@ import { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "motion/react";
 import { Phone, Mail } from "lucide-react";
-import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
 import { ContactFormFields } from "@/components/sections/ContactFormFields";
 import { InstagramIcon } from "@/components/icons.tsx/insta";
 import { YouTubeIcon } from "@/components/icons.tsx/yt";
 import { WhatsAppIcon } from "@/components/icons.tsx/whatsapp";
+import type { Meta } from "@/payload-types";
+import type { FooterServiceContent } from "@/server/types";
 
 /* ── Hardcoded constants ── */
 
@@ -43,10 +44,11 @@ type FooterBlog = {
 
 interface FooterProps {
   blogs: FooterBlog[];
+  meta: Meta;
+  services: FooterServiceContent[];
 }
 
-export function Footer({ blogs }: FooterProps) {
-  const { meta, services } = useContent();
+export function Footer({ blogs, meta, services }: FooterProps) {
   const contactRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const isContactInView = useInView(contactRef, {

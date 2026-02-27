@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ServicesPage } from "@/components/pages/services/ServicesPage";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
-import { getServicesContent } from "@/server/queries";
+import { getServiceCards } from "@/server/queries";
 
 export const metadata: Metadata = {
   title: "Services — Vision Architect",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const services = await getServicesContent();
+  const services = await getServiceCards();
 
   return (
     <>

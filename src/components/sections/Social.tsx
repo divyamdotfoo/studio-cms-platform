@@ -3,10 +3,10 @@
 import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
 import { InstagramIcon } from "@/components/icons.tsx/insta";
 import { YouTubeIcon } from "@/components/icons.tsx/yt";
+import type { Homepage, Meta } from "@/payload-types";
 
 const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
   instagram: InstagramIcon,
@@ -91,8 +91,7 @@ function ChannelCard({
  * Mobile:  heading top, cards below
  * ──────────────────────────────────────────────────── */
 
-export function Social() {
-  const { homepage, meta } = useContent();
+export function Social({ homepage, meta }: { homepage: Homepage; meta: Meta }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 

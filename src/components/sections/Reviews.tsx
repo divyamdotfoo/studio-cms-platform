@@ -3,9 +3,8 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useInView } from "motion/react";
 import { Volume2, VolumeX } from "lucide-react";
-import { useContent } from "@/lib/content-ctx";
 import { spring, springGentle } from "@/lib/motion";
-import type { Review } from "@/payload-types";
+import type { Homepage, Review } from "@/payload-types";
 
 /* ────────────────────────────────────────────────────
  * VideoPlayer
@@ -258,8 +257,13 @@ function TextReviewCard({ review }: { review: Review }) {
  * Only one video plays unmuted at a time.
  * ──────────────────────────────────────────────────── */
 
-export function Reviews() {
-  const { homepage, reviews } = useContent();
+export function Reviews({
+  homepage,
+  reviews,
+}: {
+  homepage: Homepage;
+  reviews: Review[];
+}) {
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
 
