@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/sections/Hero";
 import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { Services } from "@/components/sections/Services";
@@ -7,6 +8,15 @@ import { Social } from "@/components/sections/Social";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd, faqJsonLd } from "@/lib/json-ld";
 import { getSiteContent } from "@/server/queries";
+
+export const metadata: Metadata = {
+  title: "Vision Architect — Haridwar's Trusted Architecture Partner",
+  description:
+    "Professional architecture services in Haridwar for homes, cafes, and commercial spaces across Uttarakhand.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default async function Page() {
   const { faq } = await getSiteContent();

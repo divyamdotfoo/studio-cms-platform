@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     "Architecture Blogs for Haridwar, Rishikesh & Dehradun — Vision Architect",
   description:
     "SEO-friendly architecture guides for North Indian homeowners and business owners in Haridwar, Rishikesh, and Dehradun.",
+  alternates: {
+    canonical: "/blogs",
+  },
 };
 
 export default function BlogsPage() {

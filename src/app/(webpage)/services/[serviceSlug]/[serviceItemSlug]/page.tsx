@@ -41,6 +41,23 @@ export async function generateMetadata({
   return {
     title: `${resolved.serviceItem.name} — Vision Architect`,
     description: resolved.serviceItem.description,
+    openGraph: {
+      title: `${resolved.serviceItem.name} — Vision Architect`,
+      description: resolved.serviceItem.description,
+      ...(resolved.serviceItem.imageUrls[0]
+        ? {
+            images: [
+              {
+                url: resolved.serviceItem.imageUrls[0],
+                alt: resolved.serviceItem.name,
+              },
+            ],
+          }
+        : {}),
+    },
+    alternates: {
+      canonical: `/services/${resolved.service.slug}/${resolved.serviceItem.slug}`,
+    },
   };
 }
 

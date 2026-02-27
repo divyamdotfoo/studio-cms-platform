@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Projects — Vision Architect",
   description:
     "Explore our portfolio of residential and commercial architecture projects across Haridwar, Rishikesh, and Uttarakhand — designed with care and built to last.",
+  alternates: {
+    canonical: "/projects",
+  },
 };
 
 export default function Page() {

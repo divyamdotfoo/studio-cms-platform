@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Services — Vision Architect",
   description:
     "Our architecture services — residential design, commercial spaces, interiors, and consultation. Coming soon.",
+  alternates: {
+    canonical: "/services",
+  },
 };
 
 export default async function Page() {

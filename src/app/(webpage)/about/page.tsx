@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "About — Vision Architect | Ar. Ujjwal Kapoor",
   description:
     "Meet Ar. Ujjwal Kapoor, the young architect behind Vision Architect. 6+ years of delivering dream homes across Haridwar and beyond.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function Page() {

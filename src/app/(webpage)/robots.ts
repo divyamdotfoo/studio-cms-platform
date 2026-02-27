@@ -1,14 +1,17 @@
 import type { MetadataRoute } from "next";
 
+const BASE = "https://visionarchitect.in";
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/"],
+        disallow: ["/admin", "/admin/", "/api", "/api/"],
       },
     ],
-    sitemap: "https://visionarchitect.in/sitemap.xml",
+    sitemap: `${BASE}/sitemap.xml`,
+    host: BASE,
   };
 }
