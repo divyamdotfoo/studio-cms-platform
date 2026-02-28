@@ -1,0 +1,38 @@
+name: Nightly DB Backup
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: Dump and upload to R2
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends postgresql-client
+
+      - name: Dump database
+        run: |
+          FILENAME="backup-$(date +%Y-%m-%d).sql.gz"
+          pg_dump ${{ secrets.DATABASE_URL }} | gzip > $FILENAME
+          echo "BACKUP_FILENAME=$FILENAME" >> $GITHUB_ENV
+
+      - name: Upload to R2
+        run: |
+          aws s3 cp $BACKUP_FILENAME \
+            s3://${{ secrets.BUCKET_NAME }}/$BACKUP_FILENAME \
+            --endpoint-url ${{ secrets.S3_ENDPOINT_URL }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
