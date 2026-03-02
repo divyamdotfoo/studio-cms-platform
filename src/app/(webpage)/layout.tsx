@@ -4,9 +4,14 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Dock } from "@/components/layout/Dock";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { buildLayoutMetadata } from "@/lib/metadata";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
-import { getFooterServices, getMeta } from "@/server/queries";
-import { posts } from "@/app/(webpage)/blog/_data/posts";
+import {
+  getBlogs,
+  getFooterServices,
+  getMeta,
+  getSeoConfig,
+} from "@/server/queries";
 
 import type { Viewport } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
@@ -32,44 +37,10 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://visionarchitect.in"),
-  title: "Vision Architect — Haridwar's Trusted Architecture Partner",
-  description:
-    "Professional architecture services in Haridwar. Specializing in homes, cafes, and commercial spaces. Designing spaces that inspire lives.",
-  keywords:
-    "architect haridwar, architecture firm haridwar, home design haridwar, commercial architecture, vision architect",
-  openGraph: {
-    title: "Vision Architect — Haridwar",
-    description: "Professional architecture services in Haridwar",
-    locale: "en_IN",
-    siteName: "Vision Architect",
-    type: "website",
-    images: [
-      {
-        url: "/opengraph-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Vision Architect in Haridwar, Uttarakhand",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    images: ["/opengraph-image.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seoConfig = await getSeoConfig();
+  return buildLayoutMetadata(seoConfig);
+}
 
 export default async function WebpageLayout({
   children,
@@ -77,9 +48,11 @@ export default async function WebpageLayout({
   children: React.ReactNode;
 }>) {
   const meta = await getMeta();
+  const seoConfig = await getSeoConfig();
   const services = await getFooterServices();
+  const blogs = await getBlogs();
 
-  const blogLinks = posts.map((post) => ({
+  const blogLinks = blogs.map((post) => ({
     slug: post.slug,
     title: post.title,
   }));
@@ -92,8 +65,8 @@ export default async function WebpageLayout({
     >
       <body className="font-sans antialiased bg-cream text-ink">
         <Toaster />
-        <JsonLd data={organizationJsonLd()} />
-        <JsonLd data={websiteJsonLd()} />
+        <JsonLd data={organizationJsonLd(seoConfig)} />
+        <JsonLd data={websiteJsonLd(seoConfig)} />
         <Navbar meta={meta} />
         {children}
         <Footer blogs={blogLinks} meta={meta} services={services} />

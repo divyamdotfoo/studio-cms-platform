@@ -6,6 +6,7 @@ import { Reviews } from "@/components/sections/Reviews";
 import { Faq } from "@/components/sections/Faq";
 import { Social } from "@/components/sections/Social";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { buildCmsSeoMetadata } from "@/lib/metadata";
 import { localBusinessJsonLd, faqJsonLd } from "@/lib/json-ld";
 import {
   getFaq,
@@ -14,16 +15,13 @@ import {
   getMicroOfferings,
   getProjects,
   getReviews,
+  getSeoConfig,
 } from "@/server/queries";
 
-export const metadata: Metadata = {
-  title: "Vision Architect — Haridwar's Trusted Architecture Partner",
-  description:
-    "Professional architecture services in Haridwar for homes, cafes, and commercial spaces across Uttarakhand.",
-  alternates: {
-    canonical: "/",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const homepage = await getHomepage();
+  return buildCmsSeoMetadata(homepage.seo);
+}
 
 export default async function Page() {
   const homepage = await getHomepage();
@@ -32,10 +30,11 @@ export default async function Page() {
   const projects = await getProjects();
   const reviews = await getReviews();
   const microOfferings = await getMicroOfferings();
+  const seoConfig = await getSeoConfig();
 
   return (
     <main>
-      <JsonLd data={localBusinessJsonLd()} />
+      <JsonLd data={localBusinessJsonLd(seoConfig)} />
       <JsonLd
         data={faqJsonLd(
           faq.map((item) => ({ question: item.question, answer: item.answer }))

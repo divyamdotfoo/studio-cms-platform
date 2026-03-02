@@ -1,136 +1,101 @@
-const BASE = "https://visionarchitect.in";
+import type { SeoConfig } from "@/payload-types";
 
-const BUSINESS = {
-  name: "Vision Architect",
-  legalName: "Vision Architect",
-  url: BASE,
-  telephone: "+917668761558",
-  email: "visionarchitect29@gmail.com",
-  foundingDate: "2018",
-  founder: {
-    "@type": "Person" as const,
-    name: "Ar. Ujjwal Kapoor",
-    jobTitle: "Founder & Principal Architect",
-  },
-  address: {
-    "@type": "PostalAddress" as const,
-    addressLocality: "Haridwar",
-    addressRegion: "Uttarakhand",
-    addressCountry: "IN",
-  },
-  geo: {
-    "@type": "GeoCoordinates" as const,
-    latitude: 29.9367,
-    longitude: 78.1377,
-  },
-  areaServed: [
-    { "@type": "City" as const, name: "Haridwar" },
-    { "@type": "City" as const, name: "Rishikesh" },
-    { "@type": "City" as const, name: "Dehradun" },
-    {
-      "@type": "State" as const,
-      name: "Uttarakhand",
-    },
-  ],
-  sameAs: [
-    "https://www.instagram.com/vision_architect_/",
-    "https://www.youtube.com/@visionarchitect3537",
-  ],
-};
+const normalizeBaseUrl = (url: string) => url.replace(/\/+$/, "");
 
-export function organizationJsonLd() {
+export function organizationJsonLd(seoConfig: SeoConfig) {
+  const base = normalizeBaseUrl(seoConfig.metadataBase);
+  const org = seoConfig.organization;
+
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": `${BASE}/#organization`,
-    name: BUSINESS.name,
-    url: BUSINESS.url,
-    logo: `${BASE}/logo.png`,
-    founder: BUSINESS.founder,
-    foundingDate: BUSINESS.foundingDate,
-    sameAs: BUSINESS.sameAs,
+    "@id": `${base}/#organization`,
+    name: org.name,
+    legalName: org.legalName,
+    url: org.url,
+    logo: org.logoUrl,
+    founder: {
+      "@type": "Person",
+      name: org.founderName,
+      jobTitle: org.founderJobTitle,
+    },
+    foundingDate: org.foundingDate,
+    sameAs: org.sameAs?.map((item) => item.url) ?? [],
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: BUSINESS.telephone,
-      email: BUSINESS.email,
+      telephone: org.telephone,
+      email: org.email,
       contactType: "customer service",
       availableLanguage: ["English", "Hindi"],
     },
   };
 }
 
-export function localBusinessJsonLd() {
+export function localBusinessJsonLd(seoConfig: SeoConfig) {
+  const base = normalizeBaseUrl(seoConfig.metadataBase);
+  const org = seoConfig.organization;
+
   return {
     "@context": "https://schema.org",
     "@type": "Architect",
-    "@id": `${BASE}/#localbusiness`,
-    name: BUSINESS.name,
-    url: BUSINESS.url,
-    telephone: BUSINESS.telephone,
-    email: BUSINESS.email,
-    image: `${BASE}/logo.png`,
-    address: BUSINESS.address,
-    geo: BUSINESS.geo,
-    areaServed: BUSINESS.areaServed,
-    founder: BUSINESS.founder,
-    foundingDate: BUSINESS.foundingDate,
-    description:
-      "Professional architecture firm in Haridwar specializing in residential homes, cafes, and commercial spaces across Haridwar, Rishikesh, and Dehradun.",
-    priceRange: "$$",
-    sameAs: BUSINESS.sameAs,
+    "@id": `${base}/#localbusiness`,
+    name: org.name,
+    url: org.url,
+    telephone: org.telephone,
+    email: org.email,
+    image: org.logoUrl,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: org.addressLocality,
+      addressRegion: org.addressRegion,
+      addressCountry: org.addressCountry,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: org.geoLatitude,
+      longitude: org.geoLongitude,
+    },
+    areaServed:
+      org.areaServed?.map((item) => ({
+        "@type": item.type,
+        name: item.name,
+      })) ?? [],
+    founder: {
+      "@type": "Person",
+      name: org.founderName,
+      jobTitle: org.founderJobTitle,
+    },
+    foundingDate: org.foundingDate,
+    description: org.description,
+    priceRange: org.priceRange,
+    sameAs: org.sameAs?.map((item) => item.url) ?? [],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Architecture Services",
-      itemListElement: [
-        {
+      name: `${org.name} Services`,
+      itemListElement:
+        org.serviceCatalog?.map((service) => ({
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Residential Design",
-            description:
-              "Complete home design including floor planning, 3D visualization, construction drawings, and Vastu consultation.",
+            name: service.name,
+            description: service.description,
           },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Commercial Spaces",
-            description:
-              "Cafe, office, and showroom design with space planning, brand-aligned interiors, lighting, and furniture layout.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Interior Design",
-            description:
-              "Complete interior solutions — material selection, custom furniture, colour consultation, and decor styling.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Consultation & Planning",
-            description:
-              "Site analysis, budget planning, regulatory guidance, and project timeline planning.",
-          },
-        },
-      ],
+        })) ?? [],
     },
   };
 }
 
-export function websiteJsonLd() {
+export function websiteJsonLd(seoConfig: SeoConfig) {
+  const base = normalizeBaseUrl(seoConfig.metadataBase);
+  const org = seoConfig.organization;
+
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": `${BASE}/#website`,
-    name: BUSINESS.name,
-    url: BUSINESS.url,
-    publisher: { "@id": `${BASE}/#organization` },
+    "@id": `${base}/#website`,
+    name: org.name,
+    url: org.url,
+    publisher: { "@id": `${base}/#organization` },
   };
 }
 
@@ -139,35 +104,45 @@ export function articleJsonLd({
   description,
   slug,
   coverImage,
+  seoConfig,
 }: {
   title: string;
   description: string;
   slug: string;
   coverImage: string;
+  seoConfig: SeoConfig;
 }) {
+  const base = normalizeBaseUrl(seoConfig.metadataBase);
+  const org = seoConfig.organization;
+
   return {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: title,
     description,
-    url: `${BASE}/blog/${slug}`,
+    url: `${base}/blog/${slug}`,
     image: coverImage,
     author: {
       "@type": "Person",
-      name: "Ar. Ujjwal Kapoor",
-      url: `${BASE}/about`,
+      name: org.founderName,
+      url: `${base}/about`,
     },
     publisher: {
       "@type": "Organization",
-      name: BUSINESS.name,
-      url: BUSINESS.url,
-      logo: { "@type": "ImageObject", url: `${BASE}/logo.png` },
+      name: org.name,
+      url: org.url,
+      logo: { "@type": "ImageObject", url: org.logoUrl },
     },
-    mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE}/blog/${slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${base}/blog/${slug}` },
   };
 }
 
-export function breadcrumbJsonLd(items: { name: string; href: string }[]) {
+export function breadcrumbJsonLd(
+  items: { name: string; href: string }[],
+  metadataBase: string
+) {
+  const base = normalizeBaseUrl(metadataBase);
+
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -175,7 +150,7 @@ export function breadcrumbJsonLd(items: { name: string; href: string }[]) {
       "@type": "ListItem",
       position: i + 1,
       name: item.name,
-      item: `${BASE}${item.href}`,
+      item: `${base}${item.href}`,
     })),
   };
 }

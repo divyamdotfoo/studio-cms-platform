@@ -1,47 +1,53 @@
 import type { MetadataRoute } from "next";
-import { posts } from "./blog/_data/posts";
-import { getServiceItemParams, getServiceSlugs } from "@/server/queries";
-
-const BASE = "https://visionarchitect.in";
+import {
+  getBlogs,
+  getSeoConfig,
+  getServiceItemParams,
+  getServiceSlugs,
+} from "@/server/queries";
 
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const seoConfig = await getSeoConfig();
+  const base = seoConfig.metadataBase.replace(/\/+$/, "");
+
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: BASE,
+      url: base,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
     },
     {
-      url: `${BASE}/about`,
+      url: `${base}/about`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${BASE}/projects`,
+      url: `${base}/projects`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${BASE}/services`,
+      url: `${base}/services`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${BASE}/blogs`,
+      url: `${base}/blogs`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
     },
   ];
 
-  const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${BASE}/blog/${post.slug}`,
+  const blogs = await getBlogs();
+  const blogPages: MetadataRoute.Sitemap = blogs.map((post) => ({
+    url: `${base}/blog/${post.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.6,
@@ -50,15 +56,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const serviceSlugs = await getServiceSlugs();
   const serviceItemParams = await getServiceItemParams();
 
-  const servicePages: MetadataRoute.Sitemap = serviceSlugs.map((serviceSlug) => ({
-    url: `${BASE}/services/${serviceSlug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
+  const servicePages: MetadataRoute.Sitemap = serviceSlugs.map(
+    (serviceSlug) => ({
+      url: `${base}/services/${serviceSlug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })
+  );
   const serviceItemPages: MetadataRoute.Sitemap = serviceItemParams.map(
     ({ serviceSlug, serviceItemSlug }) => ({
-      url: `${BASE}/services/${serviceSlug}/${serviceItemSlug}`,
+      url: `${base}/services/${serviceSlug}/${serviceItemSlug}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.6,

@@ -1,6 +1,8 @@
 import { cache } from "react";
 import type {
   AboutPage,
+  Blog,
+  BlogsPage,
   Faq,
   Homepage,
   Meta,
@@ -8,7 +10,9 @@ import type {
   Project,
   ProjectsPage,
   Review,
+  SeoConfig,
   Service as PayloadService,
+  ServicesPage,
   ServiceItem,
 } from "@/payload-types";
 import { getPayloadClient } from "@/server/payload/client";
@@ -78,6 +82,11 @@ export const getMeta = cache(async (): Promise<Meta> => {
   return payload.findGlobal({ slug: "meta", depth: 2 });
 });
 
+export const getSeoConfig = cache(async (): Promise<SeoConfig> => {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({ slug: "seo-config", depth: 2 });
+});
+
 export const getHomepage = cache(async (): Promise<Homepage> => {
   const payload = await getPayloadClient();
   return payload.findGlobal({ slug: "homepage", depth: 2 });
@@ -91,6 +100,11 @@ export const getAboutPage = cache(async (): Promise<AboutPage> => {
 export const getProjectsPage = cache(async (): Promise<ProjectsPage> => {
   const payload = await getPayloadClient();
   return payload.findGlobal({ slug: "projects-page", depth: 2 });
+});
+
+export const getServicesPage = cache(async (): Promise<ServicesPage> => {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({ slug: "services-page", depth: 2 });
 });
 
 export const getProjects = cache(async (): Promise<Project[]> => {
@@ -198,11 +212,8 @@ export const getFooterServices = cache(
             name: relation.value.name,
           };
         })
-        .filter(
-          (
-            item
-          ): item is Pick<ServiceItemContent, "slug" | "name"> =>
-            Boolean(item && item.slug && item.name)
+        .filter((item): item is Pick<ServiceItemContent, "slug" | "name"> =>
+          Boolean(item && item.slug && item.name)
         );
 
       return [
@@ -224,7 +235,9 @@ export const getServiceSlugs = cache(async (): Promise<string[]> => {
 });
 
 export const getServiceItemParams = cache(
-  async (): Promise<Array<{ serviceSlug: string; serviceItemSlug: string }>> => {
+  async (): Promise<
+    Array<{ serviceSlug: string; serviceItemSlug: string }>
+  > => {
     const services = await getFooterServices();
     return services.flatMap((service) =>
       service.serviceItems
@@ -259,7 +272,8 @@ export const getServiceItemBySlug = cache(
     if (!service) return null;
 
     const serviceItem =
-      service.serviceItems.find((item) => item.slug === serviceItemSlug) ?? null;
+      service.serviceItems.find((item) => item.slug === serviceItemSlug) ??
+      null;
     if (!serviceItem) return null;
 
     return {
@@ -268,3 +282,52 @@ export const getServiceItemBySlug = cache(
     };
   }
 );
+
+export const getBlogsPage = cache(async (): Promise<BlogsPage> => {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({
+    slug: "blogs-page",
+    depth: 2,
+  });
+});
+
+export const getBlogs = cache(async (): Promise<Blog[]> => {
+  const payload = await getPayloadClient();
+  const response = await payload.find({
+    collection: "blog",
+    depth: 0,
+    limit: 100,
+    sort: "-publishedAt",
+    where: {
+      status: { equals: "published" },
+    },
+  });
+
+  return response.docs;
+});
+
+export const getBlogBySlug = cache(
+  async (slug: string): Promise<Blog | null> => {
+    const payload = await getPayloadClient();
+    const response = await payload.find({
+      collection: "blog",
+      depth: 0,
+      limit: 1,
+      where: {
+        and: [{ slug: { equals: slug } }, { status: { equals: "published" } }],
+      },
+    });
+
+    const post = response.docs[0];
+    if (!post) {
+      return null;
+    }
+
+    return post;
+  }
+);
+
+export const getBlogSlugs = cache(async (): Promise<string[]> => {
+  const blogs = await getBlogs();
+  return blogs.map((blog) => blog.slug);
+});

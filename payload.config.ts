@@ -18,6 +18,10 @@ import { resendAdapter } from "@payloadcms/email-resend";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { ServiceCollection } from "@/collections/service";
 import { ServiceItemCollection } from "@/collections/service-item";
+import { BlogCollection } from "@/collections/blog";
+import { BlogPageCollection } from "@/collections/blog-page";
+import { SeoConfigCollection } from "@/collections/seo-config";
+import { ServicesPageCollection } from "@/collections/services-page";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -62,6 +66,7 @@ export default buildConfig({
   }),
   collections: [
     AdminCollection,
+    publicCollection(BlogCollection),
     publicCollection(FaqCollection),
     publicCollection(MediaCollection),
     publicCollection(MicroOfferingsCollection),
@@ -72,7 +77,10 @@ export default buildConfig({
   ],
   globals: [
     publicGlobal(MetaCollection),
+    publicGlobal(SeoConfigCollection),
     publicGlobal(HomepageCollection),
+    publicGlobal(BlogPageCollection),
+    publicGlobal(ServicesPageCollection),
     publicGlobal(ProjectsPageCollection),
     publicGlobal(AboutPageCollection),
   ],
@@ -115,6 +123,14 @@ export default buildConfig({
     {
       scriptPath: path.resolve(dirname, "local/seed.ts"),
       key: "seed",
+    },
+    {
+      scriptPath: path.resolve(dirname, "local/seed-blogs.ts"),
+      key: "seed-blogs",
+    },
+    {
+      scriptPath: path.resolve(dirname, "local/seed-seo.ts"),
+      key: "seed-seo",
     },
   ],
   telemetry: false,

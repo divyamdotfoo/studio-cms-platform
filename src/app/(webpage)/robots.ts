@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
+import { getSeoConfig } from "@/server/queries";
 
-const BASE = "https://visionarchitect.in";
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const seoConfig = await getSeoConfig();
+  const base = seoConfig.metadataBase.replace(/\/+$/, "");
 
-export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
@@ -11,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin", "/admin/", "/api", "/api/"],
       },
     ],
-    sitemap: `${BASE}/sitemap.xml`,
-    host: BASE,
+    sitemap: `${base}/sitemap.xml`,
+    host: base,
   };
 }

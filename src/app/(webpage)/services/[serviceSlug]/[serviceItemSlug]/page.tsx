@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServiceItemPage } from "@/components/pages/services/ServiceItemPage";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { buildDynamicEntityMetadata } from "@/lib/metadata";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
+import { getContactLinks } from "@/lib/utils";
 import {
   getMeta,
+  getSeoConfig,
   getServiceItemParams,
   getServiceItemBySlug,
 } from "@/server/queries";
@@ -23,41 +26,31 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: ServiceItemRouteProps): Promise<Metadata> {
+  const seoConfig = await getSeoConfig();
   const { serviceSlug, serviceItemSlug } = await params;
   const resolved = await getServiceItemBySlug(serviceSlug, serviceItemSlug);
 
   if (!resolved) {
     return {
-      title: "Service Item Not Found — Vision Architect",
+      title: seoConfig.serviceItemNotFoundTitle,
     };
   }
 
-  return {
-    title: `${resolved.serviceItem.name} — Vision Architect`,
+  return buildDynamicEntityMetadata({
+    title: resolved.serviceItem.name,
     description: resolved.serviceItem.description,
-    openGraph: {
-      title: `${resolved.serviceItem.name} — Vision Architect`,
-      description: resolved.serviceItem.description,
-      ...(resolved.serviceItem.imageUrls[0]
-        ? {
-            images: [
-              {
-                url: resolved.serviceItem.imageUrls[0],
-                alt: resolved.serviceItem.name,
-              },
-            ],
-          }
-        : {}),
-    },
-    alternates: {
-      canonical: `/services/${resolved.service.slug}/${resolved.serviceItem.slug}`,
-    },
-  };
+    canonicalPath: `/services/${resolved.service.slug}/${resolved.serviceItem.slug}`,
+    siteName: seoConfig.siteName,
+    titleSuffix: seoConfig.titleSuffix,
+    imageUrl: resolved.serviceItem.imageUrls[0],
+    imageAlt: resolved.serviceItem.name,
+  });
 }
 
 export default async function ServiceItemSlugPage({
   params,
 }: ServiceItemRouteProps) {
+  const seoConfig = await getSeoConfig();
   const { serviceSlug, serviceItemSlug } = await params;
   const resolved = await getServiceItemBySlug(serviceSlug, serviceItemSlug);
   const meta = await getMeta();
@@ -66,11 +59,8 @@ export default async function ServiceItemSlugPage({
     notFound();
   }
 
-  const consultationText = encodeURIComponent(
-    `Hi Vision Architect, I want to book a consultation for ${resolved.service.name} - ${resolved.serviceItem.name}. Please share the next steps.`
-  );
-  const separator = meta.whatsapp.includes("?") ? "&" : "?";
-  const consultationHref = `${meta.whatsapp}${separator}text=${consultationText}`;
+  const consultationText = `Hi, I want to book a consultation for ${resolved.service.name} - ${resolved.serviceItem.name}. Please share the next steps.`;
+  const consultationHref = getContactLinks(meta, consultationText).whatsapp;
 
   return (
     <>
@@ -86,7 +76,7 @@ export default async function ServiceItemSlugPage({
             name: resolved.serviceItem.name,
             href: `/services/${resolved.service.slug}/${resolved.serviceItem.slug}`,
           },
-        ])}
+        ], seoConfig.metadataBase)}
       />
       <ServiceItemPage
         service={resolved.service}

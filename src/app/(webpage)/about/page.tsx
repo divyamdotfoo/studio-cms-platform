@@ -1,21 +1,19 @@
 import type { Metadata } from "next";
 import { AboutPage } from "@/components/pages/About";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { buildCmsSeoMetadata } from "@/lib/metadata";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
-import { getAboutPage, getMeta } from "@/server/queries";
+import { getAboutPage, getMeta, getSeoConfig } from "@/server/queries";
 
-export const metadata: Metadata = {
-  title: "About — Vision Architect | Ar. Ujjwal Kapoor",
-  description:
-    "Meet Ar. Ujjwal Kapoor, the young architect behind Vision Architect. 6+ years of delivering dream homes across Haridwar and beyond.",
-  alternates: {
-    canonical: "/about",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const aboutPage = await getAboutPage();
+  return buildCmsSeoMetadata(aboutPage.seo);
+}
 
 export default async function Page() {
   const aboutPage = await getAboutPage();
   const meta = await getMeta();
+  const seoConfig = await getSeoConfig();
 
   return (
     <>
@@ -23,7 +21,7 @@ export default async function Page() {
         data={breadcrumbJsonLd([
           { name: "Home", href: "/" },
           { name: "About", href: "/about" },
-        ])}
+        ], seoConfig.metadataBase)}
       />
       <AboutPage aboutPage={aboutPage} meta={meta} />
     </>

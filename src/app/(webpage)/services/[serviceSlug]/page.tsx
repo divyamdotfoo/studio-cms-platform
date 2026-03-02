@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePage } from "@/components/pages/services/ServicePage";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { buildDynamicEntityMetadata } from "@/lib/metadata";
 import { breadcrumbJsonLd } from "@/lib/json-ld";
-import { getServiceBySlug, getServiceSlugs } from "@/server/queries";
+import {
+  getSeoConfig,
+  getServiceBySlug,
+  getServiceSlugs,
+} from "@/server/queries";
 
 interface ServiceRouteProps {
   params: Promise<{ serviceSlug: string }>;
@@ -17,39 +22,29 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: ServiceRouteProps): Promise<Metadata> {
+  const seoConfig = await getSeoConfig();
   const { serviceSlug } = await params;
   const service = await getServiceBySlug(serviceSlug);
 
   if (!service) {
     return {
-      title: "Service Not Found — Vision Architect",
+      title: seoConfig.serviceNotFoundTitle,
     };
   }
 
-  return {
-    title: `${service.name} — Vision Architect`,
+  return buildDynamicEntityMetadata({
+    title: service.name,
     description: service.description,
-    openGraph: {
-      title: `${service.name} — Vision Architect`,
-      description: service.description,
-      ...(service.thumbnailUrl
-        ? {
-            images: [
-              {
-                url: service.thumbnailUrl,
-                alt: service.name,
-              },
-            ],
-          }
-        : {}),
-    },
-    alternates: {
-      canonical: `/services/${service.slug}`,
-    },
-  };
+    canonicalPath: `/services/${service.slug}`,
+    siteName: seoConfig.siteName,
+    titleSuffix: seoConfig.titleSuffix,
+    imageUrl: service.thumbnailUrl,
+    imageAlt: service.name,
+  });
 }
 
 export default async function ServiceSlugPage({ params }: ServiceRouteProps) {
+  const seoConfig = await getSeoConfig();
   const { serviceSlug } = await params;
   const service = await getServiceBySlug(serviceSlug);
 
@@ -64,7 +59,7 @@ export default async function ServiceSlugPage({ params }: ServiceRouteProps) {
           { name: "Home", href: "/" },
           { name: "Services", href: "/services" },
           { name: service.name, href: `/services/${service.slug}` },
-        ])}
+        ], seoConfig.metadataBase)}
       />
       <ServicePage service={service} />
     </>
