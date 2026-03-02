@@ -73,11 +73,14 @@ export default async function BlogPage({ params }: BlogRouteProps) {
         })}
       />
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", href: "/" },
-          { name: "Blogs", href: "/blogs" },
-          { name: post.title, href: `/blog/${post.slug}` },
-        ], seoConfig.metadataBase)}
+        data={breadcrumbJsonLd(
+          [
+            { name: "Home", href: "/" },
+            { name: "Blogs", href: "/blogs" },
+            { name: post.title, href: `/blog/${post.slug}` },
+          ],
+          seoConfig.metadataBase
+        )}
       />
       <h1 className="font-serif text-4xl lg:text-5xl font-medium leading-[1.1] tracking-tight text-ink mb-6">
         {post.title}

@@ -155,9 +155,7 @@ export function breadcrumbJsonLd(
   };
 }
 
-export function faqJsonLd(
-  items: { question: string; answer: string }[],
-) {
+export function faqJsonLd(items: { question: string; answer: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",

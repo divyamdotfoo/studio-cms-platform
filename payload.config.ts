@@ -125,12 +125,8 @@ export default buildConfig({
       key: "seed",
     },
     {
-      scriptPath: path.resolve(dirname, "local/seed-blogs.ts"),
-      key: "seed-blogs",
-    },
-    {
-      scriptPath: path.resolve(dirname, "local/seed-seo.ts"),
-      key: "seed-seo",
+      scriptPath: path.resolve(dirname, "local/seed-2.ts"),
+      key: "seed-2",
     },
   ],
   telemetry: false,

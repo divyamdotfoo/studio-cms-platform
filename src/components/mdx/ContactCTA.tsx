@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button/variants";
-import { cn } from "@/lib/utils";
+import { getMeta } from "@/server/queries";
+import { cn, getContactLinks } from "@/lib/utils";
 
 /**
  * ContactCTA — Two variants for use inside blog posts.
@@ -17,11 +18,14 @@ interface ContactCTAProps {
   description?: string;
 }
 
-export function ContactCTA({
+export async function ContactCTA({
   variant = "banner",
   heading,
   description,
 }: ContactCTAProps) {
+  const meta = await getMeta();
+  const contactLinks = getContactLinks(meta);
+
   if (variant === "inline") {
     return (
       <div className="my-8 rounded-sm border border-sand bg-shell/50 px-6 py-5 not-prose">
@@ -30,7 +34,7 @@ export function ContactCTA({
             "Looking for an architect who understands Uttarakhand's climate, culture, and craft?"}
         </p>
         <Link
-          href="/whatsapp"
+          href={contactLinks.whatsapp}
           className="mt-2 inline-block text-[15px] font-medium text-bronze underline underline-offset-2 decoration-bronze/40 transition-colors duration-200 hover:decoration-bronze hover:text-ink"
         >
           {heading ?? "Talk to our team at Vision Architect →"}
@@ -49,7 +53,7 @@ export function ContactCTA({
           "Whether it's a family home in Haridwar, a cafe in Rishikesh, or a modern office in Dehradun — our team is here to help you design something meaningful."}
       </p>
       <Link
-        href="/whatsapp"
+        href={contactLinks.whatsapp}
         className={cn(
           buttonVariants({ variant: "default" }),
           "mt-5 px-7 py-3 h-auto text-sm tracking-wide uppercase"

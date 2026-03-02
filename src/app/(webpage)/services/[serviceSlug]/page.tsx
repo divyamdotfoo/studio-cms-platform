@@ -55,11 +55,14 @@ export default async function ServiceSlugPage({ params }: ServiceRouteProps) {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", href: "/" },
-          { name: "Services", href: "/services" },
-          { name: service.name, href: `/services/${service.slug}` },
-        ], seoConfig.metadataBase)}
+        data={breadcrumbJsonLd(
+          [
+            { name: "Home", href: "/" },
+            { name: "Services", href: "/services" },
+            { name: service.name, href: `/services/${service.slug}` },
+          ],
+          seoConfig.metadataBase
+        )}
       />
       <ServicePage service={service} />
     </>

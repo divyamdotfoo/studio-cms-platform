@@ -19,10 +19,13 @@ export default async function BlogsPage() {
   return (
     <main className="pt-28 lg:pt-36 pb-20 lg:pb-28">
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", href: "/" },
-          { name: "Blogs", href: "/blogs" },
-        ], seoConfig.metadataBase)}
+        data={breadcrumbJsonLd(
+          [
+            { name: "Home", href: "/" },
+            { name: "Blogs", href: "/blogs" },
+          ],
+          seoConfig.metadataBase
+        )}
       />
       <JsonLd
         data={{
@@ -32,7 +35,9 @@ export default async function BlogsPage() {
           itemListElement: posts.map((post, index) => ({
             "@type": "ListItem",
             position: index + 1,
-            url: `${seoConfig.metadataBase.replace(/\/+$/, "")}/blog/${post.slug}`,
+            url: `${seoConfig.metadataBase.replace(/\/+$/, "")}/blog/${
+              post.slug
+            }`,
             name: post.title,
           })),
         }}

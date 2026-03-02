@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useInView } from "motion/react";
 import { Phone, Mail } from "lucide-react";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
+import { getContactLinks } from "@/lib/utils";
 import { ContactFormFields } from "@/components/sections/ContactFormFields";
 import { InstagramIcon } from "@/components/icons.tsx/insta";
 import { YouTubeIcon } from "@/components/icons.tsx/yt";
@@ -59,6 +60,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
 
   const year = new Date().getFullYear();
   const copyright = COPYRIGHT_TEMPLATE.replace("{year}", String(year));
+  const contactLinks = getContactLinks(meta);
   const featuredBlogs = blogs.slice(0, 4);
   const serviceItemLinks = services.flatMap((service) =>
     service.serviceItems.map((item) => ({
@@ -131,24 +133,24 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                 </p>
 
                 <div className="flex items-center gap-3 mt-6">
-                  <a
-                    href={meta.insta}
+                  <Link
+                    href={contactLinks.insta}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
                     aria-label="Instagram"
                   >
                     <InstagramIcon className="w-[16px] h-[16px]" />
-                  </a>
-                  <a
-                    href={meta.youtube}
+                  </Link>
+                  <Link
+                    href={contactLinks.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
                     aria-label="YouTube"
                   >
                     <YouTubeIcon className="w-[16px] h-[16px]" />
-                  </a>
+                  </Link>
                 </div>
               </motion.div>
 
@@ -255,8 +257,8 @@ export function Footer({ blogs, meta, services }: FooterProps) {
 
                 <ul className="space-y-3.5">
                   <li>
-                    <a
-                      href={meta.phone}
+                    <Link
+                      href={contactLinks.phone}
                       className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                     >
                       <Phone
@@ -264,22 +266,22 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                         strokeWidth={1.8}
                       />
                       Call us
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href={meta.whatsapp}
+                    <Link
+                      href={contactLinks.whatsapp}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                     >
                       <WhatsAppIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
                       WhatsApp
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href={meta.email}
+                    <Link
+                      href={contactLinks.email}
                       className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
                     >
                       <Mail
@@ -287,7 +289,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                         strokeWidth={1.8}
                       />
                       Email us
-                    </a>
+                    </Link>
                   </li>
                 </ul>
 

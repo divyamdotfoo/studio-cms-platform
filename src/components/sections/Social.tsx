@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
+import { getContactLinks } from "@/lib/utils";
 import { InstagramIcon } from "@/components/icons.tsx/insta";
 import { YouTubeIcon } from "@/components/icons.tsx/yt";
 import type { Homepage, Meta } from "@/payload-types";
@@ -94,18 +95,19 @@ function ChannelCard({
 export function Social({ homepage, meta }: { homepage: Homepage; meta: Meta }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const contactLinks = getContactLinks(meta);
 
   const channels = [
     {
       platform: "instagram",
       handle: "@vision_architect_",
-      url: meta.insta,
+      url: contactLinks.insta,
       followers: meta.instaFollowers,
     },
     {
       platform: "youtube",
       handle: "Vision Architect",
-      url: meta.youtube,
+      url: contactLinks.youtube,
       followers: meta.youtubeSubscribers,
     },
   ];

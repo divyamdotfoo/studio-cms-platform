@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     admin: Admin;
+    blog: Blog;
     faq: Faq;
     media: Media;
     'micro-offerings': MicroOffering;
@@ -83,6 +84,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     admin: AdminSelect<false> | AdminSelect<true>;
+    blog: BlogSelect<false> | BlogSelect<true>;
     faq: FaqSelect<false> | FaqSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'micro-offerings': MicroOfferingsSelect<false> | MicroOfferingsSelect<true>;
@@ -101,13 +103,19 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     meta: Meta;
+    'seo-config': SeoConfig;
     homepage: Homepage;
+    'blogs-page': BlogsPage;
+    'services-page': ServicesPage;
     'projects-page': ProjectsPage;
     'about-page': AboutPage;
   };
   globalsSelect: {
     meta: MetaSelect<false> | MetaSelect<true>;
+    'seo-config': SeoConfigSelect<false> | SeoConfigSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'blogs-page': BlogsPageSelect<false> | BlogsPageSelect<true>;
+    'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
     'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
   };
@@ -161,6 +169,36 @@ export interface Admin {
     | null;
   password?: string | null;
   collection: 'admin';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog".
+ */
+export interface Blog {
+  id: number;
+  title: string;
+  slug: string;
+  status: 'draft' | 'published';
+  publishedAt?: string | null;
+  readingTime: string;
+  description: string;
+  coverImage: string;
+  coverImageAlt: string;
+  /**
+   * Paste MDX body only. Do not include import statements or export metadata.
+   */
+  content: string;
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+    openGraphTitle: string;
+    openGraphDescription: string;
+    twitterTitle: string;
+    twitterDescription: string;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -340,6 +378,10 @@ export interface PayloadLockedDocument {
         value: number | Admin;
       } | null)
     | ({
+        relationTo: 'blog';
+        value: number | Blog;
+      } | null)
+    | ({
         relationTo: 'faq';
         value: number | Faq;
       } | null)
@@ -431,6 +473,34 @@ export interface AdminSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog_select".
+ */
+export interface BlogSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  publishedAt?: T;
+  readingTime?: T;
+  description?: T;
+  coverImage?: T;
+  coverImageAlt?: T;
+  content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        openGraphTitle?: T;
+        openGraphDescription?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -620,6 +690,63 @@ export interface Meta {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-config".
+ */
+export interface SeoConfig {
+  id: number;
+  metadataBase: string;
+  siteName: string;
+  titleSuffix: string;
+  defaultRobotsIndex: boolean;
+  defaultRobotsFollow: boolean;
+  defaultTwitterCard: 'summary' | 'summary_large_image';
+  defaultOgImageUrl: string;
+  defaultOgImageAlt: string;
+  serviceNotFoundTitle: string;
+  serviceItemNotFoundTitle: string;
+  organization: {
+    name: string;
+    legalName: string;
+    url: string;
+    logoUrl: string;
+    telephone: string;
+    email: string;
+    foundingDate: string;
+    description: string;
+    priceRange: string;
+    founderName: string;
+    founderJobTitle: string;
+    addressLocality: string;
+    addressRegion: string;
+    addressCountry: string;
+    geoLatitude: number;
+    geoLongitude: number;
+    sameAs?:
+      | {
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+    areaServed?:
+      | {
+          name: string;
+          type: 'City' | 'State' | 'Country';
+          id?: string | null;
+        }[]
+      | null;
+    serviceCatalog?:
+      | {
+          name: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage".
  */
 export interface Homepage {
@@ -674,6 +801,56 @@ export interface Homepage {
   socialSectionHeadlinePartOne?: string | null;
   socialSectionHeadlinePartTwo?: string | null;
   socialSectionDescription: string;
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+    canonicalPath: string;
+    openGraphTitle: string;
+    openGraphDescription: string;
+    twitterTitle: string;
+    twitterDescription: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs-page".
+ */
+export interface BlogsPage {
+  id: number;
+  title: string;
+  description: string;
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+    canonicalPath: string;
+    openGraphTitle: string;
+    openGraphDescription: string;
+    twitterTitle: string;
+    twitterDescription: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page".
+ */
+export interface ServicesPage {
+  id: number;
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+    canonicalPath: string;
+    openGraphTitle: string;
+    openGraphDescription: string;
+    twitterTitle: string;
+    twitterDescription: string;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -687,6 +864,16 @@ export interface ProjectsPage {
   heroHeadlinePartTwo: string;
   heroDescription: string;
   projects: (number | Project)[];
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+    canonicalPath: string;
+    openGraphTitle: string;
+    openGraphDescription: string;
+    twitterTitle: string;
+    twitterDescription: string;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -712,6 +899,16 @@ export interface AboutPage {
     approachItemDescription: string;
     id?: string | null;
   }[];
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+    canonicalPath: string;
+    openGraphTitle: string;
+    openGraphDescription: string;
+    twitterTitle: string;
+    twitterDescription: string;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -732,6 +929,65 @@ export interface MetaSelect<T extends boolean = true> {
   ownerRole?: T;
   yearOfEstablishment?: T;
   headquartersLocation?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-config_select".
+ */
+export interface SeoConfigSelect<T extends boolean = true> {
+  metadataBase?: T;
+  siteName?: T;
+  titleSuffix?: T;
+  defaultRobotsIndex?: T;
+  defaultRobotsFollow?: T;
+  defaultTwitterCard?: T;
+  defaultOgImageUrl?: T;
+  defaultOgImageAlt?: T;
+  serviceNotFoundTitle?: T;
+  serviceItemNotFoundTitle?: T;
+  organization?:
+    | T
+    | {
+        name?: T;
+        legalName?: T;
+        url?: T;
+        logoUrl?: T;
+        telephone?: T;
+        email?: T;
+        foundingDate?: T;
+        description?: T;
+        priceRange?: T;
+        founderName?: T;
+        founderJobTitle?: T;
+        addressLocality?: T;
+        addressRegion?: T;
+        addressCountry?: T;
+        geoLatitude?: T;
+        geoLongitude?: T;
+        sameAs?:
+          | T
+          | {
+              url?: T;
+              id?: T;
+            };
+        areaServed?:
+          | T
+          | {
+              name?: T;
+              type?: T;
+              id?: T;
+            };
+        serviceCatalog?:
+          | T
+          | {
+              name?: T;
+              description?: T;
+              id?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -781,6 +1037,62 @@ export interface HomepageSelect<T extends boolean = true> {
   socialSectionHeadlinePartOne?: T;
   socialSectionHeadlinePartTwo?: T;
   socialSectionDescription?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        canonicalPath?: T;
+        openGraphTitle?: T;
+        openGraphDescription?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs-page_select".
+ */
+export interface BlogsPageSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        canonicalPath?: T;
+        openGraphTitle?: T;
+        openGraphDescription?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page_select".
+ */
+export interface ServicesPageSelect<T extends boolean = true> {
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        canonicalPath?: T;
+        openGraphTitle?: T;
+        openGraphDescription?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -794,6 +1106,18 @@ export interface ProjectsPageSelect<T extends boolean = true> {
   heroHeadlinePartTwo?: T;
   heroDescription?: T;
   projects?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        canonicalPath?: T;
+        openGraphTitle?: T;
+        openGraphDescription?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -822,6 +1146,18 @@ export interface AboutPageSelect<T extends boolean = true> {
         approachItemTitle?: T;
         approachItemDescription?: T;
         id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        canonicalPath?: T;
+        openGraphTitle?: T;
+        openGraphDescription?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
       };
   updatedAt?: T;
   createdAt?: T;

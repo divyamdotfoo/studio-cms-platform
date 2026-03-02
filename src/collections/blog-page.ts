@@ -16,18 +16,6 @@ export const BlogPageCollection: GlobalConfig = {
       required: true,
     },
     {
-      name: "seoTitle",
-      label: "SEO Title",
-      type: "text",
-      required: true,
-    },
-    {
-      name: "seoDescription",
-      label: "SEO Description",
-      type: "textarea",
-      required: true,
-    },
-    {
       name: "seo",
       label: "SEO",
       type: "group",

@@ -7,7 +7,7 @@ import { useMotionValueEvent, useScroll } from "motion/react";
 import { Phone } from "lucide-react";
 import { HoverLink } from "@/components/effects/nav-link";
 import { buttonVariants } from "@/components/ui/button/variants";
-import { cn } from "@/lib/utils";
+import { cn, getContactLinks } from "@/lib/utils";
 import type { Meta } from "@/payload-types";
 
 /* ── Hardcoded navigation data ── */
@@ -45,6 +45,7 @@ export function Navbar({ meta }: { meta: Meta }) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
+  const contactLinks = getContactLinks(meta);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
@@ -92,7 +93,7 @@ export function Navbar({ meta }: { meta: Meta }) {
           {/* CTA buttons */}
           <div className="flex items-center gap-2 ml-2">
             <Link
-              href={meta.phone}
+              href={contactLinks.phone}
               className={cn(
                 buttonVariants({ variant: "outline", size: "default" }),
                 "gap-1.5"
@@ -102,7 +103,7 @@ export function Navbar({ meta }: { meta: Meta }) {
               <span>Call Us</span>
             </Link>
             <Link
-              href={meta.whatsapp}
+              href={contactLinks.whatsapp}
               className={cn(
                 buttonVariants({ variant: "default", size: "default" }),
                 "gap-1.5"
@@ -116,7 +117,7 @@ export function Navbar({ meta }: { meta: Meta }) {
       </nav>
 
       {/* ── Mobile nav ── */}
-      <nav className="lg:hidden flex items-center justify-between px-5 h-14">
+      <nav className="lg:hidden flex items-center justify-between px-2 h-14">
         {/* Brand */}
         <div>
           <Link href="/" aria-label={`${BRAND} — Home`}>
@@ -129,7 +130,7 @@ export function Navbar({ meta }: { meta: Meta }) {
         {/* CTA buttons */}
         <div className="flex items-center gap-1.5">
           <Link
-            href={meta.phone}
+            href={contactLinks.phone}
             className={cn(
               buttonVariants({ variant: "outline", size: "default" })
             )}
@@ -139,7 +140,7 @@ export function Navbar({ meta }: { meta: Meta }) {
             Call
           </Link>
           <Link
-            href={meta.whatsapp}
+            href={contactLinks.whatsapp}
             className={cn(
               buttonVariants({ variant: "default", size: "default" })
             )}

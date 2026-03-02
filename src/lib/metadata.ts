@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import type {
-  Homepage,
-  SeoConfig,
-} from "@/payload-types";
+import type { Homepage, SeoConfig } from "@/payload-types";
 
 export function buildCmsSeoMetadata(
   seo: Homepage["seo"],
@@ -18,12 +15,7 @@ export function buildCmsSeoMetadata(
     }>;
   } = {}
 ): Metadata {
-  const {
-    openGraphType = "website",
-    siteName,
-    twitterCard,
-    images,
-  } = options;
+  const { openGraphType = "website", siteName, twitterCard, images } = options;
 
   return {
     title: seo.title,

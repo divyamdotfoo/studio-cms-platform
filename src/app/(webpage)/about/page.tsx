@@ -18,10 +18,13 @@ export default async function Page() {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", href: "/" },
-          { name: "About", href: "/about" },
-        ], seoConfig.metadataBase)}
+        data={breadcrumbJsonLd(
+          [
+            { name: "Home", href: "/" },
+            { name: "About", href: "/about" },
+          ],
+          seoConfig.metadataBase
+        )}
       />
       <AboutPage aboutPage={aboutPage} meta={meta} />
     </>

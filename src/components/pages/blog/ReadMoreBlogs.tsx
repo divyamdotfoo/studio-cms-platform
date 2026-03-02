@@ -1,14 +1,13 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { posts } from "../_data/posts";
+import type { Blog } from "@/payload-types";
 
-export function ReadMoreBlogs() {
-  const pathname = usePathname();
-  const currentSlug = pathname.split("/").pop();
+type ReadMoreBlogsProps = {
+  posts: Blog[];
+  currentSlug: string;
+};
 
+export function ReadMoreBlogs({ posts, currentSlug }: ReadMoreBlogsProps) {
   const otherPosts = posts
     .filter((post) => post.slug !== currentSlug)
     .slice(0, 3);
@@ -31,7 +30,7 @@ export function ReadMoreBlogs() {
             <div className="relative w-24 h-20 sm:w-32 sm:h-24 shrink-0 overflow-hidden bg-shell">
               <Image
                 src={post.coverImage}
-                alt={post.title}
+                alt={post.coverImageAlt || post.title}
                 fill
                 sizes="128px"
                 className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"

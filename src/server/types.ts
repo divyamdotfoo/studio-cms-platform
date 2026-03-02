@@ -1,8 +1,4 @@
-import type {
-  Media,
-  Service,
-  ServiceItem,
-} from "@/payload-types";
+import type { Media, Service, ServiceItem } from "@/payload-types";
 
 export type ServiceItemContent = Pick<
   ServiceItem,

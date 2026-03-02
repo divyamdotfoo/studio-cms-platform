@@ -39,7 +39,7 @@ export function Dock() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden pointer-events-none"
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden pointer-events-none overflow-x-hidden no-scrollbar"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <motion.nav
