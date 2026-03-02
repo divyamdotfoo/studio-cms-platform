@@ -169,9 +169,11 @@ export function AboutPage({
                       <Image
                         src={profileImageUrl!}
                         alt={`${ownerName} — ${ownerRole}`}
+                        unoptimized
+                        loading="eager"
+                        fetchPriority="high"
                         fill
                         className="object-cover object-top"
-                        sizes="(max-width: 768px) 70vw, 360px"
                         priority
                       />
                     </div>

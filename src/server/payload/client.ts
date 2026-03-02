@@ -1,5 +1,16 @@
 import config from "@payload-config";
-import { cache } from "react";
-import { getPayload } from "payload";
+import { getPayload, type Payload } from "payload";
 
-export const getPayloadClient = cache(async () => getPayload({ config }));
+type GlobalWithPayload = typeof globalThis & {
+  __payloadClientPromise?: Promise<Payload>;
+};
+
+const globalWithPayload = globalThis as GlobalWithPayload;
+
+export const getPayloadClient = async () => {
+  if (!globalWithPayload.__payloadClientPromise) {
+    globalWithPayload.__payloadClientPromise = getPayload({ config });
+  }
+
+  return globalWithPayload.__payloadClientPromise;
+};
