@@ -29,15 +29,12 @@ export async function ContactCTA({
   if (variant === "inline") {
     return (
       <div className="my-8 rounded-sm border border-sand bg-shell/50 px-6 py-5 not-prose">
-        <p className="text-[15px] leading-relaxed text-stone">
-          {description ??
-            "Looking for an architect who understands Uttarakhand's climate, culture, and craft?"}
-        </p>
+        <p className="text-[15px] leading-relaxed text-stone">{description}</p>
         <Link
           href={contactLinks.whatsapp}
           className="mt-2 inline-block text-[15px] font-medium text-bronze underline underline-offset-2 decoration-bronze/40 transition-colors duration-200 hover:decoration-bronze hover:text-ink"
         >
-          {heading ?? "Talk to our team at Vision Architect →"}
+          {heading}
         </Link>
       </div>
     );
@@ -46,11 +43,10 @@ export async function ContactCTA({
   return (
     <div className="my-12 border-y border-sand py-10 not-prose text-center">
       <h3 className="font-serif text-2xl md:text-3xl font-medium tracking-tight text-ink">
-        {heading ?? "Ready to Build Your Dream Space?"}
+        {heading}
       </h3>
       <p className="mt-3 text-[15px] leading-relaxed text-stone max-w-lg mx-auto">
-        {description ??
-          "Whether it's a family home in Haridwar, a cafe in Rishikesh, or a modern office in Dehradun — our team is here to help you design something meaningful."}
+        {description}
       </p>
       <Link
         href={contactLinks.whatsapp}

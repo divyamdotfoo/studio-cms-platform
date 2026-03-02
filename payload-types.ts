@@ -673,6 +673,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Meta {
   id: number;
+  brand: string;
   phone: string;
   whatsapp: string;
   email: string;
@@ -685,6 +686,7 @@ export interface Meta {
   ownerRole: string;
   yearOfEstablishment: number;
   headquartersLocation: string;
+  googleMapsEmbed: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -917,6 +919,7 @@ export interface AboutPage {
  * via the `definition` "meta_select".
  */
 export interface MetaSelect<T extends boolean = true> {
+  brand?: T;
   phone?: T;
   whatsapp?: T;
   email?: T;
@@ -929,6 +932,7 @@ export interface MetaSelect<T extends boolean = true> {
   ownerRole?: T;
   yearOfEstablishment?: T;
   headquartersLocation?: T;
+  googleMapsEmbed?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

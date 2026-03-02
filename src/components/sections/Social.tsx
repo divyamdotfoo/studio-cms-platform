@@ -100,13 +100,13 @@ export function Social({ homepage, meta }: { homepage: Homepage; meta: Meta }) {
   const channels = [
     {
       platform: "instagram",
-      handle: "@vision_architect_",
+      handle: meta.insta,
       url: contactLinks.insta,
       followers: meta.instaFollowers,
     },
     {
       platform: "youtube",
-      handle: "Vision Architect",
+      handle: meta.youtube,
       url: contactLinks.youtube,
       followers: meta.youtubeSubscribers,
     },

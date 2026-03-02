@@ -41,9 +41,9 @@ export function ServicePage({ service }: ServicePageProps) {
               <Link
                 key={item.id}
                 href={`/services/${service.slug}/${item.slug}`}
-                className="group bg-ivory shadow-[0_2px_20px_-4px_rgba(26,26,26,0.10)] hover:shadow-[0_8px_30px_-8px_rgba(26,26,26,0.18)] transition-shadow flex flex-col gap-4"
+                className="group bg-white p-3 border border-sand shadow-[0_2px_20px_-4px_rgba(26,26,26,0.10)] hover:shadow-[0_8px_30px_-8px_rgba(26,26,26,0.18)] transition-shadow flex flex-col gap-4"
               >
-                <div className="h-58 sm:h-60 lg:h-64 shrink-0 overflow-hidden">
+                <div className="h-58 sm:h-60 lg:h-64 shrink-0 overflow-hidden bg-shell">
                   <Image
                     src={item.imageUrls[0] ?? "/images/service-placeholder.svg"}
                     alt={item.name}
@@ -56,7 +56,7 @@ export function ServicePage({ service }: ServicePageProps) {
                   />
                 </div>
 
-                <div className="p-4 sm:p-5 flex flex-col h-full">
+                <div className="p-3 sm:p-4 flex flex-col h-full">
                   <h2 className="font-serif text-[1.2rem] leading-[1.2] text-ink mb-2">
                     {item.name}
                   </h2>

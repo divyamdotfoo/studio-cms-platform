@@ -4,6 +4,13 @@ export const MetaCollection: GlobalConfig = {
   slug: "meta",
   fields: [
     {
+      name: "brand",
+      label: "Brand",
+      type: "text",
+      required: true,
+      defaultValue: "Acme Company",
+    },
+    {
       name: "phone",
       label: "Phone Number",
       type: "text",
@@ -74,6 +81,13 @@ export const MetaCollection: GlobalConfig = {
       label: "Headquarters Location",
       type: "text",
       required: true,
+    },
+    {
+      name: "googleMapsEmbed",
+      label: "Google Maps Embed Link",
+      type: "text",
+      required: true,
+      defaultValue: "https://www.google.com/maps/embed",
     },
   ],
 };

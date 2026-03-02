@@ -20,8 +20,6 @@ const NAV_LINKS = [
   { label: "About", href: "/about" },
 ];
 
-const BRAND = "VISION ARCHITECT";
-
 /* ── Inline WhatsApp icon (no lucide equivalent) ── */
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -66,10 +64,10 @@ export function Navbar({ meta }: { meta: Meta }) {
           <Link
             href="/"
             className="relative z-10"
-            aria-label={`${BRAND} — Home`}
+            aria-label={`${meta.brand} — Home`}
           >
-            <span className="font-serif italic text-xl font-medium tracking-tight text-ink">
-              {BRAND}
+            <span className="font-serif italic text-xl font-medium tracking-tight text-ink uppercase">
+              {meta.brand}
             </span>
           </Link>
         </div>
@@ -120,9 +118,9 @@ export function Navbar({ meta }: { meta: Meta }) {
       <nav className="lg:hidden flex items-center justify-between px-2 h-14">
         {/* Brand */}
         <div>
-          <Link href="/" aria-label={`${BRAND} — Home`}>
-            <span className="font-serif italic text-lg font-semibold tracking-tight text-ink">
-              {BRAND}
+          <Link href="/" aria-label={`${meta.brand} — Home`}>
+            <span className="font-serif italic text-lg font-semibold tracking-tight text-ink uppercase">
+              {meta.brand}
             </span>
           </Link>
         </div>

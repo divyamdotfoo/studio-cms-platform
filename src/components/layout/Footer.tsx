@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "motion/react";
 import { Phone, Mail } from "lucide-react";
-import { spring, springGentle, STAGGER } from "@/lib/motion";
+import { springGentle, STAGGER } from "@/lib/motion";
 import { getContactLinks } from "@/lib/utils";
 import { ContactFormFields } from "@/components/sections/ContactFormFields";
 import { InstagramIcon } from "@/components/icons.tsx/insta";
@@ -12,11 +12,6 @@ import { YouTubeIcon } from "@/components/icons.tsx/yt";
 import { WhatsAppIcon } from "@/components/icons.tsx/whatsapp";
 import type { Meta } from "@/payload-types";
 import type { FooterServiceContent } from "@/server/types";
-
-/* ── Hardcoded constants ── */
-
-const BRAND = "VISION ARCHITECT";
-const COPYRIGHT_TEMPLATE = "© {year} Vision Architect. All rights reserved.";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -59,7 +54,6 @@ export function Footer({ blogs, meta, services }: FooterProps) {
   const isFooterInView = useInView(footerRef, { once: true, margin: "-40px" });
 
   const year = new Date().getFullYear();
-  const copyright = COPYRIGHT_TEMPLATE.replace("{year}", String(year));
   const contactLinks = getContactLinks(meta);
   const featuredBlogs = blogs.slice(0, 4);
   const serviceItemLinks = services.flatMap((service) =>
@@ -123,9 +117,9 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                 animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
                 transition={springGentle}
               >
-                <Link href="/" aria-label="Vision Architect — Home">
-                  <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-ivory">
-                    {BRAND}
+                <Link href="/" aria-label={`${meta.brand} — Home`}>
+                  <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-ivory uppercase">
+                    {meta.brand}
                   </span>
                 </Link>
                 <p className="mt-3 text-[15px] leading-relaxed text-sand max-w-[280px]">
@@ -295,25 +289,24 @@ export function Footer({ blogs, meta, services }: FooterProps) {
 
                 <div className="mt-8 overflow-hidden border border-stone w-full max-w-[420px] aspect-3/2">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d671.5169117158848!2d78.13765208010588!3d29.93671897216422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39094706cf38250d%3A0x4e520b77699b721!2sVISION%20ARCHITECT!5e0!3m2!1sen!2sin!4v1771153421760!5m2!1sen!2sin"
+                    src={meta.googleMapsEmbed}
                     width="100%"
                     height="100%"
                     style={{
                       border: 0,
                       display: "block",
-                      filter: "grayscale(0.1) brightness(0.75)",
                     }}
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title="Vision Architect location on Google Maps"
+                    title={`${meta.brand} location on Google Maps`}
                   />
                 </div>
               </div>
 
               <div>
                 <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
-                  Explore service routes
+                  Explore services
                 </span>
 
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
@@ -330,34 +323,6 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                 </ul>
               </div>
             </motion.div>
-          </div>
-
-          {/* ── Bottom bar ── */}
-          <motion.div
-            className="h-px bg-stone origin-left"
-            initial={{ scaleX: 0 }}
-            animate={isFooterInView ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={spring}
-          />
-
-          <div className="py-5 pb-32 lg:py-6 lg:pb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <motion.p
-              className="text-[13px] text-drift tracking-wide"
-              initial={{ opacity: 0 }}
-              animate={isFooterInView ? { opacity: 1 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 6 }}
-            >
-              {copyright}
-            </motion.p>
-
-            <motion.p
-              className="text-[13px] text-drift tracking-wide"
-              initial={{ opacity: 0 }}
-              animate={isFooterInView ? { opacity: 1 } : {}}
-              transition={{ ...springGentle, delay: STAGGER * 7 }}
-            >
-              Crafted with care in Haridwar
-            </motion.p>
           </div>
         </div>
       </footer>

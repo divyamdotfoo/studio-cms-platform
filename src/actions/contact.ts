@@ -67,7 +67,7 @@ export async function submitContact(data: ContactData): Promise<ContactResult> {
   const { error } = await resend.emails.send({
     from: "Divyam <onboarding@resend.dev>",
     to: adEmail,
-    subject: "New Contact Enquiry — Vision Architect",
+    subject: "New Contact Enquiry",
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;">
         <h2>New Contact Enquiry</h2>
