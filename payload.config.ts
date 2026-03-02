@@ -49,6 +49,47 @@ const publicGlobal = <T extends GlobalConfig>(globalConfig: T): T => ({
   access: publicReadGlobalAccess,
 });
 
+const withAdminGroup = <
+  T extends { admin?: Record<string, unknown> | undefined }
+>(
+  config: T,
+  group: string
+): T => ({
+  ...config,
+  admin: {
+    ...(config.admin || {}),
+    group,
+  },
+});
+
+const buildCollections = (
+  definitions: Array<{
+    collection: CollectionConfig;
+    group: string;
+    publicRead?: boolean;
+  }>
+): CollectionConfig[] =>
+  definitions.map(({ collection, group, publicRead = true }) => {
+    const configuredCollection = publicRead
+      ? publicCollection(collection)
+      : collection;
+
+    return withAdminGroup(configuredCollection, group);
+  });
+
+const buildGlobals = (
+  definitions: Array<{
+    global: GlobalConfig;
+    group: string;
+    publicRead?: boolean;
+  }>
+): GlobalConfig[] =>
+  definitions.map(({ global, group, publicRead = true }) => {
+    const configuredGlobal = publicRead ? publicGlobal(global) : global;
+
+    return withAdminGroup(configuredGlobal, group);
+  });
+
 export default buildConfig({
   admin: {
     user: AdminCollection.slug,
@@ -57,6 +98,7 @@ export default buildConfig({
     },
     components: {
       beforeDashboard: ["@/components/payload/AdminCacheNotice"],
+      afterDashboard: ["@/components/payload/AdminDashboardBottomPadding"],
     },
   },
   email: resendAdapter({
@@ -64,26 +106,27 @@ export default buildConfig({
     defaultFromName: "Divyam gupta",
     apiKey: process.env.RESEND_API_KEY || "",
   }),
-  collections: [
-    AdminCollection,
-    publicCollection(BlogCollection),
-    publicCollection(FaqCollection),
-    publicCollection(MediaCollection),
-    publicCollection(MicroOfferingsCollection),
-    publicCollection(ProjectCollection),
-    publicCollection(ReviewsCollection),
-    publicCollection(ServiceCollection),
-    publicCollection(ServiceItemCollection),
-  ],
-  globals: [
-    publicGlobal(MetaCollection),
-    publicGlobal(SeoConfigCollection),
-    publicGlobal(HomepageCollection),
-    publicGlobal(BlogPageCollection),
-    publicGlobal(ServicesPageCollection),
-    publicGlobal(ProjectsPageCollection),
-    publicGlobal(AboutPageCollection),
-  ],
+  globals: buildGlobals([
+    { global: HomepageCollection, group: "Pages" },
+    { global: BlogPageCollection, group: "Pages" },
+    { global: ServicesPageCollection, group: "Pages" },
+    { global: ProjectsPageCollection, group: "Pages" },
+    { global: AboutPageCollection, group: "Pages" },
+    { global: SeoConfigCollection, group: "Settings" },
+    { global: MetaCollection, group: "Settings" },
+  ]),
+  collections: buildCollections([
+    { collection: AdminCollection, group: "Admin", publicRead: false },
+    { collection: ProjectCollection, group: "Entities" },
+    { collection: ServiceCollection, group: "Entities" },
+    { collection: ServiceItemCollection, group: "Entities" },
+    { collection: ReviewsCollection, group: "Entities" },
+    { collection: FaqCollection, group: "Entities" },
+    { collection: BlogCollection, group: "Entities" },
+    { collection: MicroOfferingsCollection, group: "Entities" },
+    { collection: MediaCollection, group: "Entities" },
+  ]),
+
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

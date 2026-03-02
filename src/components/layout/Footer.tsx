@@ -21,6 +21,11 @@ const NAV_LINKS = [
   { label: "Blogs", href: "/blogs" },
 ];
 
+const FOOTER_LINK_CLASS =
+  "text-mist transition-opacity duration-200 hover:opacity-80";
+const FOOTER_ICON_LINK_CLASS =
+  "flex items-center justify-center w-9 h-9 border border-stone text-mist transition-opacity duration-200 hover:opacity-80";
+
 type FooterBlog = {
   slug: string;
   title: string;
@@ -53,7 +58,6 @@ export function Footer({ blogs, meta, services }: FooterProps) {
   });
   const isFooterInView = useInView(footerRef, { once: true, margin: "-40px" });
 
-  const year = new Date().getFullYear();
   const contactLinks = getContactLinks(meta);
   const featuredBlogs = blogs.slice(0, 4);
   const serviceItemLinks = services.flatMap((service) =>
@@ -109,16 +113,54 @@ export function Footer({ blogs, meta, services }: FooterProps) {
       {/* ── Dark footer ── */}
       <footer ref={footerRef} className="bg-[#131211]" aria-label="Footer">
         <div className="mx-auto max-w-[1400px] px-5 lg:px-10">
-          <div className="pt-14 lg:pt-20 pb-10 lg:pb-14">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-12 lg:gap-10">
+          <div className="pt-14 lg:pt-20 pb-10 lg:pb-14 flex flex-col">
+            <motion.div
+              className="order-1 md:hidden"
+              initial={{ opacity: 0, y: 16 }}
+              animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
+              transition={springGentle}
+            >
+              <Link href="/" aria-label={`${meta.brand} — Home`}>
+                <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-mist uppercase">
+                  {meta.brand}
+                </span>
+              </Link>
+              <p className="mt-3 text-[15px] leading-relaxed text-sand max-w-[280px]">
+                {meta.tagline_footer}
+              </p>
+
+              <div className="flex items-center gap-3 mt-6">
+                <Link
+                  href={contactLinks.insta}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={FOOTER_ICON_LINK_CLASS}
+                  aria-label="Instagram"
+                >
+                  <InstagramIcon className="w-[16px] h-[16px]" />
+                </Link>
+                <Link
+                  href={contactLinks.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={FOOTER_ICON_LINK_CLASS}
+                  aria-label="YouTube"
+                >
+                  <YouTubeIcon className="w-[16px] h-[16px]" />
+                </Link>
+              </div>
+            </motion.div>
+
+            <div className="order-3 lg:order-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-12 lg:gap-10">
               {/* ── Brand column ── */}
               <motion.div
+                className="hidden md:block md:order-1"
                 initial={{ opacity: 0, y: 16 }}
                 animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
                 transition={springGentle}
               >
                 <Link href="/" aria-label={`${meta.brand} — Home`}>
-                  <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-ivory uppercase">
+                  <span className="font-serif italic text-xl lg:text-2xl tracking-tight text-mist uppercase">
                     {meta.brand}
                   </span>
                 </Link>
@@ -131,7 +173,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                     href={contactLinks.insta}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                    className={FOOTER_ICON_LINK_CLASS}
                     aria-label="Instagram"
                   >
                     <InstagramIcon className="w-[16px] h-[16px]" />
@@ -140,7 +182,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                     href={contactLinks.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center w-9 h-9 border border-stone text-sand transition-all duration-200 hover:text-ivory hover:border-drift"
+                    className={FOOTER_ICON_LINK_CLASS}
                     aria-label="YouTube"
                   >
                     <YouTubeIcon className="w-[16px] h-[16px]" />
@@ -150,6 +192,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
 
               {/* ── Quick links column ── */}
               <motion.div
+                className="order-3 md:order-2"
                 initial={{ opacity: 0, y: 16 }}
                 animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...springGentle, delay: STAGGER * 2 }}
@@ -163,7 +206,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                        className={`text-[15px] ${FOOTER_LINK_CLASS}`}
                       >
                         {link.label}
                       </Link>
@@ -174,6 +217,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
 
               {/* ── Services ── */}
               <motion.div
+                className="order-1 md:order-3"
                 initial={{ opacity: 0, y: 16 }}
                 animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...springGentle, delay: STAGGER * 3 }}
@@ -186,7 +230,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                   <li>
                     <Link
                       href="/services"
-                      className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                      className={`text-[15px] ${FOOTER_LINK_CLASS}`}
                     >
                       See all services
                     </Link>
@@ -195,7 +239,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                     <li key={service.slug}>
                       <Link
                         href={`/services/${service.slug}`}
-                        className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                        className={`text-[15px] ${FOOTER_LINK_CLASS}`}
                       >
                         {service.name}
                       </Link>
@@ -206,6 +250,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
 
               {/* ── Blogs ── */}
               <motion.div
+                className="order-2 md:order-4"
                 initial={{ opacity: 0, y: 16 }}
                 animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...springGentle, delay: STAGGER * 4 }}
@@ -218,7 +263,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                   <li>
                     <Link
                       href="/blogs"
-                      className="text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                      className={`text-[15px] ${FOOTER_LINK_CLASS}`}
                     >
                       Explore all blog posts
                     </Link>
@@ -227,7 +272,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                     <li key={blog.slug}>
                       <Link
                         href={`/blog/${blog.slug}`}
-                        className="text-[15px] leading-relaxed text-mist transition-colors duration-200 hover:text-ivory line-clamp-2"
+                        className={`text-[15px] leading-relaxed line-clamp-2 ${FOOTER_LINK_CLASS}`}
                       >
                         {blog.title}
                       </Link>
@@ -239,24 +284,24 @@ export function Footer({ blogs, meta, services }: FooterProps) {
 
             {/* ── Contact + map and deep links ── */}
             <motion.div
-              className="mt-12 lg:mt-14 pt-10 border-t border-stone/60 grid grid-cols-1 xl:grid-cols-[1fr_1.45fr] gap-12 lg:gap-10"
+              className="order-1 lg:order-2 mt-12 lg:mt-14 pt-10 border-t border-stone/60 grid grid-cols-1 xl:grid-cols-[1fr_1.45fr] gap-12 lg:gap-10"
               initial={{ opacity: 0, y: 12 }}
               animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...springGentle, delay: STAGGER * 5 }}
             >
               <div>
                 <span className="text-[13px] uppercase tracking-[0.12em] text-sand block mb-5">
-                  Get in touch
+                  Get in touch with us
                 </span>
 
                 <ul className="space-y-3.5">
                   <li>
                     <Link
                       href={contactLinks.phone}
-                      className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                      className={`group flex items-center gap-3 text-[15px] ${FOOTER_LINK_CLASS}`}
                     >
                       <Phone
-                        className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist"
+                        className="w-[18px] h-[18px] shrink-0 text-mist"
                         strokeWidth={1.8}
                       />
                       Call us
@@ -267,19 +312,19 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                       href={contactLinks.whatsapp}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                      className={`group flex items-center gap-3 text-[15px] ${FOOTER_LINK_CLASS}`}
                     >
-                      <WhatsAppIcon className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist" />
+                      <WhatsAppIcon className="w-[18px] h-[18px] shrink-0 text-mist" />
                       WhatsApp
                     </Link>
                   </li>
                   <li>
                     <Link
                       href={contactLinks.email}
-                      className="group flex items-center gap-3 text-[15px] text-mist transition-colors duration-200 hover:text-ivory"
+                      className={`group flex items-center gap-3 text-[15px] ${FOOTER_LINK_CLASS}`}
                     >
                       <Mail
-                        className="w-[18px] h-[18px] shrink-0 text-sand transition-colors duration-200 group-hover:text-mist"
+                        className="w-[18px] h-[18px] shrink-0 text-mist"
                         strokeWidth={1.8}
                       />
                       Email us
@@ -292,6 +337,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                     src={meta.googleMapsEmbed}
                     width="100%"
                     height="100%"
+                    className="grayscale-[0.5]"
                     style={{
                       border: 0,
                       display: "block",
@@ -314,7 +360,7 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-[14px] leading-relaxed text-drift transition-colors duration-200 hover:text-ivory"
+                        className={`text-[14px] leading-relaxed ${FOOTER_LINK_CLASS}`}
                       >
                         {link.label}
                       </Link>
@@ -322,6 +368,26 @@ export function Footer({ blogs, meta, services }: FooterProps) {
                   ))}
                 </ul>
               </div>
+            </motion.div>
+
+            <motion.div
+              className="order-4 mt-12 lg:mt-14 pt-6 pb-20 md:pb-0 border-t border-stone/60 flex justify-end gap-4"
+              initial={{ opacity: 0, y: 8 }}
+              animate={isFooterInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ ...springGentle, delay: STAGGER * 6 }}
+            >
+              <p className="text-[12px] uppercase tracking-widest text-drift sm:text-right">
+                Made by{" "}
+                <Link
+                  href="https://divyam.foo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${FOOTER_LINK_CLASS} underline`}
+                  aria-label="Made by divyam.foo"
+                >
+                  divyam.foo
+                </Link>
+              </p>
             </motion.div>
           </div>
         </div>

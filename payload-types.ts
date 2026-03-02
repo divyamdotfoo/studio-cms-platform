@@ -68,14 +68,14 @@ export interface Config {
   blocks: {};
   collections: {
     admin: Admin;
-    blog: Blog;
-    faq: Faq;
-    media: Media;
-    'micro-offerings': MicroOffering;
     project: Project;
-    reviews: Review;
     service: Service;
     'service-item': ServiceItem;
+    reviews: Review;
+    faq: Faq;
+    blog: Blog;
+    'micro-offerings': MicroOffering;
+    media: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,14 +84,14 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     admin: AdminSelect<false> | AdminSelect<true>;
-    blog: BlogSelect<false> | BlogSelect<true>;
-    faq: FaqSelect<false> | FaqSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    'micro-offerings': MicroOfferingsSelect<false> | MicroOfferingsSelect<true>;
     project: ProjectSelect<false> | ProjectSelect<true>;
-    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     service: ServiceSelect<false> | ServiceSelect<true>;
     'service-item': ServiceItemSelect<false> | ServiceItemSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    faq: FaqSelect<false> | FaqSelect<true>;
+    blog: BlogSelect<false> | BlogSelect<true>;
+    'micro-offerings': MicroOfferingsSelect<false> | MicroOfferingsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -102,22 +102,22 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    meta: Meta;
-    'seo-config': SeoConfig;
     homepage: Homepage;
     'blogs-page': BlogsPage;
     'services-page': ServicesPage;
     'projects-page': ProjectsPage;
     'about-page': AboutPage;
+    'seo-config': SeoConfig;
+    meta: Meta;
   };
   globalsSelect: {
-    meta: MetaSelect<false> | MetaSelect<true>;
-    'seo-config': SeoConfigSelect<false> | SeoConfigSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     'blogs-page': BlogsPageSelect<false> | BlogsPageSelect<true>;
     'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
     'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
     'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'seo-config': SeoConfigSelect<false> | SeoConfigSelect<true>;
+    meta: MetaSelect<false> | MetaSelect<true>;
   };
   locale: null;
   user: Admin;
@@ -172,42 +172,26 @@ export interface Admin {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog".
+ * via the `definition` "project".
  */
-export interface Blog {
+export interface Project {
   id: number;
-  title: string;
-  slug: string;
-  status: 'draft' | 'published';
-  publishedAt?: string | null;
-  readingTime: string;
+  name: string;
+  projectImage?:
+    | {
+        relationTo: 'media';
+        value: number | Media;
+      }[]
+    | null;
   description: string;
-  coverImage: string;
-  coverImageAlt: string;
-  /**
-   * Paste MDX body only. Do not include import statements or export metadata.
-   */
-  content: string;
-  seo: {
-    title: string;
-    description: string;
-    keywords: string;
-    openGraphTitle: string;
-    openGraphDescription: string;
-    twitterTitle: string;
-    twitterDescription: string;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faq".
- */
-export interface Faq {
-  id: number;
-  question: string;
-  answer: string;
+  features: {
+    feature: string;
+    id?: string | null;
+  }[];
+  area: string;
+  timeline: string;
+  type: 'residential' | 'shops-showrooms' | 'offices' | 'restaurants';
+  location: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -239,58 +223,6 @@ export interface Media {
       filename?: string | null;
     };
   };
-}
-/**
- * Micro Offerings are the small services that we offer to our clients. They are not part of our main services but are offered as a separate service.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "micro-offerings".
- */
-export interface MicroOffering {
-  id: number;
-  name: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "project".
- */
-export interface Project {
-  id: number;
-  name: string;
-  projectImage?:
-    | {
-        relationTo: 'media';
-        value: number | Media;
-      }[]
-    | null;
-  description: string;
-  features: {
-    feature: string;
-    id?: string | null;
-  }[];
-  area: string;
-  timeline: string;
-  type: 'residential' | 'shops-showrooms' | 'offices' | 'restaurants';
-  location: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reviews".
- */
-export interface Review {
-  id: number;
-  name: string;
-  content: string;
-  video?: {
-    relationTo: 'media';
-    value: number | Media;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -351,6 +283,74 @@ export interface ServiceItem {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  name: string;
+  content: string;
+  video?: {
+    relationTo: 'media';
+    value: number | Media;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq".
+ */
+export interface Faq {
+  id: number;
+  question: string;
+  answer: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog".
+ */
+export interface Blog {
+  id: number;
+  title: string;
+  slug: string;
+  status: 'draft' | 'published';
+  publishedAt?: string | null;
+  readingTime: string;
+  description: string;
+  coverImage: string;
+  coverImageAlt: string;
+  /**
+   * Paste MDX body only. Do not include import statements or export metadata.
+   */
+  content: string;
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+    openGraphTitle: string;
+    openGraphDescription: string;
+    twitterTitle: string;
+    twitterDescription: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Micro Offerings are the small services that we offer to our clients. They are not part of our main services but are offered as a separate service.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "micro-offerings".
+ */
+export interface MicroOffering {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -378,28 +378,8 @@ export interface PayloadLockedDocument {
         value: number | Admin;
       } | null)
     | ({
-        relationTo: 'blog';
-        value: number | Blog;
-      } | null)
-    | ({
-        relationTo: 'faq';
-        value: number | Faq;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'micro-offerings';
-        value: number | MicroOffering;
-      } | null)
-    | ({
         relationTo: 'project';
         value: number | Project;
-      } | null)
-    | ({
-        relationTo: 'reviews';
-        value: number | Review;
       } | null)
     | ({
         relationTo: 'service';
@@ -408,6 +388,26 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'service-item';
         value: number | ServiceItem;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'faq';
+        value: number | Faq;
+      } | null)
+    | ({
+        relationTo: 'blog';
+        value: number | Blog;
+      } | null)
+    | ({
+        relationTo: 'micro-offerings';
+        value: number | MicroOffering;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -476,85 +476,6 @@ export interface AdminSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog_select".
- */
-export interface BlogSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  status?: T;
-  publishedAt?: T;
-  readingTime?: T;
-  description?: T;
-  coverImage?: T;
-  coverImageAlt?: T;
-  content?: T;
-  seo?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        keywords?: T;
-        openGraphTitle?: T;
-        openGraphDescription?: T;
-        twitterTitle?: T;
-        twitterDescription?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faq_select".
- */
-export interface FaqSelect<T extends boolean = true> {
-  question?: T;
-  answer?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-  sizes?:
-    | T
-    | {
-        thumbnail?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "micro-offerings_select".
- */
-export interface MicroOfferingsSelect<T extends boolean = true> {
-  name?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "project_select".
  */
 export interface ProjectSelect<T extends boolean = true> {
@@ -571,17 +492,6 @@ export interface ProjectSelect<T extends boolean = true> {
   timeline?: T;
   type?: T;
   location?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reviews_select".
- */
-export interface ReviewsSelect<T extends boolean = true> {
-  name?: T;
-  content?: T;
-  video?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -629,6 +539,96 @@ export interface ServiceItemSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  name?: T;
+  content?: T;
+  video?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq_select".
+ */
+export interface FaqSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog_select".
+ */
+export interface BlogSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  publishedAt?: T;
+  readingTime?: T;
+  description?: T;
+  coverImage?: T;
+  coverImageAlt?: T;
+  content?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+        openGraphTitle?: T;
+        openGraphDescription?: T;
+        twitterTitle?: T;
+        twitterDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "micro-offerings_select".
+ */
+export interface MicroOfferingsSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -666,86 +666,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "meta".
- */
-export interface Meta {
-  id: number;
-  brand: string;
-  phone: string;
-  whatsapp: string;
-  email: string;
-  insta: string;
-  youtube: string;
-  tagline_footer: string;
-  instaFollowers: string;
-  youtubeSubscribers: string;
-  ownerName: string;
-  ownerRole: string;
-  yearOfEstablishment: number;
-  headquartersLocation: string;
-  googleMapsEmbed: string;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "seo-config".
- */
-export interface SeoConfig {
-  id: number;
-  metadataBase: string;
-  siteName: string;
-  titleSuffix: string;
-  defaultRobotsIndex: boolean;
-  defaultRobotsFollow: boolean;
-  defaultTwitterCard: 'summary' | 'summary_large_image';
-  defaultOgImageUrl: string;
-  defaultOgImageAlt: string;
-  serviceNotFoundTitle: string;
-  serviceItemNotFoundTitle: string;
-  organization: {
-    name: string;
-    legalName: string;
-    url: string;
-    logoUrl: string;
-    telephone: string;
-    email: string;
-    foundingDate: string;
-    description: string;
-    priceRange: string;
-    founderName: string;
-    founderJobTitle: string;
-    addressLocality: string;
-    addressRegion: string;
-    addressCountry: string;
-    geoLatitude: number;
-    geoLongitude: number;
-    sameAs?:
-      | {
-          url: string;
-          id?: string | null;
-        }[]
-      | null;
-    areaServed?:
-      | {
-          name: string;
-          type: 'City' | 'State' | 'Country';
-          id?: string | null;
-        }[]
-      | null;
-    serviceCatalog?:
-      | {
-          name: string;
-          description: string;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -916,85 +836,90 @@ export interface AboutPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "meta_select".
+ * via the `definition` "seo-config".
  */
-export interface MetaSelect<T extends boolean = true> {
-  brand?: T;
-  phone?: T;
-  whatsapp?: T;
-  email?: T;
-  insta?: T;
-  youtube?: T;
-  tagline_footer?: T;
-  instaFollowers?: T;
-  youtubeSubscribers?: T;
-  ownerName?: T;
-  ownerRole?: T;
-  yearOfEstablishment?: T;
-  headquartersLocation?: T;
-  googleMapsEmbed?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
+export interface SeoConfig {
+  id: number;
+  metadataBase: string;
+  siteName: string;
+  titleSuffix: string;
+  defaultRobotsIndex: boolean;
+  defaultRobotsFollow: boolean;
+  defaultTwitterCard: 'summary' | 'summary_large_image';
+  defaultOgImageUrl: string;
+  defaultOgImageAlt: string;
+  serviceNotFoundTitle: string;
+  serviceItemNotFoundTitle: string;
+  organization: {
+    name: string;
+    legalName: string;
+    url: string;
+    logoUrl: string;
+    telephone: string;
+    email: string;
+    foundingDate: string;
+    description: string;
+    priceRange: string;
+    founderName: string;
+    founderJobTitle: string;
+    addressLocality: string;
+    addressRegion: string;
+    addressCountry: string;
+    geoLatitude: number;
+    geoLongitude: number;
+    sameAs?:
+      | {
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+    areaServed?:
+      | {
+          name: string;
+          type: 'City' | 'State' | 'Country';
+          id?: string | null;
+        }[]
+      | null;
+    serviceCatalog?:
+      | {
+          name: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "seo-config_select".
+ * via the `definition` "meta".
  */
-export interface SeoConfigSelect<T extends boolean = true> {
-  metadataBase?: T;
-  siteName?: T;
-  titleSuffix?: T;
-  defaultRobotsIndex?: T;
-  defaultRobotsFollow?: T;
-  defaultTwitterCard?: T;
-  defaultOgImageUrl?: T;
-  defaultOgImageAlt?: T;
-  serviceNotFoundTitle?: T;
-  serviceItemNotFoundTitle?: T;
-  organization?:
-    | T
-    | {
-        name?: T;
-        legalName?: T;
-        url?: T;
-        logoUrl?: T;
-        telephone?: T;
-        email?: T;
-        foundingDate?: T;
-        description?: T;
-        priceRange?: T;
-        founderName?: T;
-        founderJobTitle?: T;
-        addressLocality?: T;
-        addressRegion?: T;
-        addressCountry?: T;
-        geoLatitude?: T;
-        geoLongitude?: T;
-        sameAs?:
-          | T
-          | {
-              url?: T;
-              id?: T;
-            };
-        areaServed?:
-          | T
-          | {
-              name?: T;
-              type?: T;
-              id?: T;
-            };
-        serviceCatalog?:
-          | T
-          | {
-              name?: T;
-              description?: T;
-              id?: T;
-            };
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
+export interface Meta {
+  id: number;
+  brand: string;
+  /**
+   * Upload profile image for the about page.
+   */
+  profileImage?: {
+    relationTo: 'media';
+    value: number | Media;
+  } | null;
+  phone: string;
+  whatsapp: string;
+  email: string;
+  insta: string;
+  youtube: string;
+  tagline_footer: string;
+  instaFollowers: string;
+  youtubeSubscribers: string;
+  ownerName: string;
+  ownerRole: string;
+  yearOfEstablishment: number;
+  headquartersLocation: string;
+  googleMapsEmbed: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1163,6 +1088,89 @@ export interface AboutPageSelect<T extends boolean = true> {
         twitterTitle?: T;
         twitterDescription?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-config_select".
+ */
+export interface SeoConfigSelect<T extends boolean = true> {
+  metadataBase?: T;
+  siteName?: T;
+  titleSuffix?: T;
+  defaultRobotsIndex?: T;
+  defaultRobotsFollow?: T;
+  defaultTwitterCard?: T;
+  defaultOgImageUrl?: T;
+  defaultOgImageAlt?: T;
+  serviceNotFoundTitle?: T;
+  serviceItemNotFoundTitle?: T;
+  organization?:
+    | T
+    | {
+        name?: T;
+        legalName?: T;
+        url?: T;
+        logoUrl?: T;
+        telephone?: T;
+        email?: T;
+        foundingDate?: T;
+        description?: T;
+        priceRange?: T;
+        founderName?: T;
+        founderJobTitle?: T;
+        addressLocality?: T;
+        addressRegion?: T;
+        addressCountry?: T;
+        geoLatitude?: T;
+        geoLongitude?: T;
+        sameAs?:
+          | T
+          | {
+              url?: T;
+              id?: T;
+            };
+        areaServed?:
+          | T
+          | {
+              name?: T;
+              type?: T;
+              id?: T;
+            };
+        serviceCatalog?:
+          | T
+          | {
+              name?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "meta_select".
+ */
+export interface MetaSelect<T extends boolean = true> {
+  brand?: T;
+  profileImage?: T;
+  phone?: T;
+  whatsapp?: T;
+  email?: T;
+  insta?: T;
+  youtube?: T;
+  tagline_footer?: T;
+  instaFollowers?: T;
+  youtubeSubscribers?: T;
+  ownerName?: T;
+  ownerRole?: T;
+  yearOfEstablishment?: T;
+  headquartersLocation?: T;
+  googleMapsEmbed?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

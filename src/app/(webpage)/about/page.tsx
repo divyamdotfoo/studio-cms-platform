@@ -14,7 +14,6 @@ export default async function Page() {
   const aboutPage = await getAboutPage();
   const meta = await getMeta();
   const seoConfig = await getSeoConfig();
-
   return (
     <>
       <JsonLd

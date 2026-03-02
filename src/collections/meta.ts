@@ -1,4 +1,5 @@
-import type { GlobalConfig } from "payload";
+import type { CollectionSlug, GlobalConfig } from "payload";
+import { MediaCollection } from "./media";
 
 export const MetaCollection: GlobalConfig = {
   slug: "meta",
@@ -10,6 +11,18 @@ export const MetaCollection: GlobalConfig = {
       required: true,
       defaultValue: "Acme Company",
     },
+
+    {
+      name: "profileImage",
+      label: "Profile Image",
+      type: "relationship",
+      relationTo: [MediaCollection.slug as CollectionSlug],
+      required: false,
+      admin: {
+        description: "Upload profile image for the about page.",
+      },
+    },
+
     {
       name: "phone",
       label: "Phone Number",

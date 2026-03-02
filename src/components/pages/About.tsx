@@ -6,8 +6,6 @@ import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { spring, springGentle, STAGGER } from "@/lib/motion";
 import type { AboutPage as PayloadAboutPage, Meta } from "@/payload-types";
 
-const PROFILE_IMAGE = "/images/profile.jpeg";
-
 /* ────────────────────────────────────────────────────
  * About page
  *
@@ -45,15 +43,28 @@ export function AboutPage({
   } = aboutPage;
   const { ownerName, ownerRole, headquartersLocation, yearOfEstablishment } =
     meta;
+  const profileImageUrl: string | null =
+    meta.profileImage &&
+    meta.profileImage.value &&
+    typeof meta.profileImage.value === "object" &&
+    "url" in meta.profileImage.value &&
+    typeof meta.profileImage.value.url === "string"
+      ? meta.profileImage.value.url
+      : null;
+  const hasProfileImage = Boolean(profileImageUrl);
 
   const imgRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
   const valuesRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: imgRef,
-    offset: ["start end", "end start"],
-  });
+  const { scrollYProgress } = useScroll(
+    hasProfileImage
+      ? {
+          target: imgRef,
+          offset: ["start end", "end start"],
+        }
+      : {}
+  );
   const imgY = useTransform(scrollYProgress, [0, 1], [40, -40]);
   const imgRotate = useTransform(scrollYProgress, [0, 1], [-2, 1]);
 
@@ -139,47 +150,49 @@ export function AboutPage({
               </motion.p>
             </div>
 
-            <div
-              ref={imgRef}
-              className="mt-10 lg:mt-0 max-w-[320px] sm:max-w-[360px] lg:max-w-none"
-            >
-              <motion.div
-                className="relative"
-                initial={{ opacity: 0, y: 50, rotate: -4, scale: 0.92 }}
-                animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
-                transition={{ ...springGentle, delay: T + 0.3 }}
+            {hasProfileImage ? (
+              <div
+                ref={imgRef}
+                className="mt-10 lg:mt-0 max-w-[320px] sm:max-w-[360px] lg:max-w-none"
               >
                 <motion.div
-                  className="relative z-10 bg-ivory p-2 lg:p-3 shadow-[0_8px_40px_-8px_rgba(26,26,26,0.2)]"
-                  style={{ y: imgY, rotate: imgRotate }}
+                  className="relative"
+                  initial={{ opacity: 0, y: 50, rotate: -4, scale: 0.92 }}
+                  animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+                  transition={{ ...springGentle, delay: T + 0.3 }}
                 >
-                  <div className="relative aspect-2/3 w-full">
-                    <Image
-                      src={PROFILE_IMAGE}
-                      alt={`${ownerName} — ${ownerRole}`}
-                      fill
-                      className="object-cover object-top"
-                      sizes="(max-width: 768px) 70vw, 360px"
-                      priority
-                    />
-                  </div>
-
                   <motion.div
-                    className="flex items-center justify-between pt-2 lg:pt-3 px-1"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ ...spring, delay: T + 0.7 }}
+                    className="relative z-10 bg-ivory p-2 lg:p-3 shadow-[0_8px_40px_-8px_rgba(26,26,26,0.2)]"
+                    style={{ y: imgY, rotate: imgRotate }}
                   >
-                    <span className="text-[11px] uppercase tracking-widest text-drift">
-                      {headquartersLocation}
-                    </span>
-                    <span className="text-[11px] uppercase tracking-widest text-drift">
-                      {`Est. ${yearOfEstablishment}`}
-                    </span>
+                    <div className="relative aspect-2/3 w-full">
+                      <Image
+                        src={profileImageUrl!}
+                        alt={`${ownerName} — ${ownerRole}`}
+                        fill
+                        className="object-cover object-top"
+                        sizes="(max-width: 768px) 70vw, 360px"
+                        priority
+                      />
+                    </div>
+
+                    <motion.div
+                      className="flex items-center justify-between pt-2 lg:pt-3 px-1"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ ...spring, delay: T + 0.7 }}
+                    >
+                      <span className="text-[11px] uppercase tracking-widest text-drift">
+                        {headquartersLocation}
+                      </span>
+                      <span className="text-[11px] uppercase tracking-widest text-drift">
+                        {`Est. ${yearOfEstablishment}`}
+                      </span>
+                    </motion.div>
                   </motion.div>
                 </motion.div>
-              </motion.div>
-            </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
