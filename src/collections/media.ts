@@ -5,9 +5,26 @@ export const MediaCollection: CollectionConfig = {
   admin: {
     useAsTitle: "filename",
     defaultColumns: ["thumbnailURL", "filename", "alt", "updatedAt"],
+    components: {
+      views: {
+        list: {
+          Component: {
+            path: "@/components/payload/MediaGridListView",
+            exportName: "MediaGridListView",
+          },
+        },
+      },
+    },
   },
   upload: {
     adminThumbnail: "thumbnail",
+    mimeTypes: [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/avif",
+      "video/mp4",
+    ],
     imageSizes: [
       {
         name: "thumbnail",
