@@ -135,8 +135,9 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || "",
-      max: 10,
-      min: 0,
+      // Use this if you have limited resources on your database or are on a free tier
+      // On build nextjs spins up multiple workers, so we need to limit the number of connections per worker to the database.
+      max: process.env.IS_PROD_BUILD === "true" ? 2 : 10,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 10_000,
     },
