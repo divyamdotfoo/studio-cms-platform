@@ -45,7 +45,7 @@ export async function submitContact(data: ContactData): Promise<ContactResult> {
     };
   }
 
-  const adEmail = process.env.CLIENT_EMAIL;
+  const adEmail = process.env.ADMIN_EMAIL;
   const resendKey = process.env.RESEND_API_KEY;
 
   if (!adEmail || !resendKey) {
@@ -65,7 +65,7 @@ export async function submitContact(data: ContactData): Promise<ContactResult> {
     .join("");
 
   const { error } = await resend.emails.send({
-    from: "Divyam <onboarding@resend.dev>",
+    from: "Admin<onboarding@resend.dev>",
     to: adEmail,
     subject: "New Contact Enquiry",
     html: `
@@ -73,7 +73,7 @@ export async function submitContact(data: ContactData): Promise<ContactResult> {
         <h2>New Contact Enquiry</h2>
         <p>Someone reached out through the website:</p>
         ${contactLines}
-        <p style="color:#9ca3af;font-size:11px;margin-top:32px;">this email is automated by the site manager</p>
+        <p style="color:#9ca3af;font-size:11px;margin-top:32px;">This email is an automated email.</p>
       </div>
     `,
   });
