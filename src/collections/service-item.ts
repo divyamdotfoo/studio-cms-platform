@@ -13,6 +13,16 @@ export const ServiceItemCollection: CollectionConfig = {
   slug: "service-item",
   admin: {
     useAsTitle: "name",
+    components: {
+      views: {
+        list: {
+          Component: {
+            path: "@/components/payload/ServiceItemGridListView",
+            exportName: "ServiceItemGridListView",
+          },
+        },
+      },
+    },
   },
   fields: [
     {

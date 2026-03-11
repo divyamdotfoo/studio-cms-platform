@@ -6,6 +6,16 @@ export const ProjectCollection: CollectionConfig = {
   slug: "project",
   admin: {
     useAsTitle: "name",
+    components: {
+      views: {
+        list: {
+          Component: {
+            path: "@/components/payload/ProjectGridListView",
+            exportName: "ProjectGridListView",
+          },
+        },
+      },
+    },
   },
   fields: [
     {

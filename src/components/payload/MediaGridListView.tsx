@@ -3,17 +3,12 @@
 import { DefaultListView, useConfig, useListQuery } from "@payloadcms/ui";
 import { formatAdminURL } from "payload/shared";
 import type { ListViewClientProps } from "payload";
+import type { Media } from "../../../payload-types";
 
-type MediaDoc = {
-  id: number | string;
-  alt?: null | string;
-  filename?: null | string;
-  mimeType?: null | string;
-  sizes?: Record<string, { url?: null | string } | undefined> | null;
-  thumbnailURL?: null | string;
-  updatedAt?: null | string;
-  url?: null | string;
-};
+type MediaDoc = Pick<
+  Media,
+  "id" | "alt" | "filename" | "mimeType" | "sizes" | "thumbnailURL" | "updatedAt" | "url"
+>;
 
 const getPreviewURL = (doc: MediaDoc): string | undefined => {
   const sizeThumb = doc.sizes?.thumbnail?.url ?? undefined;
@@ -54,7 +49,7 @@ const MediaGridTable = ({ collectionSlug }: { collectionSlug: string }) => {
   const docs = Array.isArray(data?.docs) ? (data.docs as MediaDoc[]) : [];
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-3 max-md:grid-cols-2">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5 max-md:grid-cols-2">
       {docs.map((doc) => {
         const previewURL = getPreviewURL(doc);
         const label = doc.alt || doc.filename || `Media #${doc.id}`;
@@ -64,7 +59,7 @@ const MediaGridTable = ({ collectionSlug }: { collectionSlug: string }) => {
           <a
             key={String(doc.id)}
             href={getDocURL(adminRoute, collectionSlug, doc.id)}
-            className="block overflow-hidden rounded-xl border border-(--theme-elevation-150) bg-(--theme-bg) text-(--theme-text) no-underline transition-[transform,box-shadow,border-color] duration-150 ease-in-out hover:-translate-y-px hover:border-(--theme-elevation-300) hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] focus-visible:border-(--theme-success-500) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--theme-success-200)"
+            className="block overflow-hidden rounded-xl bg-(--theme-bg) text-(--theme-text) no-underline ring-1 ring-inset ring-(--theme-elevation-150) transition-[transform,box-shadow,ring-color] duration-150 ease-in-out hover:-translate-y-px hover:ring-(--theme-elevation-300) hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--theme-success-200)"
             title={label}
             aria-label={`Open ${label}`}
           >

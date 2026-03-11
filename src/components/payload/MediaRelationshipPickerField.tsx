@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { CSSProperties } from "react";
 import { useConfig, useField, usePayloadAPI } from "@payloadcms/ui";
 import type {
   RelationshipFieldClientComponent,
   RelationshipFieldClientProps,
 } from "payload";
+import type { Media } from "../../../payload-types";
 
 type PickerClientProps = {
   buttonLabel?: string;
@@ -18,63 +18,50 @@ type PickerClientProps = {
 
 type Props = RelationshipFieldClientProps & PickerClientProps;
 
+type MediaRelationValue = {
+  id?: number | null;
+  value?: Media | number | null;
+};
+
 type RelationshipValue =
   | number
-  | string
-  | {
-      id?: number | string | null;
-      value?:
-        | number
-        | string
-        | {
-            id?: number | string | null;
-          }
-        | null;
-    }
+  | Media
+  | MediaRelationValue
   | null
   | undefined;
 
-type MediaDoc = {
-  id: number | string;
-  alt?: string | null;
-  filename?: string | null;
-  thumbnailURL?: string | null;
-  url?: string | null;
-  sizes?: Record<string, { url?: string | null } | undefined> | null;
-};
+type MediaDoc = Pick<
+  Media,
+  "id" | "alt" | "filename" | "thumbnailURL" | "url" | "sizes"
+>;
 
 type PolymorphicRelationshipValue = {
   relationTo: string;
-  value: number | string;
+  value: number;
 };
 
-const cardStyle: CSSProperties = {
-  width: "100%",
-  border: "1px solid var(--theme-elevation-150)",
-  borderRadius: "8px",
-  background: "var(--theme-bg)",
-  cursor: "pointer",
-  overflow: "hidden",
-  padding: 0,
-};
-
-const getMediaId = (item: RelationshipValue): number | string | null => {
+const getMediaId = (item: RelationshipValue): number | null => {
   if (item === null || item === undefined) return null;
 
-  if (typeof item === "number" || typeof item === "string") {
+  if (typeof item === "number") {
     return item;
   }
 
-  if (typeof item === "object" && "value" in item) {
-    const value = item.value;
-    if (typeof value === "number" || typeof value === "string") return value;
-    if (value && typeof value === "object" && "id" in value) {
-      return value.id ?? null;
-    }
-  }
+  if (typeof item === "object") {
+    if (typeof item.id === "number") return item.id;
 
-  if (typeof item === "object" && "id" in item) {
-    return item.id ?? null;
+    if ("value" in item) {
+      const nestedValue = item.value;
+      if (typeof nestedValue === "number") return nestedValue;
+      if (
+        nestedValue &&
+        typeof nestedValue === "object" &&
+        typeof nestedValue.id === "number"
+      ) {
+        return nestedValue.id;
+      }
+    }
+    if (typeof item.id === "number") return item.id;
   }
 
   return null;
@@ -82,11 +69,11 @@ const getMediaId = (item: RelationshipValue): number | string | null => {
 
 const normalizeRelationshipValue = (
   value: RelationshipValue | RelationshipValue[]
-): (number | string)[] => {
+): number[] => {
   if (Array.isArray(value)) {
     return value
       .map(getMediaId)
-      .filter((id): id is number | string => id !== null);
+      .filter((id): id is number => id !== null);
   }
 
   const id = getMediaId(value);
@@ -110,15 +97,13 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
   }: Props) => {
     const { config } = useConfig();
     const apiBasePath = config?.routes?.api ?? "/api";
-    const { value, setValue } = useField<RelationshipValue | RelationshipValue[]>(
-      { path }
-    );
+    const { value, setValue } = useField<
+      RelationshipValue | RelationshipValue[]
+    >({ path });
 
     const [query, setQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [draftSelectedIDs, setDraftSelectedIDs] = useState<(number | string)[]>(
-      []
-    );
+    const [draftSelectedIDs, setDraftSelectedIDs] = useState<number[]>([]);
 
     const [{ data, isError, isLoading }, { setParams }] = usePayloadAPI(
       `${apiBasePath}/media`,
@@ -131,7 +116,10 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
       }
     );
 
-    const selectedIDs = useMemo(() => normalizeRelationshipValue(value), [value]);
+    const selectedIDs = useMemo(
+      () => normalizeRelationshipValue(value),
+      [value]
+    );
     const relationTo = useMemo(() => {
       if (Array.isArray(field.relationTo)) {
         return field.relationTo[0] ?? "media";
@@ -146,7 +134,7 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
 
     const mediaByID = useMemo(() => {
       return new Map(
-        mediaDocs.map((doc) => [String(doc.id), doc] as [string, MediaDoc])
+        mediaDocs.map((doc) => [doc.id, doc] as [number, MediaDoc])
       );
     }, [mediaDocs]);
 
@@ -173,27 +161,24 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
     }, [isOpen, selectedIDs]);
 
     const hasMany = Boolean(field.hasMany);
-    const activeSelection = new Set(draftSelectedIDs.map((id) => String(id)));
+    const activeSelection = new Set(draftSelectedIDs);
 
-    const toggleDraftSelection = (id: number | string) => {
+    const toggleDraftSelection = (id: number) => {
       if (!hasMany) {
         setDraftSelectedIDs([id]);
         return;
       }
 
       setDraftSelectedIDs((prev) => {
-        const idKey = String(id);
-        if (prev.some((item) => String(item) === idKey)) {
-          return prev.filter((item) => String(item) !== idKey);
+        if (prev.includes(id)) {
+          return prev.filter((item) => item !== id);
         }
         return [...prev, id];
       });
     };
 
-    const applySelection = () => {
-      const toPolymorphic = (
-        ids: (number | string)[]
-      ): PolymorphicRelationshipValue[] =>
+    const applySelection = (): void => {
+      const toPolymorphic = (ids: number[]): PolymorphicRelationshipValue[] =>
         ids.map((id) => ({
           relationTo,
           value: id,
@@ -225,8 +210,8 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
       setIsOpen(false);
     };
 
-    const removeSelected = (idToRemove: number | string) => {
-      const next = selectedIDs.filter((id) => String(id) !== String(idToRemove));
+    const removeSelected = (idToRemove: number) => {
+      const next = selectedIDs.filter((id) => id !== idToRemove);
       if (hasMany) {
         if (Array.isArray(field.relationTo)) {
           setValue(
@@ -257,111 +242,53 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
     };
 
     return (
-      <div style={{ display: "grid", gap: "0.75rem" }}>
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+      <div className="grid gap-4">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            style={{
-              border: "1px solid var(--theme-elevation-250)",
-              borderRadius: "6px",
-              padding: "0.5rem 0.75rem",
-              background: "var(--theme-bg)",
-              color: "var(--theme-text)",
-              cursor: "pointer",
-              fontSize: "0.875rem",
-            }}
+            className="cursor-pointer rounded-md border border-(--theme-elevation-250) bg-(--theme-bg) px-3 py-2 text-sm text-(--theme-text)"
           >
             {buttonLabel}
           </button>
-          <span style={{ fontSize: "0.8rem", color: "var(--theme-elevation-700)" }}>
-            {helperText}
-          </span>
+          <span className="text-[0.8rem] text-(--theme-elevation-700)">{helperText}</span>
         </div>
 
         {selectedIDs.length === 0 ? (
-          <div
-            style={{
-              border: "1px dashed var(--theme-elevation-250)",
-              borderRadius: "8px",
-              padding: "0.6rem 0.75rem",
-              color: "var(--theme-elevation-600)",
-              fontSize: "0.875rem",
-            }}
-          >
+          <div className="rounded-lg border border-dashed border-(--theme-elevation-250) px-3 py-2.5 text-sm text-(--theme-elevation-600)">
             {emptyLabel}
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-              gap: "0.5rem",
-            }}
-          >
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3">
             {selectedIDs.map((id) => {
-              const doc = mediaByID.get(String(id));
+              const doc = mediaByID.get(id);
               const previewURL = doc ? getPreviewURL(doc) : undefined;
               const label = doc?.alt || doc?.filename || `Media #${id}`;
 
               return (
                 <div
-                  key={String(id)}
-                  style={{
-                    border: "1px solid var(--theme-elevation-150)",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    position: "relative",
-                    background: "var(--theme-bg)",
-                  }}
+                  key={id}
+                  className="relative overflow-hidden rounded-lg bg-(--theme-bg) ring-1 ring-inset ring-(--theme-elevation-150)"
                 >
-                  <div
-                    style={{
-                      height: "72px",
-                      background: "var(--theme-elevation-100)",
-                    }}
-                  >
+                  <div className="h-[72px] bg-(--theme-elevation-100)">
                     {previewURL ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={previewURL}
                         alt={label}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block",
-                        }}
+                        className="block h-full w-full object-cover"
                       />
                     ) : null}
                   </div>
-                  <div style={{ padding: "0.4rem 0.5rem", fontSize: "0.75rem" }}>
-                    <div
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                      title={label}
-                    >
+                  <div className="px-2 py-1.5 text-xs">
+                    <div className="truncate" title={label}>
                       {label}
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeSelected(id)}
-                    style={{
-                      position: "absolute",
-                      top: "0.25rem",
-                      right: "0.25rem",
-                      border: "1px solid var(--theme-elevation-250)",
-                      background: "var(--theme-bg)",
-                      borderRadius: "999px",
-                      width: "20px",
-                      height: "20px",
-                      cursor: "pointer",
-                      lineHeight: 1,
-                    }}
+                    className="absolute right-1 top-1 h-5 w-5 cursor-pointer rounded-full border border-(--theme-elevation-250) bg-(--theme-bg) leading-none"
                     aria-label={`Remove ${label}`}
                     title="Remove image"
                   >
@@ -374,162 +301,80 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
         )}
 
         {isOpen ? (
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 1000,
-              background: "rgba(0, 0, 0, 0.45)",
-              display: "grid",
-              placeItems: "center",
-              padding: "1rem",
-            }}
-          >
+          <div className="fixed inset-0 z-1000 grid place-items-center bg-black/45 p-4">
             <div
               role="dialog"
               aria-modal="true"
               aria-label={modalTitle}
-              style={{
-                width: "min(1100px, 100%)",
-                maxHeight: "90vh",
-                background: "var(--theme-bg)",
-                border: "1px solid var(--theme-elevation-250)",
-                borderRadius: "12px",
-                display: "grid",
-                gridTemplateRows: "auto auto 1fr auto",
-                overflow: "hidden",
-              }}
+              className="grid max-h-[90vh] w-full max-w-[1100px] grid-rows-[auto_auto_1fr_auto] overflow-hidden rounded-xl border border-(--theme-elevation-250) bg-(--theme-bg)"
             >
-              <div
-                style={{
-                  padding: "0.9rem 1rem",
-                  borderBottom: "1px solid var(--theme-elevation-150)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
+              <div className="flex items-center justify-between border-b border-(--theme-elevation-150) px-4 py-3.5">
                 <strong>{modalTitle}</strong>
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  style={{
-                    border: "1px solid var(--theme-elevation-250)",
-                    background: "var(--theme-bg)",
-                    borderRadius: "6px",
-                    padding: "0.35rem 0.6rem",
-                    cursor: "pointer",
-                  }}
+                  className="cursor-pointer rounded-md border border-(--theme-elevation-250) bg-(--theme-bg) px-2.5 py-1.5"
                 >
                   Close
                 </button>
               </div>
 
-              <div
-                style={{
-                  padding: "0.8rem 1rem",
-                  borderBottom: "1px solid var(--theme-elevation-150)",
-                }}
-              >
+              <div className="border-b border-(--theme-elevation-150) px-4 py-3">
                 <input
                   type="text"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search by filename or alt text"
-                  style={{
-                    width: "100%",
-                    border: "1px solid var(--theme-elevation-250)",
-                    borderRadius: "8px",
-                    padding: "0.55rem 0.7rem",
-                    background: "var(--theme-bg)",
-                    color: "var(--theme-text)",
-                  }}
+                  className="w-full rounded-lg border border-(--theme-elevation-250) bg-(--theme-bg) px-3 py-2 text-(--theme-text)"
                 />
               </div>
 
-              <div style={{ overflow: "auto", padding: "1rem" }}>
-                {isLoading ? (
-                  <p style={{ margin: 0 }}>Loading media…</p>
-                ) : null}
+              <div className="overflow-auto p-4">
+                {isLoading ? <p className="m-0">Loading media…</p> : null}
                 {isError ? (
-                  <p style={{ margin: 0, color: "var(--theme-error-500)" }}>
+                  <p className="m-0 text-(--theme-error-500)">
                     Could not load media.
                   </p>
                 ) : null}
                 {!isLoading && !isError && mediaDocs.length === 0 ? (
-                  <p style={{ margin: 0 }}>No media found for this search.</p>
+                  <p className="m-0">No media found for this search.</p>
                 ) : null}
 
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-                    gap: "0.75rem",
-                  }}
-                >
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
                   {mediaDocs.map((doc) => {
                     const id = doc.id;
-                    const idKey = String(id);
-                    const isSelected = activeSelection.has(idKey);
+                    const isSelected = activeSelection.has(id);
                     const label = doc.alt || doc.filename || `Media #${id}`;
                     const previewURL = getPreviewURL(doc);
 
                     return (
                       <button
-                        key={idKey}
+                        key={id}
                         type="button"
                         onClick={() => toggleDraftSelection(id)}
-                        style={{
-                          ...cardStyle,
-                          boxShadow: isSelected
-                            ? "0 0 0 2px var(--theme-success-500) inset"
-                            : undefined,
-                        }}
+                        className={`w-full cursor-pointer overflow-hidden rounded-lg bg-(--theme-bg) p-0 text-left ring-1 ring-inset ${
+                          isSelected
+                            ? "ring-(--theme-success-500)"
+                            : "ring-(--theme-elevation-150)"
+                        }`}
                         aria-pressed={isSelected}
                         title={label}
                       >
-                        <div
-                          style={{
-                            aspectRatio: "4 / 3",
-                            background: "var(--theme-elevation-100)",
-                          }}
-                        >
+                        <div className="aspect-4/3 bg-(--theme-elevation-100)">
                           {previewURL ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={previewURL}
                               alt={label}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                                display: "block",
-                              }}
+                              className="block h-full w-full object-cover"
                             />
                           ) : null}
                         </div>
-                        <div style={{ padding: "0.55rem 0.6rem", textAlign: "left" }}>
-                          <div
-                            style={{
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              fontSize: "0.8rem",
-                              fontWeight: 600,
-                            }}
-                          >
+                        <div className="px-2.5 py-2 text-left">
+                          <div className="truncate text-[0.8rem] font-semibold">
                             {doc.filename || "Untitled image"}
                           </div>
-                          <div
-                            style={{
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              fontSize: "0.75rem",
-                              color: "var(--theme-elevation-700)",
-                              marginTop: "0.15rem",
-                            }}
-                          >
+                          <div className="mt-0.5 truncate text-[0.75rem] text-(--theme-elevation-700)">
                             {doc.alt || `ID: ${id}`}
                           </div>
                         </div>
@@ -539,43 +384,22 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
                 </div>
               </div>
 
-              <div
-                style={{
-                  borderTop: "1px solid var(--theme-elevation-150)",
-                  padding: "0.75rem 1rem",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "0.75rem",
-                }}
-              >
-                <span style={{ fontSize: "0.85rem", color: "var(--theme-elevation-700)" }}>
+              <div className="flex items-center justify-between gap-3 border-t border-(--theme-elevation-150) px-4 py-3">
+                <span className="text-[0.85rem] text-(--theme-elevation-700)">
                   {draftSelectedIDs.length} selected
                 </span>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
+                <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    style={{
-                      border: "1px solid var(--theme-elevation-250)",
-                      borderRadius: "6px",
-                      padding: "0.45rem 0.7rem",
-                      background: "var(--theme-bg)",
-                      cursor: "pointer",
-                    }}
+                    className="cursor-pointer rounded-md border border-(--theme-elevation-250) bg-(--theme-bg) px-3 py-1.5"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={applySelection}
-                    style={{
-                      border: "1px solid var(--theme-success-500)",
-                      borderRadius: "6px",
-                      padding: "0.45rem 0.7rem",
-                      background: "var(--theme-success-100)",
-                      cursor: "pointer",
-                    }}
+                    className="cursor-pointer rounded-md border border-(--theme-success-500) bg-(--theme-success-100) px-3 py-1.5"
                   >
                     Apply selection
                   </button>
@@ -587,4 +411,3 @@ export const MediaRelationshipPickerField: RelationshipFieldClientComponent =
       </div>
     );
   }) as RelationshipFieldClientComponent;
-
