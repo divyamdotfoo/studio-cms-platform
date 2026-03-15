@@ -1,0 +1,16 @@
+export const SEED_META = {
+  brand: "Studio CMS Template",
+  phone: "+911234567890",
+  whatsapp: "+911234567890",
+  email: "hello@example.com",
+  insta: "studio_template",
+  youtube: "studio-template",
+  tagline_footer: "From concept to completion.",
+  instaFollowers: "2k+",
+  youtubeSubscribers: "1k+",
+  ownerName: "Alex Sharma",
+  ownerRole: "Founder & Principal Designer",
+  yearOfEstablishment: 2020,
+  headquartersLocation: "Dehradun, Uttarakhand",
+  googleMapsEmbed: "https://www.google.com/maps/embed",
+};

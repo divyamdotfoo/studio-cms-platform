@@ -148,13 +148,13 @@ export default buildConfig({
   plugins: [
     s3Storage({
       collections: {
-        media: {
-          generateFileURL:
-            process.env.NODE_ENV === "development"
-              ? undefined
-              : ({ filename }) =>
+        media:
+          process.env.NODE_ENV === "production"
+            ? {
+                generateFileURL: ({ filename }) =>
                   `${process.env.CLOUDFLARE_PUBLIC_URL}/${filename}`,
-        },
+              }
+            : true,
       },
       bucket: process.env.S3_BUCKET || "",
       config: {
@@ -169,7 +169,7 @@ export default buildConfig({
   ],
   bin: [
     {
-      scriptPath: path.resolve(dirname, "local/seed.ts"),
+      scriptPath: path.resolve(dirname, "seed/index.ts"),
       key: "seed",
     },
   ],
