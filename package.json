@@ -14,7 +14,7 @@
     "db:generate": "payload migrate:create",
     "db:migrate": "payload migrate",
     "db:seed": "payload seed",
-    "payload:gen": "payload generate:importmap && payload generate:types"
+    "payload:generate": "payload generate:importmap && payload generate:types"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",

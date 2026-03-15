@@ -39,7 +39,16 @@ export const viewport: Viewport = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const seoConfig = await getSeoConfig();
-  return buildLayoutMetadata(seoConfig);
+  const meta = await getMeta();
+  const faviconRelation = meta.favicon;
+  const faviconUrl =
+    faviconRelation &&
+    typeof faviconRelation.value !== "number" &&
+    faviconRelation.value.url
+      ? faviconRelation.value.url
+      : null;
+
+  return buildLayoutMetadata(seoConfig, faviconUrl);
 }
 
 export default async function WebpageLayout({

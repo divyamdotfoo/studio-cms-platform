@@ -22,6 +22,16 @@ export const MetaCollection: GlobalConfig = {
         description: "Upload profile image for the about page.",
       },
     },
+    {
+      name: "favicon",
+      label: "Favicon",
+      type: "relationship",
+      relationTo: [MediaCollection.slug as CollectionSlug],
+      required: false,
+      admin: {
+        description: "Upload favicon (.ico recommended) for the website.",
+      },
+    },
 
     {
       name: "phone",

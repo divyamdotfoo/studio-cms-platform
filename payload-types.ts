@@ -905,6 +905,13 @@ export interface Meta {
     relationTo: 'media';
     value: number | Media;
   } | null;
+  /**
+   * Upload favicon (.ico recommended) for the website.
+   */
+  favicon?: {
+    relationTo: 'media';
+    value: number | Media;
+  } | null;
   phone: string;
   whatsapp: string;
   email: string;
@@ -1158,6 +1165,7 @@ export interface SeoConfigSelect<T extends boolean = true> {
 export interface MetaSelect<T extends boolean = true> {
   brand?: T;
   profileImage?: T;
+  favicon?: T;
   phone?: T;
   whatsapp?: T;
   email?: T;

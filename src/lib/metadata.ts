@@ -83,11 +83,23 @@ export function buildDynamicEntityMetadata({
   };
 }
 
-export function buildLayoutMetadata(seoConfig: SeoConfig): Metadata {
+export function buildLayoutMetadata(
+  seoConfig: SeoConfig,
+  faviconUrl?: string | null
+): Metadata {
+  console.log("faviconUrl", faviconUrl);
   return {
     metadataBase: new URL(seoConfig.metadataBase),
     title: `${seoConfig.organization.name}${seoConfig.titleSuffix}`,
     description: seoConfig.organization.description,
+    ...(faviconUrl
+      ? {
+          icons: {
+            icon: faviconUrl,
+            shortcut: faviconUrl,
+          },
+        }
+      : {}),
     openGraph: {
       title: `${seoConfig.organization.name}${seoConfig.titleSuffix}`,
       description: seoConfig.organization.description,

@@ -23,6 +23,8 @@ export const MediaCollection: CollectionConfig = {
       "image/png",
       "image/webp",
       "image/avif",
+      "image/x-icon",
+      "image/vnd.microsoft.icon",
       "video/mp4",
     ],
     imageSizes: [
