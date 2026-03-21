@@ -1,4 +1,4 @@
-# Studio CMS
+# Studio CMS Platform
 
 Production-ready starter for studio websites using Next.js + Payload CMS.
 
@@ -8,65 +8,36 @@ Production-ready starter for studio websites using Next.js + Payload CMS.
 - Payload CMS v3
 - PostgreSQL
 - Tailwind CSS
+- Remote MDX via `@mdx-js/mdx`
 - S3-compatible media storage
+- Resend email integration
 
-## Prerequisites
+## What it includes
 
-- Node.js 20+
-- `pnpm`
-- Docker (for local PostgreSQL via `docker compose`)
+- CMS-managed pages and sections
+- Dynamic services and blog routes
+- Centralized SEO metadata and JSON-LD
+- Database-backed blog content rendered from MDX
+- Migration and seed workflow for content initialization
 
-## Quick Start
-
-1. Install dependencies
+## Local setup
 
 ```bash
 pnpm install
-```
-
-2. Create env file
-
-```bash
-cp .env.example .env
-```
-
-3. Start database
-
-```bash
 pnpm db:up
-```
-
-4. Run migrations
-
-```bash
 pnpm db:migrate
-```
-
-5. Seed starter content (includes media)
-
-```bash
 pnpm db:seed
-```
-
-6. Start development server
-
-```bash
 pnpm dev
 ```
 
-## Seed Data
+## CI workflows
 
-- Public starter seed is in `seed/`.
-- Main script: `seed/index.ts`.
-- Structured seed data: `seed/data/`.
-- Starter images: `seed/assets/images/`.
+- `.github/workflows/migrate.yml` - runs Payload migrations
+- `.github/workflows/backup.yml` - creates nightly PostgreSQL backups
 
-`pnpm db:seed` is designed to be repeatable and fails fast if required media files or mappings are missing.
+## Key paths
 
-## Project Structure
-
-- `src/collections` - Payload collections and globals
-- `src/server/queries.ts` - server-side cached queries
-- `src/lib/metadata.ts` - metadata helpers
-- `src/lib/json-ld.ts` - JSON-LD helpers
-- `seed` - public seed script, data, and starter media
+- `src/collections` - Payload collection and global schemas
+- `src/server/queries.ts` - cached server-side data access
+- `src/lib/metadata.ts` - shared metadata builders
+- `src/lib/json-ld.ts` - structured data helpers
