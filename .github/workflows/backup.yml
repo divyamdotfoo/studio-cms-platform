@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   backup:
@@ -16,6 +16,9 @@ jobs:
     environment: production
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -24,15 +27,35 @@ jobs:
       - name: Dump database
         run: |
           FILENAME="backup-$(date +%Y-%m-%d).sql.gz"
-          pg_dump ${{ secrets.DATABASE_URL }} | gzip > $FILENAME
-          echo "BACKUP_FILENAME=$FILENAME" >> $GITHUB_ENV
+          pg_dump "${{ secrets.DATABASE_URL }}" | gzip > "$FILENAME"
+          echo "BACKUP_FILENAME=$FILENAME" >> "$GITHUB_ENV"
 
       - name: Upload to R2
         run: |
-          aws s3 cp $BACKUP_FILENAME \
-            s3://${{ secrets.BUCKET_NAME }}/$BACKUP_FILENAME \
-            --endpoint-url ${{ secrets.S3_ENDPOINT_URL }}
+          aws s3 cp "$BACKUP_FILENAME" \
+            "s3://${{ secrets.BUCKET_NAME }}/$BACKUP_FILENAME" \
+            --endpoint-url "${{ secrets.S3_ENDPOINT_URL }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: auto
+
+      - name: Update keepalive file
+        run: |
+          mkdir -p .github
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > .github/keepalive.txt
+
+      - name: Commit keepalive changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .github/keepalive.txt
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: keep repository active"
+          git push
